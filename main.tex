@@ -1,0 +1,124 @@
+\documentclass[12pt]{article}
+\usepackage{geometry}
+% Margins
+\geometry{
+	paper=a4paper, % Change to letterpaper for US letter
+	inner=2.5cm, % Inner margin
+	outer=3.8cm, % Outer margin
+	bindingoffset=.5cm, % Binding offset
+	top=1.5cm, % Top margin
+	bottom=1.5cm, % Bottom margin
+	%showframe, % Uncomment to show how the type block is set on the page
+}
+
+\usepackage{libertine}
+\usepackage{libertinust1math}
+\usepackage[T1]{fontenc}
+%\usepackage[
+%url=false,
+%backend=biber,
+%natbib=true,
+%style=numeric,
+%maxbibnames=3,
+%isbn = false,
+%sorting=none
+%]{biblatex}
+\usepackage[backend=biber, style=numeric, sorting=none]{biblatex}
+\bibliography{ref}
+\usepackage[autostyle=true]{csquotes} % Required to generate language-dependent quotes in the bibliography
+\usepackage{graphicx}
+\usepackage{verbatim}
+\usepackage{latexsym}
+\usepackage{setspace}
+\usepackage{float}
+\usepackage{array}
+\usepackage{subcaption}
+\usepackage{url}
+\usepackage{hyperref}
+\hypersetup{
+	colorlinks=true,
+	linkcolor=black,
+	filecolor=black,
+	citecolor=black,
+	urlcolor=black,
+}     
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage[normalem]{ulem}
+\usepackage{pdfpages}
+%\usepackage[htt]{hyphenat}
+\usepackage[acronym]{glossaries}
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{changepage}
+
+\begin{document}
+\title{Flash Evaporation and Modelling: 101} % replace with the problem you are writing up
+\author{Harsh Pandey} % replace with your name
+\maketitle
+
+\section{The Process}
+\begin{itemize}
+\item occurs when a sudden pressure drop causes the liquid to expand beyond its saturation conditions to a meta-stable state~\cite{Gartner2024-zh}.
+\item observed when the surrounding liquid conditions suddenly change and become lower than its saturated conditions. Due to the sudden pressure drop, the whole energy cannot be contained in the liquid as sensisble heat and the heat surplus is converted into latent heat of vaporisation~\cite{sauryFlashEvaporationWater2005}
+\item the phase change can be triggered by depressurisation under nearly adiabatic conditions. In case of hot liquids, the temperature remains almost constant till the phase change starts, but the saturation temperature drops with the pressure. As the liquid pressure reaches the saturation pressure at the corresponding temperature, boiling (formation of vapour bubbles) takes place due to the interfacial heat transfer. The bubble growth and vapour generation is controlled by the heat transfer rate at the liquid-vapor interface. The pressure undershoot (difference between saturation and pressure at boiling inception) characterises the maximal non-equilibrium between the phases~-~its value depending on the initial liquid temperature, depressurisation rate, available nucleation sites, and the liquid and vapour properties~\cite{liaoReviewNumericalModelling2021}
+\end{itemize}
+
+\subsection{'Flashing Inception'}
+\begin{itemize}
+	\item starts when the temperature increases by a few degrees above the saturation temperature or an initirally subcooled liquid may become saturated if the pressure drop is large enough to reduce the substance pressure below the saturation pressure corresponding to its temperature~\cite{mansourReviewFlashEvaporation2019}
+	\item occurs when the superheat limit is reached~\cite{liaoComputationalModellingFlash2017}
+	\item themodynamic limit is given by~$\frac{\partial P}{\partial V}|_{T} = 0$~along with an equation of state that is not available really. It's the spinodal curves that show this~\cite{liaoComputationalModellingFlash2017}
+	\item in practice, the metastable liquid will undergo phase change before reaching the homogenous nucleation limit~\cite{liaoComputationalModellingFlash2017}
+\end{itemize}
+
+
+\subsection{Nucleation}
+\begin{itemize}
+	\item as a significantly high local superheat degree does not exist, the location where nucleation is initiated is determined majorly by the available nucleation sites. In most cases, the walls are a major source of nucleation sites due to roughness and manufacturing imperfectness~\cite{liaoFlashingEvaporationDifferent2013}
+	\item in a superheated liquid, fluctuations of the fluid properties on a molecular level may cause the formation of vapour nuclei. The generation of vapour nuclei can be divided into homogenous nucleation within the liquid and heterogenous nucleation at the interface between the superheated liquid and a second (typically solid) phase~\cite{Gartner2024-zh}.
+	\item in most practical circumstances, the metastable liquid will undergo phase change before it reaches the homogenous nucleation limit. In this case, nucleation occurs around pre-existing nuclei or gaseous seeds or poorly wettable cavities on solid surfaces. This is known as heterogenous nucleation~\cite{liaoComputationalModellingFlash2017} 
+	\item \scriptsize--- Zone I (subcooled liquid) --- Zone II (metastable superheated liquid) --- Zone III (nucleation; non-equilibrium) --- Zone IV (equilibrium) --- \normalsize
+	\item modelling methods \begin{itemize}
+		\item homogenous seeding (ignores zone II and III)
+		\item step function (ignores zone II)
+		\item nucleation modelling
+	\end{itemize} 
+\end{itemize}
+
+\subsection{Bubble Growth}
+\begin{itemize}
+	\item at the very early stage, the nuclei are small and surface tension is dominant and restricts growth, this delay period has a marginal influence and is often ignored~\cite{miyatakeSimpleUniversalEquation1997, liaoFlashingEvaporationDifferent2013}
+	\item second stage, called inertia controlled growth~\cite{Gartner2024-zh}, starts after the nuclei have grown to around twice their diameter due to the dominant inertia forces. The radius of the nucleus bubble growth is a consequence of the pressure difference between the vapour pressure in the bubble and the exterior pressure. This is hydro-dynamically controlled~\cite{liaoFlashingEvaporationDifferent2013}. Bubble growth is a linear function of time~\cite{miyatakeSimpleUniversalEquation1997}.
+	\item the third stage is called the thermally controlled growth mode, where the after bubble grows further and its wall temperature decreases, the increase in heat transfer between the surrounding liquid and the bubble wall causes addition of vapour to the bubble by evaporation at the interface. Bubble growth is characterised by~$R \propto t^{1/2}$~\cite{miyatakeSimpleUniversalEquation1997}. Growth is restricted mainly by the rate at which heat is supplied by the liquid. However, conduction is not always the primary means of heat transfer because turbulence and relative motion between bubbles and the surrounding liquid~\cite{liaoComputationalModellingFlash2017}
+\end{itemize}
+\subsection{Vapour Generation Rate}
+Null.
+
+\section{Modelling Multiphase Flows}
+Several different models and simulation approaches for various two-phase flow conditions have evolved:
+\begin{itemize}
+\item Euler-Euler: Treats the two phase flow as interpenetrating continua. The governing equations of the fluid are solved for each phase on the Eulerian grid, and the interactions of the two phases at the interface are represented through suitable exchange terms.
+\item Euler-Lagrange: Models treat one phase as a continuous solution on an Eulerian grid. The second phase is dispersed and treated as discrete particles in a Lagrangian framework. Here, it is assumed that the bubbles, droplets, or solids represented by the particles can be treated as rigid bodies with homogenous properties within the partile and that they are in a dilute flow. The effect of the flow field around the particles is them subsumed as appropriate forces~\cite{Gartner2024-zh}
+\item Multiphase Mixture: Simplified Euler-Euler approach. 
+\end{itemize}
+Among different approaches, the homogenous equilibrium model is generally recognised as the simplest. Within this approach, the flashing flow is considered as pseudo single-phase flowing through the nozzle at the equilibrium state. The HEM approach can be applied to relatively long nozzles (that allow for a smooth phase change inside them), however, in short nozzles, this can result in large errors as the equilibrium assumption is no longer valid. To accomodate the nonequilibrium effects, empirical correction factors, slip between phases (mixture models), and two fluid models are used. The needed closure models (flow pattern details, information about bubble size distributions and bubble shapes) are not general and are selected on a case-by-case basis. Approaches to modelling flashing flows need to consider: (a) the change of phase during flashing flow and (b) the interaction between the liquid phase and the vapor phase during the vaporization process.~\cite{dangleComputationalFluidDynamics2018}
+
+Concering the change of phase during flashing flow, the models can be classified into two main categories:
+\begin{itemize}
+\item models accounting for the nucleation process (which show better agreement with the real behaviour but require experimental data to tune the nucleation source term)
+\item models neglecting nucleation and assuming constant bubble size or number density
+\end{itemize}
+
+\subsection{Local Instaneous Balance Equations}
+
+\printbibliography
+\end{document}
+
+
+
+ 
+
+

@@ -1,0 +1,65 @@
+\section{Literature Review}\label{chap:review}
+The close-contact sublimation models presented in this thesis build upon established research, the most important being the theory of close-contact melting. Before we delve into a review of the most important theoretical concepts, we aim to familiarize the reader with the contents of this thesis in the context of existing literature. 
+
+
+
+\begin{figure}[ht!]
+\centering
+\includegraphics[trim=0 0 0 0 cm,clip,width=1\textwidth]{Chapters/Review/figs/workflowhorizontal/ccmworkflowHorizontal.pdf}
+\caption[Close-Contact Phase Change: Case Distinction Based on Physical Regimes]{Case distinctions for different physical settings. We consider the phase transitions from a solid (icy) state to either  gaseous \textbf{(A)} or liquid \textbf{(B)} state. In this thesis, we study close-contact sublimation \textbf{(A)}. In particular, we investigate compressibility effects \textbf{(I)} in the gas film. The shading indicates the main subjects covered in this thesis. \textit{A hybrid regime of partial sublimation and partial melting is not discussed in this thesis and thus excluded from the sketch.}}
+\label{fig:ccmcworkflow}
+\end{figure}
+
+Figure \ref{fig:ccmcworkflow} sketches modeling approaches to close-contact phase change in different flow regimes. Depending on the ambient conditions, we consider solid-gas sublimation (\textbf{A}) or solid-liquid melting (\textbf{B}).
+The present thesis aims to expand the existing close-contact melting theory for incompressible melts by adding a model for solid-gas sublimation phase change (\textit{shaded boxes, top half} of Fig. \ref{fig:ccmcworkflow}). 
+White boxes contain topics that are either established in literature and reviewed in the following sections (\textbf{B}, \textbf{II}) or not covered in this thesis (\textbf{II c}). \textit{In the following paragraphs, bold labels refer to Fig. \ref{fig:ccmcworkflow}, if not stated otherwise.}
+
+To make the discussion of close-contact phase change in the context of melting probes more accessible, we discuss a short conceptual sketch (Fig. \ref{fig:introEquilibria}) of a simple rectangular melting head at constant temperature $T_H$, moving through solid ice at a constant velocity $U$.
+
+\begin{figure}[ht!]
+\centering
+\includegraphics[trim=0 0 0 0 cm,clip,width=1\textwidth]{Chapters/Review/figs/equilibriaIntro/equilibriaSketch.pdf}
+\caption[Equilibrium in Close-Contact Phase Change]{Close-contact equilibrium state in the lubrication film at the tip of a flat constant temperature melting head sinking through an icy environment with velocity $U$. The zoomed in views of the melt (\textit{film thickness} $\delta$ \textit{not to scale}) show an example temperature distribution $T(x_f,z)$ at some arbitrary fixed location $x_f$ (\textbf{a}) and the mechanical equilibrium between the pressure $p(x)$ in the lid and the effective external force $F\ts{eff}$ (\textbf{b}).}
+\label{fig:introEquilibria}
+\end{figure}
+
+The probe's heated surface induces a phase change from solid to liquid (\textit{close-contact melting} or \gls{CCM}, Fig. \ref{subfig:ccmsketch}) or solid to gas (\textit{close-contact sublimation} or \gls{CCS}, Fig. \ref{subfig:ccssketch}), depending on the ambient pressure and temperature. 
+Due to the (gravitational) force acting on the phase change material, the layer of liquid or gaseous substance separating the melting head from the ice is only a very thin film compared to the extents of the heater. 
+In this thesis, we will refer to this film as \textit{melt film} in the context of solid-liquid phase change and as \textit{sublimation film} in the context of sublimation. In both cases, we call the interface between the two phases \textit{phase change interface} or \gls{PCI}.
+
+The propagation speed $U$ of the probe relative to a static icy environment is a main quantity of interest in the trajectory analysis of melting probes. It is a function of the energy supplied to the system through a heated surface and the effective force $F\ts{eff}$ exerted on the melt film by the heating device.
+The theory of close-contact melting (\textbf{B}) provides a model for a constant velocity solid-liquid phase change process assuming an equilibrium between the effective force $F\ts{eff}$ and the \textit{contact force} exerted by the pressure distribution $p(x)$ across the melt (\textbf{b} in Fig. \ref{fig:introEquilibria}). It is well-established both
+experimentally \cite{moallemi1986experiment} and 
+theoretically \cite{moallemi1986analysis}, \cite{schuller2019icarus} and applied in different engineering contexts, ranging from thermal energy storage systems \cite{kozak2014close}, \cite{hirata1991analysis} to melting probes for solar system exploration \cite{schuller2017spatially}, \cite{schuller2019icarus}, \cite{schuller2016curvilinearccm}.
+
+
+To recall the different phase transitions and their dependence on the ambient temperature $T$ and a species' partial pressure $p$, Fig. \ref{fig:phasediagram} shows a qualitative sketch of a phase diagram \cite{Gedde2020}. Note that the plot does not include the critical regime, since it is not of importance within the scope of this thesis. Sublimation phase change from solid to gaseous phase, the main subject of the present discussions, typically occurs in low-pressure environments. The \textit{sublimation curve} (marked in \textit{bold red}) links the gas pressure and temperature ($p\ts{sat}$,\,$T\ts{sat}$) on a solid-gas interface in equilibrium, meaning that both phases coexist on an interface at rest. This pressure is referred to as the \textit{sublimation pressure}, \textit{vapor pressure} or \textit{saturation pressure} $p\ts{sat}$. For a non-equilibrium interface, when sublimation phase change causes the interface to move, neither the gas temperature $T^G$ nor the pressure $p^G$ one the interface generally lie exactly on the sublimation curve. We will however show in the review Section \ref{sec:interfacedescription} that $(T^G,\,p^G) \approx (p\ts{sat},\,T\ts{sat})$ can be a good approximation, in particular when the mass transfer across the interface is slow \cite{ishii2010thermo}. 
+
+\begin{figure}[ht!]
+\centering
+\includegraphics[trim=0 0 0 0 cm,clip,width=0.6\textwidth]{Chapters/Review/figs/phasechange/phasechange.pdf}
+\caption[Simplified Phase Diagram]{Qualitative phase diagram for the subcritical regime of a substance with no phase anomaly. We recall that the type of phase transition for a pure substance depends on its temperature $T$ and pressure $p$. At the triple point $\qty(p_t, T_t)$, marked by the blue dot, all three phases (\textit{solid}, \textit{liquid}, \textit{gas}) are in thermodynamic equilibrium. The existing close-contact melting theory \cite{schuller2017spatially}, \cite{schuller2016curvilinearccm} covers solid-liquid phase transitions. This thesis extends the close-contact theory to low-pressure environments ($p < p_t$), where solid-gas sublimation occurs. \textit{This does not include the regime close to the triple point, where hybrid melting and sublimation could occur.}}
+\label{fig:phasediagram}
+\end{figure}
+
+In the following, we assume pure sublimation, excluding the hybrid regime of partial sublimation and partial melting in a lid under conditions near the triple point. The latter case is also deliberately excluded from Fig. \ref{fig:ccmcworkflow}.
+
+While the sublimation flow's mathematical description changes by dropping the assumption of incompressibility, major parts of the algorithm are straightforward extensions of the ideas developed for incompressible melts (\textbf{II} in Fig. \ref{fig:ccmcworkflow}).
+In the first section of this chapter (Sec. \ref{sec:incompccm}), we will thus present a brief review of the incompressible theory, corresponding to a phase transition across the melting curve depicted in Fig. \ref{fig:phasediagram}. Special emphasis is put on the results presented in \cite{schuller2017spatially}, \cite{schuller2019icarus} and \cite{schuller2016curvilinearccm}, upon which we build the compressible theory presented in Chapter \ref{chap:compressible}.
+
+It is theoretically possible to model the sublimation film using the full system of compressible \textit{Navier-Stokes} equations but this approach comes at a high expense of both computational and model complexity. As in the case of close-contact melting, the governing equations can however be simplified after considering a scaling described by \textit{compressible lubrication theory} (\textbf{I}). The scaled equations and simplifying assumptions are shown in Section \ref{sec:complubricationreview}.
+
+The large mean free path of gas can render the classical continuum model (\textbf{II a}) invalid under near-vacuum conditions.  For the transition regime of moderate Knudsen numbers, the \textit{R13} theory \cite{struchtrup2003r13derivation}, \cite{struchtrup2005macroscopic} provides a deterministic macroscopic model for the rarefied gaseous flow. The issue of gas rarefaction is reviewed in Section \ref{sec:slipreview}, where we also present the hydrodynamic limit of sublimation boundary conditions derived for the R13 model \cite{beckmann2018evaporation}. We will later extend the continuum close-contact sublimation solver with this set of boundary conditions (\textbf{II b}) as a first step towards a fully non-isothermal R13 close-contact sublimation model.
+
+\FloatBarrier
+
+
+% Jump conditions
+\input{Chapters/Review/Interface/interface}
+
+% Incompressible CCM
+\input{Chapters/Review/CCM/ccm}
+
+
+
+\newpage

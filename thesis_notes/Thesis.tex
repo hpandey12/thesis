@@ -1,0 +1,255 @@
+%----------------------------------------------------------------------
+
+%
+% Template based on the original
+% template created by:
+% Author: N. Hosters
+% Created: 27.10.2011
+% 
+% Modified and adapted for overleaf:
+% B. Terschanski
+% 
+%
+%----------------------------------------------------------------------
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                           %
+% HEADER                                                                    %
+%                                                                           %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[paper=a4,12pt,titlepage,listof=totoc,index=totoc,bibliography=totoc]{scrartcl}
+% paper=a4		Papierformat DinA 4
+% 12pt		Schriftgr��e 12pt
+% titlepage 		Deckblatt
+% listof=totoc	Abbildungs- und Tabellenverzeichnis in Inhaltsverzeichnis
+% index=totoc		Index ins Inhaltverzeichnis
+% bibliography=totoc	Quellenverzeichnis ins Inhaltsverzeichnis
+%liststotoc: 	Abbildungs- und Tabellenverzeichnis in Inhaltsverzeichnis
+%idxtotoc: 		Index ins Inhaltverzeichnis
+%bibtotoc:    Literaturverzeichnis ins Inhaltsverzeichnis
+%twoside:     f�r Duplex
+
+
+\usepackage[english]{Libraries/MBDStyles}
+%\usepackage[ngerman]{babel}
+%german      \usepackage[ngerman]{babel} und \usepackage[ngerman] {translator}
+%translator       \usepackage[ngerman]{translator}
+%babel           \usepackage[ngerman]{babel}
+
+
+%\usepackage{scrpage2}    
+\usepackage[export]{adjustbox}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{cancel}
+\usepackage{color}
+\usepackage{epigraph}
+% For coloured table cells
+\usepackage[table,xcdraw]{xcolor}
+\usepackage{graphicx}
+\usepackage{latexsym}
+\usepackage{listings}
+\usepackage{mathrsfs}
+\usepackage{mathtools}
+\usepackage{pgf,tikz}
+\usepackage{physics}
+\usepackage{placeins}
+\usepackage{scalerel}
+\usepackage{subcaption}
+\usepackage{tabularx}
+\usepackage{tikzscale}
+\usepackage{todonotes}
+\usepackage{siunitx}
+%red, green, blue, yellow, cyan, magenta, black, white
+\usepackage{pifont}
+\usepackage{tocvsec2}
+\usepackage{enumitem}
+\usepackage{framed}
+\usepackage{dashrule}
+\usepackage{hyperref}
+
+\input{Chapters/symbols.tex}		% Glossar mit Einteilung in Kategorien
+
+
+\newtheorem{defn}{Definition}
+
+\newcommand{\todoin}[1]{\todo[inline]{#1}}
+\newcommand{\g}[1]{{\gls{#1}}}
+
+\newcommand{\highlight}[1]{%
+	\colorbox{red!10}{$\displaystyle#1$}}
+
+\newcommand{\customlabel}[2]{%
+\protected@write \@auxout {}{\string \newlabel {#1}{{#2}{}}}}
+
+% You can define your own colors here:
+\definecolor{mygreen}{RGB}{28,172,0} % color values Red, Green, Blue
+\definecolor{mylilas}{RGB}{170,55,241}
+
+\definecolor{mbdyellow}{RGB}{250, 190, 80}
+\definecolor{mbdblue}{RGB}{141, 185, 229}
+\definecolor{mbdrose}{RGB}{241, 158, 177}
+
+% You can use the listings package to
+% nicely format code inputs if you need it.
+% Google for nice lstset presets for the language that you want to embed
+\lstset{language=Matlab,%
+    %basicstyle=\color{red},
+    breaklines=true,%
+    morekeywords={matlab2tikz},
+    keywordstyle=\color{blue},%
+    morekeywords=[2]{1}, keywordstyle=[2]{\color{black}},
+    identifierstyle=\color{black},%
+    stringstyle=\color{mylilas},
+    commentstyle=\color{mygreen},%
+    showstringspaces=false,%without this there will be a symbol in the places where there is a space
+    numbers=left,%
+    numberstyle={\tiny \color{black}},% size of the numbers
+    numbersep=9pt, % this defines how far the numbers are from the text
+    emph=[1]{for,end,break},emphstyle=[1]\color{red}, %some words to emphasise
+    %emph=[2]{word1,word2}, emphstyle=[2]{style},    
+}
+
+
+\newcommand\fat[1]{\ThisStyle{\ooalign{%
+  \kern.46pt$\SavedStyle#1$\cr\kern.33pt$\SavedStyle#1$\cr%
+  \kern.2pt$\SavedStyle#1$\cr$\SavedStyle#1$}}}
+\def\fvee{\mathbin{\fat{\vee}}}
+
+\newcommand*\circled[1]{\tikz[baseline=(char.base)]{%
+            \node[shape=circle,fill=blue!20,draw,inner sep=2pt] (char) {#1};}}
+
+
+%\usepackage[pdftex,colorlinks,hypertexnames=false]{hyperref}
+%\hypersetup{%
+%	linkcolor={blue},
+%	citecolor={red},
+%}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                           %
+% DOKUMENT                                                                  %
+%                                                                           %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+% Definition des Types der Arbeit
+\newcommand{\ThesisType}{Master's Thesis}
+
+% Differential for integrals
+\newcommand*\diff{\mathop{}\!\mathrm{d}}
+% Text subscript
+\newcommand{\ts}[1]{_{\text{#1}}}
+\renewcommand\arraystretch{1.5}
+\def\code#1{\texttt{#1}}
+
+\renewcommand{\entryname}{}
+\renewcommand{\descriptionname}{}
+
+
+%----------------------------------------
+% TITELSEITE          
+%----------------------------------------
+\input{Cover/Titlepage}
+
+
+%----------------------------------------
+% INHALTSVERZEICHNIS  
+%----------------------------------------
+\pagestyle{Inhaltsverzeichnis}
+\tableofcontents					
+\newpage
+
+% Ab hier romanische Nummerierung 
+\pagestyle{Inhalt}
+\pagenumbering{Roman}
+
+%----------------------------------------
+% GLOSSAR            
+%----------------------------------------
+
+
+
+%Alle Glossare
+\printglossary[type=main, style=Glossar-parent]
+\printglossary[type=index, style=Glossar]
+\printglossary[type=abkz, style=Abkzg]
+
+\newpage 
+
+%----------------------------------------
+% VERZEICHNISSE    
+%----------------------------------------
+\setcounter{tocdepth}{1}
+\listoffigures              % Abbildungsverzeichnis
+\newpage
+\listoftables               % Tabellenverzeichnis
+\newpage
+
+
+%----------------------------------------
+% INHALT              
+%----------------------------------------
+
+
+% Ab hier arabische Nummerierung
+\pagenumbering{arabic}
+\settocdepth{subsection}
+\noindent
+% Inhalt kann auch in Dateien ausgelagert werden, die
+% folgenderma�en eingebunden werden
+% \input{<Verzeichnis>/<.tex Datei OHNE Endung>}
+% Bsp: \input{Autor1/Projekt1}
+%      \input{Einleitung}
+
+% Inhalt
+
+%\printglossaries
+%\input{InputExample/symbole_2}		% Glossar mit Einteilung in Kategorien
+%\input{Chapters/todo.tex}
+
+% You can insert your source here. Split the 
+% Latex code into chapters and insert them using the 
+% \input command.
+%
+% The basic template contains an excerpt of a thesis
+% to give some basic examples of how to input various kinds of equations, figures and tables. 
+% You can get rid of the example code by simply commenting out the corresponding \input lines.
+% 
+% If compilation is slow, you might comment out some of the packages included above with \usepackage if 
+% you do not use them.
+
+
+
+\input{Chapters/Introduction/introduction.tex}
+\newpage
+\input{Chapters/Review/review}
+%\newpage
+%\input{Chapters/YOURCHAPTER/yourtexfile.tex}
+
+
+%----------------------------------------
+% APPENDIX            
+%----------------------------------------
+\FloatBarrier
+\newpage
+\appendix
+\input{Chapters/Appendix/appendix.tex}
+\newpage
+\FloatBarrier
+
+%----------------------------------------
+% QUELLENVERZEICHNIS            
+%----------------------------------------
+
+%Erster Buchstabe der Bibliothek immer gro�!
+%\bibliographystyle{plainnat}
+\bibliographystyle{unsrt}
+%\bibliographystyle{plain}
+%\bibliographystyle{apalike}
+\bibliography{Chapters/literature}
+%\bibliographystyle{plainnat}
+
+\end{document}

@@ -1,0 +1,54 @@
+%----------------------------------------------------------------------
+% Konventionen bez�glich der Schreibweise von Matrizen, Vektoren, etc.
+%
+%
+% Autor: G. Wellmer
+% Erstellt: unbekannt
+% 
+% Letzte �nderungen: - <�nderung>,<Datum>,<Person>   
+%----------------------------------------------------------------------
+
+%----------------------------------------------------------------------
+% einger�ckt = erg�nzt
+% \integ (Integral) hinzugef�gt
+% \ointeg (Ringintegral) hinzugef�gt
+%----------------------------------------------------------------------
+
+%Verweise
+\newcommand{\fig}[1]{Fig.~\ref{#1}}
+\newcommand{\eq}[1]{Eqn.~(\ref{#1})}
+\newcommand{\tab}[1]{Table~\ref{#1}}
+\newcommand{\chap}[1]{Chapter~\ref{#1}}
+\newcommand{\sect}[1]{Section \ref{#1}}
+\newcommand{\app}[1]{Appendix~\ref{#1}}
+
+% Formatierungen Text
+\newcommand{\file}[1]{\texttt{\emph{#1}}}
+\newcommand{\code}[1]{\ttfamily {#1}\rmfamily}
+%
+% Formatierungen Formeln
+\newcommand{\pderiv}[2]{\ensuremath{\displaystyle\frac{\partial{#1}}{\partial{#2}}}}
+\newcommand{\deriv}[2]{\ensuremath{\displaystyle\frac{d{#1}}{d{#2}}}}
+\newcommand{\limint}[1]{\ensuremath{\displaystyle\int\limits_{#1}}}
+\newcommand{\limsum}[2]{\ensuremath{\\displaystyle\sum\limits_{#1}^{#2}}}
+\newcommand{\matr}[1]{\mbox{\boldmath{$\bar{\bar{\mathsf {#1}}}$}}}
+\newcommand{\vect}[1]{\mbox{\boldmath{$\bar{{#1}}$}}}
+\newcommand{\munit}[1]{\ensuremath{\mathrm{#1}}}
+\newcommand{\ind}[1]{\ensuremath{\mathsf {#1}}}
+% eigene
+\newcommand{\integ}[2]{\ensuremath{\displaystyle\int\limits_{#1}^{#2}}}
+\newcommand{\ointeg}[2]{\ensuremath{\displaystyle\oint\limits_{#1}^{#2}}}
+%
+\renewcommand{\baselinestretch}{1.15}
+\parskip 1ex
+%
+
+\newenvironment{tttable}[1]{%
+   \begingroup
+   \sffamily
+   \urlstyle{sf}% URL-Schriftart in Tabelle weicht ab.
+   \begin{table}{#1}
+}{%
+   \end{table}
+   \endgroup
+} 

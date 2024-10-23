@@ -1,0 +1,418 @@
+% ========================================================================
+% Kategorien nach denen die Eintr�ge sortiert werden
+% ========================================================================
+
+\newglossaryentry{rs}{
+name={Roman Symbols},
+description={\nopostdesc}
+}
+
+\newglossaryentry{gs}{
+name={Greek Symbols},
+description={\nopostdesc}
+}
+
+
+% ========================================================================
+% Eintrage des Glossars
+% ========================================================================
+
+\newglossaryentry{alpha}{
+name=\ensuremath{\alpha},
+description={thermal diffusivity},
+sort=ga,
+type=main,
+parent=gs
+}
+\glsadd{alpha}
+
+
+\newglossaryentry{epsilon}{
+name=\ensuremath{\epsilon},
+description={lubrication parameter},
+sort=ge,
+type=main,
+parent=gs
+}
+\glsadd{epsilon}
+
+\newglossaryentry{delta}{
+name=\ensuremath{\delta},
+description={lubrication film thickness, gap height},
+sort=gd,
+type=main,
+parent=gs
+}
+\glsadd{delta}
+
+\newglossaryentry{mu}{
+name=\ensuremath{\mu},
+description={(dynamic) viscosity},
+sort=gm,
+type=main,
+parent=gs
+}
+\glsadd{mu}
+
+\newglossaryentry{kappa}{
+name=\ensuremath{\kappa},
+description={thermal conductivity},
+sort=gk,
+type=main,
+parent=gs
+}
+\glsadd{kappa}
+
+
+\newglossaryentry{Gamma}{
+name=\ensuremath{\Gamma},
+description={spatial boundary},
+sort=gG,
+type=main,
+parent=gs
+}
+\glsadd{Gamma}
+
+\newglossaryentry{Omega}{
+name=\ensuremath{\Omega},
+description={spatial domain},
+sort=gO,
+type=main,
+parent=gs
+}
+\glsadd{Omega}
+
+
+\newglossaryentry{rho}{
+name=\ensuremath{\rho},
+description={density},
+sort=gr,
+type=main,
+parent=gs
+}
+\glsadd{rho}
+
+
+\newglossaryentry{zeta}{
+name=\ensuremath{\zeta},
+description={specific internal energy},
+sort=gz,
+type=main,
+parent=gs
+}
+\glsadd{zeta}
+
+
+\newglossaryentry{T}{
+name=\ensuremath{T},
+description={temperature},
+sort=temperature,
+type=main,
+parent=rs
+}
+\glsadd{T}
+
+\newglossaryentry{U}{
+name=\ensuremath{U},
+description={interface velocity in a static frame of reference, Stefan velocity},
+sort=U,
+type=main,
+parent=rs
+}
+\glsadd{U}
+
+\newglossaryentry{W}{
+name=\ensuremath{W},
+description={gas velocity on the phase change interface},
+sort=W,
+type=main,
+parent=rs
+}
+\glsadd{W}
+
+\newglossaryentry{LRadius}{
+name=\ensuremath{L},
+description={heater half-length (\textit{Cartesian setup}), radius of a cylindrical probe (\textit{cylindrical Setup})},
+sort=L,
+type=main,
+parent=rs
+}
+\glsadd{LRadius}
+
+
+
+\newglossaryentry{v}{
+name=\ensuremath{v},
+description={velocity (vector)},
+sort=v,
+type=main,
+parent=rs
+}
+\glsadd{v}
+
+\newglossaryentry{u}{
+name=\ensuremath{u},
+description={horizontal ($x-$ or $r-$) component of the velocity vector},
+sort=u,
+type=main,
+parent=rs
+}
+\glsadd{u}
+
+\newglossaryentry{w}{
+name=\ensuremath{w},
+description={vertical ($z-$) component of the velocity vector},
+sort=w,
+type=main,
+parent=rs
+}
+\glsadd{w}
+
+\newglossaryentry{h}{
+name=\ensuremath{h},
+description={specific enthalpy},
+sort=hh,
+type=main,
+parent=rs
+}
+\glsadd{h}
+
+\newglossaryentry{hm}{
+name=\ensuremath{h_m},
+description={latent heat (of melting/sublimation)},
+sort=hm,
+type=main,
+parent=rs
+}
+\glsadd{hm}
+
+\newglossaryentry{qdot}{
+name=\ensuremath{\Dot{Q}},
+description={heat flow rate},
+sort=Qdot,
+type=main,
+parent=rs
+}
+\glsadd{qdot}
+
+\newglossaryentry{q}{
+name=\ensuremath{q},
+description={heat flux (vector)},
+sort=Q,
+type=main,
+parent=rs
+}
+\glsadd{q}
+
+
+
+\newglossaryentry{cp}{
+name=\ensuremath{c_{p}},
+description={specific heat capacity},
+sort=cp,
+type=main,
+parent=rs
+}
+\glsadd{cp}
+
+\newglossaryentry{n}{
+name=\ensuremath{n},
+description={number of discretization points},
+sort=nt,
+type=main,
+parent=rs
+}
+\glsadd{n}
+
+
+\newglossaryentry{p}{
+name=\ensuremath{p},
+description={pressure, pressure tensor},
+sort=p,
+type=main,
+parent=rs
+}
+\glsadd{p}
+
+
+\newglossaryentry{Re}{
+name=\textit{Re},
+description={Reynolds number},
+sort=re,
+type=main,
+parent=rs
+}
+\glsadd{Re}
+
+\newglossaryentry{Ma}{
+name=\textit{Ma},
+description={Mach number},
+sort=ma,
+type=main,
+parent=rs
+}
+\glsadd{Ma}
+
+\newglossaryentry{Pr}{
+name=\textit{Pr},
+description={Prandtl number},
+sort=pr,
+type=main,
+parent=rs
+}
+\glsadd{Pr}
+
+\newglossaryentry{Pe}{
+name=\textit{Pe},
+description={Peclet number},
+sort=pe,
+type=main,
+parent=rs
+}
+\glsadd{Pe}
+
+
+\newglossaryentry{Kn}{
+name=\textit{Kn},
+description={Knudsen number},
+sort=kn,
+type=main,
+parent=rs
+}
+\glsadd{Kn}
+
+
+% ------------------------------------------
+% Indizes
+% ------------------------------------------
+
+\newglossaryentry{in}{
+name=\ensuremath{I},
+description={on the phase change interface},
+sort=i,
+type=index,
+}
+\glsadd{in}	% sicherstellen, dass das Symbol verwendet wird
+
+
+\newglossaryentry{S}{
+name=\ensuremath{S},
+description={solid phase},
+sort=S,
+type=index,
+}
+\glsadd{S}
+
+\newglossaryentry{G}{
+name=\ensuremath{G},
+description={gaseous phase},
+sort=G,
+type=index,
+}
+\glsadd{G}
+
+
+\newglossaryentry{L}{
+name=\ensuremath{L},
+description={liquid phase},
+sort=L,
+type=index,
+}
+\glsadd{L}
+
+\newglossaryentry{s}{
+name=\ensuremath{s},
+description={far field of the solid phase},
+sort=s,
+type=index,
+}
+\glsadd{s}
+
+
+\newglossaryentry{H}{
+name=\ensuremath{H},
+description={heater surface},
+sort=h,
+type=index,
+}
+\glsadd{H}
+
+\newglossaryentry{deltaindex}{
+name=\ensuremath{\delta},
+description={with respect to the gap height / vertical component of velocity},
+sort=delta,
+type=index,
+}
+\glsadd{deltaindex}
+
+
+% \newglossaryentry{eq}{
+% name=\ensuremath{eq},
+% description={thermodynamical / mechanical equilibrium},
+% sort=eq,
+% type=index,
+% }
+% \glsadd{eq}
+
+
+% ------------------------------------------
+% Abk�rzungen
+% ------------------------------------------
+
+
+\newglossaryentry{CCM}{
+name=CCM,
+description={Close-Contact Melting},
+sort=CCM,
+type=abkz
+}
+\glsadd{CCM}
+
+\newglossaryentry{PCI}{
+name=PCI,
+description={Phase Change Interface},
+sort=pci,
+type=abkz
+}
+\glsadd{PCI}
+
+\newglossaryentry{CCS}{
+name=CCS,
+description={Close-Contact Sublimation},
+sort=ccs,
+type=abkz
+}
+\glsadd{CCS}
+
+\newglossaryentry{FEM}{
+name=FEM,
+description={Finite Element Method},
+sort=fem,
+type=abkz
+}
+\glsadd{FEM}
+
+\newglossaryentry{NSF}{
+name=NSF,
+description={Navier-Stokes-Fourier, Navier-Stokes Equations with Fourier-Closure},
+sort=nsf,
+type=abkz
+}
+\glsadd{NSF}
+
+
+% \newglossaryentry{INS}{
+% name=INS,
+% description={Incompressible Navier-Stokes (Equations)},
+% sort=ins,
+% type=abkz
+% }
+% \glsadd{INS}
+
+\newglossaryentry{ODE}{
+name=ODE,
+description={Ordinary Differential Equation},
+sort=ins,
+type=abkz
+}
+\glsadd{ODE}

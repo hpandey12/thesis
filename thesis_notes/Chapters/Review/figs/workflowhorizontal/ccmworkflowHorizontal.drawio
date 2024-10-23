@@ -1,0 +1,120 @@
+<mxfile host="Electron" modified="2021-05-17T10:59:54.030Z" agent="5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/14.6.13 Chrome/89.0.4389.128 Electron/12.0.7 Safari/537.36" etag="6V2nRQHtxek-bjdtChZl" compressed="false" version="14.6.13" type="device">
+  <diagram id="WNrqvLWJtSxUU-78l1Kw" name="Page-1">
+    <mxGraphModel dx="1086" dy="806" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="1" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="SEUTMyrRXvYL5SIFeNz0-36" value="&lt;font style=&quot;font-size: 50px&quot; face=&quot;Palatino&quot;&gt;&lt;i&gt;Present Thesis&lt;/i&gt;&lt;/font&gt;" style="text;html=1;strokeColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;shadow=0;glass=0;sketch=0;opacity=10;textOpacity=10;" vertex="1" parent="1">
+          <mxGeometry x="108" y="220" width="510" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="SEUTMyrRXvYL5SIFeNz0-35" value="" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=none;shadow=0;sketch=0;glass=0;gradientColor=#ffffff;opacity=50;fillColor=#FFCCCC;" vertex="1" parent="1">
+          <mxGeometry x="119" y="180" width="640" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="SEUTMyrRXvYL5SIFeNz0-2" style="edgeStyle=orthogonalEdgeStyle;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontFamily=Palatino;rounded=1;fillColor=#f5f5f5;strokeColor=#330000;" edge="1" parent="1" source="SEUTMyrRXvYL5SIFeNz0-4" target="SEUTMyrRXvYL5SIFeNz0-39">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="149" y="407.5" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="129" y="380" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SEUTMyrRXvYL5SIFeNz0-3" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontFamily=Palatino;" edge="1" parent="1" source="SEUTMyrRXvYL5SIFeNz0-4" target="SEUTMyrRXvYL5SIFeNz0-9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="SEUTMyrRXvYL5SIFeNz0-4" value="&lt;div&gt;&lt;i&gt;Ambient &lt;br&gt;&lt;/i&gt;&lt;/div&gt;&lt;div&gt;&lt;i&gt;Pressure, &lt;br&gt;&lt;/i&gt;&lt;/div&gt;&lt;div&gt;&lt;i&gt;Temperature?&lt;br&gt;&lt;/i&gt;&lt;/div&gt;" style="rhombus;whiteSpace=wrap;html=1;fontFamily=Palatino;spacing=2;spacingTop=-10;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="69" y="247.5" width="120" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="SEUTMyrRXvYL5SIFeNz0-7" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontFamily=Palatino;dashed=1;" edge="1" parent="1" source="SEUTMyrRXvYL5SIFeNz0-9">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="209" y="350" />
+              <mxPoint x="369" y="350" />
+            </Array>
+            <mxPoint x="369" y="385" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SEUTMyrRXvYL5SIFeNz0-8" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#330000;fontFamily=Palatino;" edge="1" parent="1" source="SEUTMyrRXvYL5SIFeNz0-9" target="SEUTMyrRXvYL5SIFeNz0-12">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="SEUTMyrRXvYL5SIFeNz0-9" value="&lt;b&gt;(A) Sublimation&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Palatino;labelBackgroundColor=none;fillColor=#f8cecc;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="149" y="190" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="SEUTMyrRXvYL5SIFeNz0-28" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="SEUTMyrRXvYL5SIFeNz0-12" target="SEUTMyrRXvYL5SIFeNz0-15">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="369" y="293" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SEUTMyrRXvYL5SIFeNz0-12" value="&lt;b&gt;(I) Compressible Lubrication Theory&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;labelBackgroundColor=none;fontFamily=Palatino;shadow=1;fillColor=#f8cecc;strokeColor=#080303;" vertex="1" parent="1">
+          <mxGeometry x="309" y="190" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="SEUTMyrRXvYL5SIFeNz0-13" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#330000;fontFamily=Palatino;" edge="1" parent="1" source="SEUTMyrRXvYL5SIFeNz0-15" target="SEUTMyrRXvYL5SIFeNz0-17">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="509" y="293" />
+              <mxPoint x="509" y="269" />
+            </Array>
+            <mxPoint x="379" y="560" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SEUTMyrRXvYL5SIFeNz0-14" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;strokeColor=#330000;fontFamily=Palatino;" edge="1" parent="1" source="SEUTMyrRXvYL5SIFeNz0-15" target="SEUTMyrRXvYL5SIFeNz0-18">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="449" y="383" />
+            </Array>
+            <mxPoint x="399" y="541.25" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SEUTMyrRXvYL5SIFeNz0-15" value="&lt;div&gt;&lt;i&gt;Knudsen &lt;br&gt;&lt;/i&gt;&lt;/div&gt;&lt;div&gt;&lt;i&gt;Number?&lt;/i&gt;&lt;/div&gt;" style="rhombus;whiteSpace=wrap;html=1;fontFamily=Palatino;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="409" y="255" width="80" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="SEUTMyrRXvYL5SIFeNz0-16" value="&lt;div style=&quot;text-align: left&quot;&gt;&lt;b&gt;(II a)&lt;/b&gt; &lt;b&gt;Continuum Flow&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;i&gt;(Navier Stokes)&lt;/i&gt;&lt;b&gt;&lt;br&gt;&lt;/b&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;labelBackgroundColor=none;fontFamily=Palatino;fillColor=#e1d5e7;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="609" y="190" width="130" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="SEUTMyrRXvYL5SIFeNz0-17" value="&lt;div&gt;&lt;b&gt;(II b)&lt;/b&gt; &lt;b&gt;Slip Flow&lt;br&gt;&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;i&gt;(Slip Boundary Cond.)&lt;/i&gt;&lt;b&gt;&lt;br&gt;&lt;/b&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;labelBackgroundColor=none;fontFamily=Palatino;fillColor=#ffe6cc;strokeColor=#330000;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="609" y="247.5" width="130" height="42.5" as="geometry" />
+        </mxCell>
+        <mxCell id="SEUTMyrRXvYL5SIFeNz0-18" value="&lt;div&gt;&lt;b&gt;(II c)&lt;/b&gt; &lt;b&gt;Transition Flow&lt;br&gt;&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;Fully Rarefied Flow&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;i&gt;&lt;font style=&quot;font-size: 12px&quot;&gt;(R13 Models, Boltzmann / MC Methods)&lt;/font&gt;&lt;/i&gt;&lt;b style=&quot;font-size: 10px&quot;&gt;&lt;br&gt;&lt;/b&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;labelBackgroundColor=none;fontFamily=Palatino;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="609" y="320" width="130" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="SEUTMyrRXvYL5SIFeNz0-19" value="$$0.001\le\textit{Kn}\le 0.1$$ " style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;labelBackgroundColor=none;fontFamily=Palatino;" vertex="1" parent="1">
+          <mxGeometry x="513" y="240" width="90" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="SEUTMyrRXvYL5SIFeNz0-20" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;strokeColor=#330000;fontFamily=Palatino;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="SEUTMyrRXvYL5SIFeNz0-15" target="SEUTMyrRXvYL5SIFeNz0-16">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="359" y="541.25" as="sourcePoint" />
+            <mxPoint x="239" y="630" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="449" y="210" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SEUTMyrRXvYL5SIFeNz0-21" value="$$\textit{Kn}\le 0.001$$ " style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;labelBackgroundColor=none;fontFamily=Palatino;" vertex="1" parent="1">
+          <mxGeometry x="509" y="185" width="80" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="SEUTMyrRXvYL5SIFeNz0-22" value="$$\textit{Kn}\gt 0.1$$ " style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;labelBackgroundColor=none;fontFamily=Palatino;" vertex="1" parent="1">
+          <mxGeometry x="509" y="355" width="80" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="SEUTMyrRXvYL5SIFeNz0-23" value="&lt;font face=&quot;Palatino&quot; size=&quot;1&quot;&gt;&lt;b style=&quot;font-size: 14px&quot;&gt;&lt;i&gt;1. Type of Phase Change?&lt;/i&gt;&lt;/b&gt;&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontColor=#4D4D4D;labelPosition=center;verticalLabelPosition=middle;" vertex="1" parent="1">
+          <mxGeometry x="149" y="130" width="150" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="SEUTMyrRXvYL5SIFeNz0-24" value="&lt;font face=&quot;Palatino&quot; size=&quot;1&quot;&gt;&lt;b style=&quot;font-size: 14px&quot;&gt;&lt;i&gt;2. Incompressible or Compressible Flow Model?&lt;/i&gt;&lt;/b&gt;&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontColor=#4D4D4D;" vertex="1" parent="1">
+          <mxGeometry x="309" y="130" width="170" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="SEUTMyrRXvYL5SIFeNz0-31" value="&lt;font face=&quot;Palatino&quot; size=&quot;1&quot;&gt;&lt;b style=&quot;font-size: 14px&quot;&gt;&lt;i&gt;3. Do rarefaction effects play a role?&lt;/i&gt;&lt;/b&gt;&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;labelBackgroundColor=#ffffff;fontColor=#4D4D4D;" vertex="1" parent="1">
+          <mxGeometry x="509" y="130" width="235" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="SEUTMyrRXvYL5SIFeNz0-41" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="SEUTMyrRXvYL5SIFeNz0-39" target="SEUTMyrRXvYL5SIFeNz0-40">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="SEUTMyrRXvYL5SIFeNz0-39" value="&lt;b&gt;(B) Melting&lt;br&gt;&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Palatino;labelBackgroundColor=none;shadow=1;align=center;fillColor=#FFFFFF;spacingLeft=0;" vertex="1" parent="1">
+          <mxGeometry x="149" y="360" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="SEUTMyrRXvYL5SIFeNz0-40" value="&lt;b&gt;(II) Incompressible Lubrication Theory&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;labelBackgroundColor=none;fontFamily=Palatino;shadow=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="309" y="360" width="120" height="40" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

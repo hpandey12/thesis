@@ -1,0 +1,159 @@
+\subsection{Material Properties}\label{app:matprops}
+
+In this Section of the Appendix we collect a variety of curve fits used to approximate material properties like thermal conductivity and viscosity. Data is ordered by species and phase. 
+
+\subsubsection{Water ($\text{H}_2\text{O}$)}
+\textbf{Enthalpy of Sublimation}
+To compute the enthalpy of sublimation at a given interface temperature, we use a fit from \cite{feistel2007sublimation}:
+
+\begin{equation}\label{eq:appenthalpyofsublimationwater}
+    h_m(T) = \sum_{i=0}^{6} a_i\, \qty(\frac{T}{T_t})^i \quad \qty[\frac{J}{kg}] \quad ,
+\end{equation}
+
+with $T_t = 273.16\,[K]$ and interpolation parameters $a_i$ listed in Table \ref{tab:appparameters2}.
+
+\begin{table}[]
+\centering
+\begin{tabular}{l|S[table-format=9.9] S[retain-zero-exponent=true]}
+i & {$a_i\,[J/kg]$}      & {$L_i$}                    \\
+\hline
+0 & 2638742.45418107  & 2.443221 e-3  \\
+1 & 400983.673912406  & 1.323095 e-2  \\
+2 & 200812.111806393  & 6.770357 e-3  \\
+3 & -1486203.38485336 & -3.454586 e-3 \\
+4 & 2290451.50230789  & 4.096266 e-4  \\
+5 & -1690159.93521118 &                          \\
+6 & 479848.354373932  &                         
+\end{tabular}
+\caption[Fitting Parameters: Sublimation Enthalpy and Thermal Conductivity of Gaseous $\text{H}_2\text{O}$]{Fitting Parameters for the sublimation enthalpy (Eqn. \ref{eq:appenthalpyofsublimationwater}) and thermal conductivity of gaseous $\text{H}_2\text{O}$ (Eqn. \ref{eq:thermalconductivitywatervapor}).}
+\label{tab:appparameters2}
+\end{table}
+
+
+
+\paragraph{Solid Phase ($\text{H}_2\text{O}$ \textit{Ice})}\mbox{}\\
+
+For material properties of compact water ice we use the fittings proposed in \cite{ulamec2006access}, which were also used in \cite{schuller2019icarus}:
+\begin{flalign}
+& \textit{Thermal Conductivity} & & \kappa_S(T) = \frac{619.2}{T} + \frac{58646}{T^3} + 3.237\cdot 10^{-3}\,T - 1.382\cdot 10^{-5}\,T^2 & 
+\quad , \\
+& \textit{Density} & & \rho_S(T) = 933.31 + 0.037978 \, T -3.6274 \cdot 10^{-4} \,  T^2 & \quad , \\
+& \textit{Heat Capacity} & & c_{p,S}(T) = x^3\,\frac{c_1 + c_2\, x^2 + c_3\,x^6}{1 + c_4\,x^2 + c_5\,x^4 + c_6\,x^8} & \quad ,
+\end{flalign}
+
+with $x\coloneqq T / 273.16$, $c_1=1.843\cdot 10^5$, $c_2 = 1.6357\cdot 10^8$, $c_3=3.5519\cdot 10^9$, $c_4=1.667\cdot 10^2$, $c_5=6.465\cdot 10^4$ and $c_6 = 1.6935\cdot 10^6$.
+
+\paragraph{Gaseous Phase (\textit{Steam})}\mbox{}\\
+
+\textbf{Viscosity}
+We use the fit shown in Eqn. 6 of \cite{crifo1989inferences} by taking the average of the proposed upper and lower bounds:
+
+\begin{equation}
+    \mu_{G}(T) = 9.25\cdot 10^{-6}\,\qty(\frac{T}{300\,[K]})^{1.1} \quad \qty[Pa\,s] \quad .
+\end{equation}
+
+\textbf{Heat Capacity}
+We use the following fit for the ideal gas heat capacity of steam, proposed in \cite{cooper1982representation}:
+
+\begin{equation}\label{eq:heatcapacitywatervapor}
+    \frac{c_{p,G}(T)}{R} = b_0 + \sum_{i=1}^{5}b_i\,\frac{x_i^2\,\exp{-x_i}}{\qty(1-\exp{-x_i})^2} \quad ,
+\end{equation}
+
+with $R = 461.52\,[J/(kg\,K)]$. Paramters $b_i$, $\beta_i$ are listed in Table \ref{tab:appcpfitparams}.
+
+\begin{table}[]
+\centering
+\begin{tabular}{l|l S[table-format=5.0] S[table-format=1.6]}
+\textbf{i} & \quad & {$\beta_i\,[K]$} & {$b_i$}    \\
+\hline
+0 & &                & 4.00632  \\
+1 & & 833            & 0.012436 \\
+2 & & 2289           & 0.97315  \\
+3 & & 5009           & 1.2795   \\
+4 & & 5982           & 0.96956  \\
+5 & & 17800          & 0.24873 
+\end{tabular}
+\caption[Fitting Parameters: Heat Capacity of Ideal Gas Water Vapor]{Parameters for the heat capacity fit (Eqn. \ref{eq:heatcapacitywatervapor}) of ideal gas water vapor. \textit{Recreation of Table I in \cite{cooper1982representation}.}}
+\label{tab:appcpfitparams}
+\end{table}
+
+\textbf{Thermal Conductivity}
+The thermal conductivity of water vapor is obtained from the dilute term of the standard fit (Eqn. 4) proposed in \cite{huber2012new}:
+
+\begin{equation}\label{eq:thermalconductivitywatervapor}
+    \lambda_{G}(T) = \frac{\sqrt{\Bar{T}}}{S(T)}\,\cdot \lambda^* \quad \qty[\frac{W}{m\,K}] \quad ,
+\end{equation}
+
+with 
+\begin{equation}
+    S(T) = \sum_{k=0}^4 \frac{L_k}{\qty(\Bar{T})^k} \quad .
+\end{equation}
+
+Here we use $\Bar{T}=T/T^*$, $T^* = 647.096\,[K]$, $\lambda^*$ $=1\cdot 10^{-3}\,[W / (m\,K)]$ and coefficients $L_i$ listed in Table \ref{tab:appparameters2}.
+
+\subsubsection{Carbon Dioxide ($\text{CO}_2$)}
+
+\paragraph{Solid Phase ($\text{CO}_2$ \textit{Ice})}\mbox{}\\
+
+\textbf{Density}
+We use a parametrization for the $\text{CO}_2$ ice density proposed in \cite{mangan2017co2}:
+\begin{equation}\label{eq:densityco2ice}
+    \rho_S(T) =  \qty(1.72381 -2.53\cdot10^{-4}\,T - 2.87\cdot10^{-6}\,T^2)\cdot 10^3 \quad [kg / m^3] \quad .
+\end{equation}
+
+The authors give a reference ambient pressure of $p_e = 10^{-2}\,[mBar]$, but Eqn. \ref{eq:densityco2ice} also reproduces the dry ice density reference density of about $1562\,[kg/m^3]$ at $-78.5\,[\deg C]$ and $1\,[atm]$ with $0.02\%$ deviation.
+
+\textbf{Thermal Conductivity}
+We use a fit shown in \cite{ross1998thermal}:
+\begin{subequations}
+\begin{equation}\label{eq:thermalconductivityco2ice}
+    \kappa_S(T) = 10^{K(T)}\quad \qty[\frac{W}{m\,K}] \quad ,
+\end{equation}
+
+with 
+\begin{equation}
+    K(T) = \sum_{i=0}^2\,m_i\,\qty(\text{log}_{10}\qty[\frac{T}{1\,[K]}])^i
+\end{equation}
+\end{subequations}
+
+and $m_0=-5.39941$, $m_1=5.45894$, $m_2=-1.41326$. Eqn. \ref{eq:thermalconductivityco2ice} gives values of $\kappa_S(T)$ in the range of $[0.557-0.453]\,[W/(m\,K)]$ for temperatures $T\in[170-210]\,[K]$.
+
+\textbf{Heat Capacity} For the heat capacity of $\text{CO}_2$ ice, we created a piece-wise linear interpolation of the data presented in \cite{giauque1937carbon} and converted the result to $[J/(kg\,K)]$.
+
+
+\paragraph{Gaseous Phase ($\text{CO}_2$ \textit{Vapor})}\mbox{}\\
+
+\textbf{Viscosity}
+We use the fit shown in Eqn. 3 of \cite{vesovic1990transport}.
+\begin{subequations}
+\begin{equation}
+    \mu_{G}(T)  = \frac{1.00697\cdot\sqrt{T}}{\exp{A(T)}}\cdot 10^{-6}\quad \qty[Pa\,s]\quad ,
+\end{equation}
+
+where 
+
+\begin{equation}
+    A(T)  \coloneqq \sum_{i=0}^4 a_i\,\qty(\log{T^*})^i \quad ,
+\end{equation}
+\end{subequations}
+and $T^*=T/\epsilon$, $\epsilon = 251.196\,[K]$, $a_0 = 0.235156$, $a_1=-0.491266$, $a_2=5.211155\cdot 10^{-2}$, $a_3=5.347906\cdot 10^{-2}$ and  $a_4=-1.537102\cdot 10^{-2}$. Here $\log$ denotes the natural logarithm.
+
+As a second, more recent reference, please be referred to \cite{laesecke2017reference}.
+
+\textbf{Thermal Conductivity}
+The data collected in Fig. 2 of \cite{vesovic1990transport} for the gas thermal conductivity $\kappa_{G}$ of $\text{CO}_2$ suggest a strong linear correlation in the low temperature regime ($T<300\,[K]$). We thus use a simple linear fit of two data-points, $(T_1,\, \kappa_{1}) =$ $(100\,[K],$ $\,0.0096\,[W/(m\,K)])$ and $(T_2, \kappa_{2}) =$ $(273.15\,[K],$ $\,0.01276\, [W/(m\,K)])$:
+
+\begin{equation}
+   \kappa_{G}(T) =  \kappa_{1}+\frac{ \kappa_{2}- \kappa_{1}}{T_2-T_1}\,(T- T_1) \quad  \qty[\frac{W}{m\,K}]\quad .
+\end{equation}
+
+More information on the thermal conductivity of nine polyatomic gases at low density can be found in \cite{uribe1990thermal}.
+
+\textbf{Heat Capacity}
+The data for the ideal gas heat capacity $c_{p,G}$ of $\text{CO}_2$ suggest a strong linear correlation in the low temperature regime considered in this thesis. We thus again use a simple linear fit of two data-points presented in \cite{Woolley1954ThermodynamicFF}, $(T_1, c_{p,1}) =$ $(100\,[K],$ $\,29.205\,[J/(mol\,K)])$ and $(T_2, c_{p,2}) =$ $(273.15\,[K],$ $\,35.946\, [J/(mol\,K)])$:
+
+\begin{equation}
+    c_{p,G}(T) = \frac{1}{M_{CO2}}\qty(c_{p,1}+\frac{c_{p,2}-c_{p,1}}{T_2-T_1}\,(T- T_1))\quad  \qty[\frac{J}{kg\,K}]\quad ,
+\end{equation}
+
+with the molecular weight of $\text{CO}_2$,  $M_{CO2}=44.0095\cdot 10^{-3}\,[kg/mol]$.

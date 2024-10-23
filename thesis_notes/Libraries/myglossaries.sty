@@ -1,0 +1,187 @@
+% +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+% +                                                                                                           +
+% +   3 Glossare                                                                                              + 
+% +      -main                                                                                                +
+% +      -index                                                                                               +
+% +      -abkz                                                                                                +
+% +   mit vier verschiedenen Formatierungen:                                                                  +
+% +      -Abkzg   (Abk�rzungsverzeichnis ohne Untergruppen)                                                   +
+% +      -Glossar (Glossar ohne Untergruppen)                                                                 +
+% +      -Abkzg-parent   (Abk�rzungsverzeichnis mit Untergruppen)                                             +
+% +      -Glossar-parent (Glossar mit Untergruppen)                                                           +
+% +                                                                                                           +
+% +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+% +                                                                                                           +
+% +   Beispiel f�r zwei Eintr�ge in der Gruppe GriechBst (griechische Buchstaben) im Glossar main:            +
+% +                                                                                                           +
+% +   \newglossaryentry{GriechBst}{                             % Bezeichnung der Gruppe                      +
+% +   name={griechische Buchstaben},                            % Gruppen�berschrift                          +                                                          
+% +   description={\nopostdesc}                                 % Beschreibung leer lassen                    +
+% +   }                                                                                                       +
+% +                                                                                                           +
+% +   \newglossaryentry{alpha}{                                 % Bezeichnung des Eintrags                    +
+% +   name=\ensuremath{\alpha},                                 % Anzuzeigendes Symbol                        +
+% +   description={erster Buchstabe im griechischen Alphabet},  % Beschreibung                                +
+% +   sort=ga,                                                  % Sortierungsschl�ssel (g: griechisch)        +
+% +   type=main,                                                % Einordnung in das entspr. Glossar           +
+% +   parent=GriechBst                                          % Gruppenzugeh�rigkeit                        +
+% +   }                                                                                                       +
+% +                                                                                                           +
+% +   \newglossaryentry{beta}{                                  % Bezeichnung des Eintrags                    +
+% +   name=\ensuremath{\beta},                                  % Anzuzeigendes Symbol                        +
+% +   description={zweiter Buchstabe im griechischen Alphabet}, % Beschreibung                                +
+% +   sort=gb,                                                  % Sortierungsschl�ssel (g: griechisch)        +
+% +   type=main,                                                % Einordnung in das entspr. Glossar           +
+% +   parent=GriechBst                                          % Gruppenzugeh�rigkeit                        +
+% +   }                                                                                                       +
+% +                                                                                                           +
+% +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+%Define language options
+\newif\if@german
+\newif\if@english
+
+\DeclareOption{german}{
+\@germantrue}
+
+\DeclareOption{english}{
+\@englishtrue}
+
+\ProcessOptions
+
+
+% =============================================================================================================
+% Allgemeine Aufrufe und Formatierung
+% -------------------------------------------------------------------------------------------------------------
+% Package einbinden
+\usepackage[toc, nonumberlist, style=longheader]{glossaries}[=v4.49]
+
+% Zus�tzliche Glossare 'index' und 'abkz'
+\if@german
+	\newglossary[slg]{index}{syi}{syg}{Indizes}
+	\newglossary[abg]{abkz}{abi}{abo}{Abk�rzungen}
+\else
+	\newglossary[slg]{index}{syi}{syg}{Indices}
+	\newglossary[abg]{abkz}{abi}{abo}{Acronyms}
+\fi
+
+
+% Glossare anlegen
+\makeglossaries
+
+% Allgemeine Formatierung der Glossare
+\renewcommand*{\glsgroupskip}{}		% Entfernen des Abstandes zwischen Gruppen
+\renewcommand*{\glspostdescription}{}	% Der Punkt am Ende jeder Beschreibung wird weggelassen 
+\renewcommand{\glossaryname}{Glossar}	% �berschrift f�r das Glossar 'main'
+
+% Style f�r Sub-Entries
+\renewcommand*{\glossarysubentryfield}[6]{\glossaryentryfield{#2}{#3}{#4}{#5}{#6}}
+
+% Hier m�ssen \entryname und \description mit leeren Argumenten definiert werden da ansonsten in den Headern die default Bezeichnungen "Notation" und "Description" zusammen mit den in Abkz und Glossar vorgegebenen Bezeichnungen ausgegeben werden
+\renewcommand{\entryname}{}
+\renewcommand{\descriptionname}{}
+% =============================================================================================================
+
+
+
+% =============================================================================================================
+% Glossar-Styles
+% -------------------------------------------------------------------------------------------------------------
+
+% Variablen f�r Spaltenbreiten
+\newlength{\glstargetwidth}
+\newlength{\glshspace}
+\newlength{\OLDtabcolsep}
+
+% Angabe der Spaltenbreiten
+\setlength{\glstargetwidth}	{0.29\textwidth} % Breite der Symbol-Spalte
+\setlength{\glshspace}		{0.02\textwidth} % Breite des Abstands zwischen Symbol- und Beschreibungs-Spalte
+\setlength{\glsdescwidth}	{0.69\textwidth} % Breite der Beschreibungs-Spalte
+\setlength{\OLDtabcolsep}{\tabcolsep}            % Abstand zwischen den Spalten sichern
+\setlength{\tabcolsep}{0pt}			 % kein zus�tzlicher Abstand zwischen den Spalten
+
+% -------------------------------------------------------------------------------------------------------------   
+% Abk�rzungen - ohne Untergruppen
+% -------------------------------------------------------------------------------------------------------------
+\newglossarystyle{Abkzg}
+{
+	\if@german
+ 		\renewcommand*{\glossaryheader}{\bfseries \entryname{Abk�rzung} & \bfseries \descriptionname{Bedeutung}\\ & \\\endhead}
+	\else
+		\renewcommand*{\glossaryheader}{}
+	\fi
+  \renewenvironment{theglossary}
+    {
+    \begin{longtable}{p{\glstargetwidth} @{\hspace{\glshspace}} p{\glsdescwidth}}
+    }
+    {\end{longtable}}
+  % Format f�r Gruppen�berschrift festlegen
+  \renewcommand*{\glossaryentryfield}[5]{\textbf{\glstarget{##1}{##2}} & ##3 \\}
+  % Format f�r Eintr�ge
+  %\renewcommand*{\glossarysubentryfield}[6]{##3 & ##4 \\}
+}
+% -------------------------------------------------------------------------------------------------------------
+% Glossar - ohne Untergruppen
+% -------------------------------------------------------------------------------------------------------------
+\newglossarystyle{Glossar}
+{
+	\if@german
+		\renewcommand*{\glossaryheader}{\bfseries \entryname{Zeichen} & \bfseries \descriptionname{Bedeutung}\\ & \\\endhead}
+	\else
+		\renewcommand*{\glossaryheader}{}
+	\fi
+  \renewenvironment{theglossary}
+    {
+    \begin{longtable}{p{\glstargetwidth} @{\hspace{\glshspace}} p{\glsdescwidth}}
+    }
+    {\end{longtable}}
+  % Format f�r Gruppen�berschrift festlegen
+  \renewcommand*{\glossaryentryfield}[5]{\textbf{\glstarget{##1}{##2}} & ##3 \\}
+  % Format f�r Eintr�ge
+  %\renewcommand*{\glossarysubentryfield}[6]{##3 & ##4 \\}
+}
+% -------------------------------------------------------------------------------------------------------------   
+% Abk�rzungen - mit Untergruppen
+% -------------------------------------------------------------------------------------------------------------
+\newglossarystyle{Abkzg-parent}
+{
+	\if@german
+		\renewcommand*{\glossaryheader}{\bfseries \entryname{Abk�rzung} & \bfseries \descriptionname{Bedeutung}\\\endhead}
+	\else
+		\renewcommand*{\glossaryheader}{}
+	\fi
+  \renewenvironment{theglossary}
+    {
+    \begin{longtable}{p{\glstargetwidth} @{\hspace{\glshspace}} p{\glsdescwidth}}
+    }
+    {\end{longtable}}
+  % Format f�r Gruppen�berschrift festlegen
+  \renewcommand*{\glossaryentryfield}[5]{ & \\ \mbox{\textbf{\glstarget{##1}{##2}}} & \\}
+  % Format f�r Eintr�ge
+  \renewcommand*{\glossarysubentryfield}[6]{##3 & ##4 \\}
+}
+% -------------------------------------------------------------------------------------------------------------
+% Glossar - mit Untergruppen
+% -------------------------------------------------------------------------------------------------------------
+\newglossarystyle{Glossar-parent}
+{
+	\if@german
+		\renewcommand*{\glossaryheader}{\bfseries \entryname{Zeichen} & \bfseries \descriptionname{Bedeutung}\\\endhead}
+	\else
+		\renewcommand*{\glossaryheader}{}
+	\fi
+  \renewenvironment{theglossary}
+    {
+    \begin{longtable}{p{\glstargetwidth} @{\hspace{\glshspace}} p{\glsdescwidth}}
+    }
+    {\end{longtable}}
+  % Format f�r Gruppen�berschrift festlegen
+  \renewcommand*{\glossaryentryfield}[5]{ & \\ \mbox{\textbf{\glstarget{##1}{##2}}} & \\}
+  % Format f�r Eintr�ge
+  \renewcommand*{\glossarysubentryfield}[6]{##3 & ##4 \\}
+}
+
+% Abstand zwischen den Spalten wiederherstellen
+\setlength{\tabcolsep}{\OLDtabcolsep}
+% =============================================================================================================
+
