@@ -1,0 +1,39 @@
+\documentclass[../main.tex]{subfiles}
+\graphicspath{{\subfix{../images/}}}
+\begin{document}
+%\section{Shells and Stuff}
+\subsection{What are shells and membranes? The Definitions}
+Most structural objects/elements can be reduced to a physical line with a certain cross-section. The description of stresses in these objects can be done by describing
+ “stress resultants” - the normal force, transverse shearing forces, bending moments, and the torque - in the cross section. In contrast to these objects,
+ certain structural elements are made to enclose some space making it impossible for them to be reduced to a line. They are better described as a curved surface or a plane.
+ These elements can be broadly broken down in two categories - plates and shells [1].
+
+A shell is a curved, thin-walled structure with the thickness being significantly smaller than the other dimensions [2]. The distinguishing
+ feature between a shell and a plate is that the shell has a curvature whereas plates are flat structures [3]. It is, however, not necessary for the thickness
+ in a shell to be extremely small. It can also vary across the surface. The behaviour of a shell can be linear or nonlinear.
+
+Shells are ubiquitous in engineering and nature because of the advantages they present.
+They carry load efficiently - this is most optimally done when all the load is carried using membrane forces; 
+exhibit high structural integrity, reserved strength, strength to weight ratio; and have high stiffness [4]. 
+This results in EXAMPLES HERE.
+
+\subsection{Shell Theories: an overview}
+\begin{itemize}
+    \item Shell's behaviour under loading is governed primarily by its curvature
+    \item Due to the curvature, their bending cannot be separated from stretching
+    \item Thick shells vs thin shells.
+        \begin{itemize}
+            \item Thin shells are shells with a max(h/R) <= (1/20)
+            \item For thick shells, (1/1000) <= h/R <= (1/20)
+        \end{itemize}
+    \item Shell theories aim to reduce the dimensionality of the equilibrium problem from a 3D body to only the study of the midsurface ie 2D.  
+    \item Love extended the Kirchhoff hypothesis for plate bending and the set of assumptions came to be called Kirchhoff-Love Theory(?). Had its share of problems
+    \item Reissner developed a linear theory for thin shells and managed to iron out some problems with the K-L theory. 
+\end{itemize}
+
+\subsection{Problems with modelling shells/membranes}
+In the real world, thin shells are very sensitive to imperfections and can be highly unstable if not designed properly[5]. Modelling this complexity is challenging too. Shells can undergo large deformations, large rotations, and large strains. They can behave highly nonlinearly and
+ can have multiple unstabilities - in compression, for out-of plane loading, for pressure loading, and with respect to in-plane loading [6]. 
+ This mixture of performance and sensitivity makes the shell the ‘primadonna of structures’ [2]. Given that there are no analytical solutions
+ for most cases to predict a shell’s behaviour, reliable approximate solutions are necessary. This report ---------.
+\end{document}

@@ -1,0 +1,89 @@
+% Chapter 1
+\chapter{Introduction to Shells} % Main chapter title
+
+\label{Chapter1} % For referencing the chapter elsewhere, use \ref{Chapter1} 
+
+%----------------------------------------------------------------------------------------
+
+% Define some commands to keep the formatting separated from the content 
+\newcommand{\keyword}[1]{\textbf{#1}}
+\newcommand{\tabhead}[1]{\textbf{#1}}
+\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\file}[1]{\texttt{\bfseries#1}}
+\newcommand{\option}[1]{\texttt{\itshape#1}}
+
+%----------------------------------------------------------------------------------------
+\section{What are shells and membranes?}
+Most structural objects and elements can be reduced to a physical line with a certain cross-section. The description of stresses
+ in these objects can be done by describing  “stress resultants” - the normal force, transverse shearing forces, bending
+ moments, and the torque - in the cross section. In contrast to these objects, certain structural elements enclose some space making it impossible for them to be reduced to a line. They are better described as a curved surface
+ or a plane. These elements can be broadly broken down in two categories - plates and shells \cite{flugge2013}.
+
+A shell is a curved, thin-walled structure with the thickness being significantly smaller than the other dimensions \cite{bischoff2004}.
+ The distinguishing feature between a shell and a plate is that the shell has a curvature whereas plates are flat
+ structures \cite{chen1997}. It is, however, not necessary for the thickness in a shell to be extremely small. It can also vary across
+ the surface. The behaviour of a shell can be geometrically linear or nonlinear. Membranes are special cases of shells whose walls offer
+ no resistance to bending moments and transverse shear forces. 
+
+Shells carry load efficiently - this is most optimally done when all the load is carried using membrane forces; 
+ exhibit high structural integrity, strength to weight ratio; and have high stiffness \cite{ventsel2001}.
+ Shells and membranes are ubiquitous in engineering and nature because of the advantages they present - from aerospace as
+ aeroplanes and rocket hulls, civil engineering where they are found in large span roofs, cooling towers, containment
+ tanks, to biological systems such as skulls, eyes, cells, and blood vessels.
+%----------------------------------------------------------------------------------------
+%----------------------------------------------------------------------------------------
+\section{Problems with modelling shells/membranes}
+In the real world, thin shells are very sensitive to imperfections and can be highly unstable if not designed properly \cite{loibl2019}.
+ Modelling this complexity is challenging too. Shells can undergo large deformations, large rotations, and large strains.
+ They can behave highly nonlinearly and can have multiple instabilities - in compression, for out-of-plane loading, for 
+ pressure loading, and with respect to in-plane loading \cite{sauer2014}.
+ This mixture of performance and sensitivity makes the shell the 'primadonna of structures' \cite{bischoff2004}. Given that there are
+ no analytical solutions for most cases to predict a shell's behaviour, reliable approximate solutions are necessary.
+
+Shell theories aim to reduce the dimensionality of the equilibrium problem from a 3D body to only the study of the
+ midsurface of the shell. This dimensionality reduction is often dependent on the thickness of shells. Generally, shells
+ with a thickness h and general radius of curvature R, can be categorised as thin shells if $\text{max}(h/R)<=(1/20)$.
+Love laid the foundations of classical linear shell theory by applying the Kirchhoff hypothesis to thin,
+ homogenous, isotropic, linear-elastic shells governed by a generalised Hooke's law. Known as the Kirchhoff-Love theory,
+ the assumptions can be summarised as \cite{podio1989}:
+\begin{itemize}
+    \item No deformation in the midsurface - it is the neutral plane during bending.
+    \item Points that lie on the normal to the midsurface remain so even after deformation.
+\end{itemize}
+The transverse normal stresses and the transverse shear strains are neglected. 
+Reissner \cite{reissner1941} and Mindlin \cite{mindlin1951} separately expanded upon the Kirchhoff-Love hypothesis with the inclusion of transverse shear
+strains and first order shear effects in their derivations, which could calculate the deformation of shells with a
+thickness of $\text{max}(h/R) <= (1/10)$. Their theories assumed the following:
+\begin{itemize}
+    \item The normals of the undeformed midsurface are deformed into the normals to the deformed midsurface.
+    \item The stress components normal to the middle surface are small compared to the other stress components and can be neglected in the stress-strain relations
+    \item The displacements are so small that the equilibrium conditions for deformed elements are the same as if they were not deformed.
+\end{itemize}
+There is a lack of a universally accepted classical linear shell theory, all of which share a degree of inaccuracy
+ due to their arbitrary treatment of secondary effects \cite{nayfeh2004} and \emph{ad hoc} assumptions \cite{naghdi1963}
+ during different stages of the formulation of the governing equations. Love's first
+ approximation
+ \begin{itemize}
+    \item doesn't satisfy the equilibrium equation arising from the symmery of the stress tensor,
+    \item isn't invariant under infinitesimal rigid body displacement and,
+    \item violates a 2D analogue of the Betti-Rayleigh reciprocity theorem in 3D linear elasticity.
+\end{itemize}
+Reissner's first approximation runs into the same problems except violating the reciprocity theorem \cite{truesdell1984}. Although improvements to classical linear
+ shell theories can be found in later works by Reissner (1959), Novozhilov (1959), Sanders (1959), and Koiter
+ (1959), Naghdi \cite{naghdi1963} mentions the existence of inconsistencies present in many of these approximations. 
+
+The formulation presented in this report is based on the work of Sauer \cite{sauer2014}, which is a formulation of
+ the theoretical framework laid down by Steigmann \cite{steigmann1999}. Although substantially same as Naghdi's \cite{truesdell1984}
+ formulation, Steigmann's assumptions logically conform to finite elasticity theory. Sauer's formulation is also specifically based on
+ membranes because while membranes are special cases of shells and a formulation for shells could be extended to membranes, a formulation dedicated explicitly
+ towards membranes is more robust and accurate \cite{sauer2014}. Here, liquid membranes can also be accounted for through the
+ split of contributions between the in-plane and out-of-plane components, admission of arbitrary elastic material models,
+ all quantities are formulated directly in curvilinear coordinates.
+
+The following chapter presents the theory and formulation of the finite element method for the solution of an elliptic
+ boundary vaue problem. Chapter 3 details the theory and implementation of the finite element method to nonlinear boundary
+ value problems for solid mechanics in an orthonormal basis system. Chapter 4 extends this nonlinear framework to membranes
+ through the incorporation of curvilinear coordinates and presents numerical examples to illustrate the capabilities of the
+ formulation.
+%----------------------------------------------------------------------------------------
+\afterpage{\blankpage}

@@ -1,0 +1,81 @@
+\documentclass[
+11pt, english, singlespacing,
+headsepline,
+chapterinoneline,
+%consistentlayout, 
+]{MastersDoctoralThesis}
+
+% Load packages
+\include{Packages/Packages}
+
+% Margins
+\geometry{
+	paper=a4paper, % Change to letterpaper for US letter
+	inner=2.5cm, % Inner margin
+	outer=3.8cm, % Outer margin
+	bindingoffset=.5cm, % Binding offset
+	top=1.5cm, % Top margin
+	bottom=1.5cm, % Bottom margin
+	%showframe, % Uncomment to show how the type block is set on the page
+}
+
+% Information
+\newcommand{\thesistype}{Mini-Thesis}
+\newcommand{\titel}{Development and investigation of general non-linear framework for solving rotation-free solid membranes}
+\newcommand{\autor}{Harsh Pandey}
+\newcommand{\matnumber}{415518}
+\newcommand{\studyprogram}{M.Sc. CAME}
+
+\newcommand{\supervisorinternal}{Michal Rajski M.Sc.}
+%\newcommand{\supervisorexternal}{Max Mustermann, B.Sc.}
+\newcommand{\submitdate}{10\textsuperscript{th} of October 2022}
+
+
+\newcommand\blankpage{%
+	\null
+    \thispagestyle{empty}%
+    \addtocounter{page}{-1}%
+    \newpage}
+
+\begin{document}
+
+\frontmatter % Use roman page numbering style (i, ii, iii, iv...) for the pre-content pages
+
+\pagestyle{plain} % Default to the plain heading style until the thesis style is called for the body content
+
+% Title page
+\include{FrontBackMatter/Titlepage}
+
+% Declaration page
+\include{FrontBackMatter/Authorship}
+
+% Abstract
+%\include{FrontBackMatter/Abstract}
+
+% Acknowledgements
+%\include{FrontBackMatter/Acknowledgements}
+
+%	Include table content, list of figures and of tables
+\include{FrontBackMatter/ListOfContent}
+
+% List of symbols, abbreviations and constants
+%\include{FrontBackMatter/Symbols}
+
+
+% Content
+\mainmatter % Begin numeric (1,2,3...) page numbering
+\pagestyle{thesis} % Return the page headers back to the "thesis" style
+
+\include{Content/Chapter1}
+\include{Content/Chapter2}
+\include{Content/Chapter3}
+\include{Content/Chapter4}
+\include{Content/Chapter5}
+% Appendix 
+\include{Appendix/AppendixA}
+\include{Appendix/AppendixB}
+% Bibliography
+\include{Bibliography/Bibliography}
+
+
+\end{document}  

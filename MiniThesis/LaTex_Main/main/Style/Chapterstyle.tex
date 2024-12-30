@@ -1,0 +1,57 @@
+\addtokomafont{captionlabel}{\bfseries}			% Kapitelbeschriftungen fett
+\setkomafont{disposition}{\scshape\bfseries}	% Formatierung der Kapitel im Inhaltsverzeichnis
+
+\titleformat{\chapter}[display]
+	{\normalfont\scshape\Huge}
+	{\thechapter.~#1}
+	{-25pt}
+	{\color{rwth}\rule{\textwidth}{3pt}\Huge}
+\titleformat{name=\chapter,numberless}[display]
+	{\normalfont\scshape\Huge}
+	{#1}
+	{-25pt}
+	{\color{rwth}\rule{\textwidth}{3pt}\Huge}
+
+\titleformat{\section}[display]
+	{\normalfont\scshape\LARGE}
+	{\thesection.~#1}
+	{-40pt}
+	{}
+\titleformat{name=\section,numberless}[display]
+	{\normalfont\scshape\LARGE}
+	{#1}
+	{-40pt}
+	{}
+
+\titleformat{\subsection}[display]
+	{\normalfont\scshape\large}
+	{\thesubsection.~#1}
+	{-30pt}
+	{}
+\titleformat{name=\subsection,numberless}[display]
+	{\normalfont\scshape\large}
+	{#1}
+	{-30pt}
+	{}
+
+\titleformat{\subsubsection}[display]
+	{\normalfont\scshape\large}
+	{\thesubsubsection.~#1}
+	{-30pt}
+	{}
+\titleformat{name=\subsubsection,numberless}[display]
+	{\normalfont\scshape\large}
+	{#1}
+	{-30pt}
+	{}
+
+\titleformat{\subsubsubsection}[display]
+	{\normalfont\scshape\large}
+	{\thesubsubsubsection.~#1}
+	{-30pt}
+	{}
+\titleformat{name=\subsubsubsection,numberless}[display]
+	{\normalfont\scshape\large}
+	{#1}
+	{-30pt}
+	{}

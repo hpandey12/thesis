@@ -1,0 +1,107 @@
+\definecolor{rwth}{RGB}{0,102,204}			% RWTH blue
+
+\setlength{\parindent}{4ex}
+\setlength{\parskip}{1ex}
+\evensidemargin0cm	
+\oddsidemargin0mm
+
+\setcounter{tocdepth}{2} 						% Depth of table of contents
+\setcounter{secnumdepth}{2}
+\hypersetup{
+    pdftitle={\titel},
+    pdfauthor={\autor},
+    pdfcreator={\autor},
+    pdfsubject={\titel},
+    pdfkeywords={\titel},
+}
+
+% ======================================================
+% ======================================================
+% ========= Head & Footer
+% ======================================================
+% ======================================================
+
+\pagestyle{scrheadings}							% Kopf- und Fußzeilen mit KOMA-Script
+\clearscrheadings								% Bisherige Kopf- und Fußzeilen löschen
+\clearscrplain
+\lohead{\pagemark}								% links, oben, gerade Seite
+\lehead{\leftmark}								% links, oben, ungerade Seite
+\cohead{}										% mittig, oben, gerade Seite
+\cehead{}										% mittig, oben, ungerade Seite
+\rohead{\leftmark}								% rechts, oben, gerade Seite								
+\rehead{\pagemark}								% rechts, oben, ungerade Seite
+\lofoot{}										% links, oben, gerade Seite
+\lefoot{}										% links, oben, ungerade Seite
+\cofoot{}										% mittig, oben, gerade Seite
+\cefoot{}										% mittig, oben, ungerade Seite
+\rofoot{}										% rechts, oben, gerade Seite								
+\refoot{}										% rechts, oben, ungerade Seite
+\setheadsepline{1.2pt}[\color{rwth}]			% Linie unter Kopfzeile
+
+
+% ======================================================
+% ======================================================
+% ========= List of symbols & List of abbreviations
+% ======================================================
+% ======================================================
+
+% interessant: http://www.mrunix.de/forums/showthread.php?t=42536
+
+\newcommand{\abkVZ}[2]{\nomenclature[A_#1]{#1}{#2}}
+\newcommand{\frmVZ}[3][2]{\nomenclature[C_#1]{#2}{#3}}
+
+\makenomenclature
+\renewcommand{\nomlabelwidth}{3cm}			% Linke Spaltenbreite
+\newcommand{\nomnameA}{List of Abbreviations}
+\newcommand{\nomnameB}{List of Symbols}
+\renewcommand{\nomname}{\nomnameA}
+\newcommand{\nomaltname}{\nomnameB}
+\newcommand{\nomaltpreamble}{}
+\newcommand{\nomaltpostamble}{}
+\newcommand{\usetwonomenclatures}{\nomenclature[\switchnomitem]{}{}}
+\newcommand{\switchnomitem}{B}
+\renewcommand{\nomgroup}[1]{
+	\ifthenelse{ % IF
+		\equal{#1}{\switchnomitem}
+	}{ % THEN
+		\switchnomalt
+	}{ % ELSE
+	}
+}
+
+\setlength{\nomitemsep}{-\parsep}
+\newcommand{\switchnomalt}{
+	\end{thenomenclature}
+	\renewcommand{\nomname}{\nomaltname}
+	\renewcommand{\nompreamble}{\nomaltpreamble}
+	\renewcommand{\nompostamble}{\nomaltpostamble}
+	\begin{thenomenclature}
+	\addcontentsline{toc}{chapter}{\nomnameB}	
+	\markboth{\nomnameB}{\nomnameB}
+	\vspace*{-1.8em}
+}
+
+% ======================================================
+% ======================================================
+% ========= Margin next to equations
+% ======================================================
+% ======================================================
+
+\g@addto@macro\normalsize{%
+	\setlength\abovedisplayskip{20pt}
+	\setlength\belowdisplayskip{20pt}
+	\setlength\abovedisplayshortskip{20pt}
+	\setlength\belowdisplayshortskip{20pt}
+}
+
+% ======================================================
+% ======================================================
+% ========= Userdefined commands
+% ======================================================
+% ======================================================
+
+\newcommand{\charef}[1]{Chapter~\ref{#1}}
+\newcommand{\secref}[1]{Section~\ref{#1}}
+\newcommand{\figref}[1]{Figure~\ref{#1}}
+\newcommand{\tabref}[1]{Table~\ref{#1}}
+\newcommand{\equref}[1]{Equation~\eqref{#1}}

@@ -1,0 +1,23 @@
+set(gca,'fontsize', font_size, 'ticklabelinterpreter','latex');
+    xlabel(x_label1,'Interpreter','latex');
+    ylabel(y_label,'Interpreter','latex');
+    title(fig_name_left, 'Interpreter', 'latex');
+
+
+\begin{figure}
+		\centering
+		\begin{subfigure}{.99\textwidth}
+				\centering
+				\includegraphics[width=.8\linewidth]{~/ownCloud/syms/SGBEM/Output/Figures/GBEM_QL_cond/log_ngp/cond_ngp_G_1_nx_2}	
+				\caption{$ n_{\mathrm{el}} = 24 $}
+		\end{subfigure}
+		\newline
+		\centering
+		\begin{subfigure}{.99\textwidth}
+				\centering
+				\includegraphics[width=.8\linewidth]{~/ownCloud/syms/SGBEM/Output/Figures/GBEM_QL_cond/log_ngp/cond_ngp_H_1_nx_2}	
+				\caption{$ n_{\mathrm{el}} = 24 $}
+		\end{subfigure}
+		\caption{The condition number of system matrices for the Galerkin method: (a) pure Dirichlet problem - singular formulation - condition number of $ \mathbf{G} $, (b) pure Neumann problem - hypersingular formulation - condition number of $ \mathbf{H} $.}
+		\label{fig:Gal_condition}
+\end{figure}

@@ -1,0 +1,116 @@
+% Element Loop: 11. Finite Bilinear Quad
+% Roger Sauer - 15.12.10
+
+
+% Initialize
+I2 = eye(2); 
+R  = zeros(2*nno,1);
+K  = zeros(2*nno,2*nno);
+
+% if size(sig) == [4 1]
+%    sig = sig'; 
+% end
+
+% Elemental Loop
+for i = 1 : nel   
+    % Previous Timestep Dofs
+    con = 2*CON(i,:);
+    ie = [con(1)-1 con(1) con(2)-1 con(2) con(3)-1 con(3) con(4)-1 con(4)];
+    
+    % Initial and Current Nodal Coordinates and Displacements
+    XI = Xn(CON(i,:),:); 
+    xI = xn(CON(i,:),:); 
+    
+    % Initialize 
+    rel  = zeros(8,1);
+    kmat = zeros(8,8);
+    kgeo = zeros(8,8);
+    
+    % Gauss Point Loop (Volume Intgrals)
+    for gp = 1:ngp
+        % Gauss point coordinates and weights
+        %%CHECK WHERE THESE QUADRATURE POINTS ARE DEFINED
+        xi = xigv(gp,1) ; eta = xigv(gp,2) ; wg = xigv(gp,3) ;
+        
+        % Shape Functions
+        N1 = ( 1 - xi )*( 1 - eta )/4;
+        N2 = ( 1 + xi )*( 1 - eta )/4;
+        N3 = ( 1 + xi )*( 1 + eta )/4;
+        N4 = ( 1 - xi )*( 1 + eta )/4;
+        N  = [N1*I2 N2*I2 N3*I2 N4*I2];
+        
+        % Shape Fct (xi,eta)-Derivatives
+        dpN = [ -( 1 - eta )  -( 1 - xi ) ;
+                 ( 1 - eta )  -( 1 + xi ) ;
+                 ( 1 + eta )   ( 1 + xi ) ;
+                -( 1 + eta )   ( 1 - xi ) ]/4;
+        
+        % Jacobian between Current Configuration and Master Element
+        Jac = xI'*dpN;
+        detJ = det(Jac); 
+        invJ = inv(Jac);
+        
+        jac = XI'*dpN;
+        detj = det(jac);
+        invj = inv(jac);
+        
+        % Deformation check
+        if detJ < 0 
+           jterm = 1;
+           fprintf('\n Negative Jacobian determinant in element %5i \n',i)
+        end
+        if jterm == 1 ; break ; end
+        
+        % Shape Fct (x,y)- Spatial Derivatives
+        dN = dpN*invJ;
+        
+        % B-Matrix
+        B = zeros(4,8) ;
+        for j = 1:4
+           B(:,2*j-1:2*j) = [ dN(j,1)        0 ;
+                                    0  dN(j,2) ;
+                                    0        0 ;
+                              dN(j,2)  dN(j,1) ];
+        end
+           
+        % Deformation Gradient
+        invF = zeros(2,2);
+        Fgr = Jac*invj;
+        detF = det(Fgr);
+        
+        % Cauchy Stress, Spatial Tangent (in Voigt notation; plane strain NH only)     
+        Upr = lam/detF * log(detF) ;
+        sit = mu/detF * ( Fgr*Fgr' - I2 ) ;
+        
+        tmp = Upr*I2 + sit ;
+        
+        sig(1,1) = tmp(1,1) ;
+        sig(1,2) = tmp(2,2) ;
+        sig(1,3) = 0 ;
+        sig(1,4) = tmp(1,2) ;
+        
+        Dnl = D/detF - Upr*Is4 ;
+                    
+        % Elemental Force Vector (current-rho = rho0/detF)
+        rel = rel + B'*sig'*detJ*wg - N'*g*detJ*wg ;
+        
+        % Material Stiffness
+        kmat = kmat + B'*Dnl*B*detJ*wg ;
+               
+        % Geometrical Stiffness
+        dNm1 = kron(dN(:,1)*dN(:,1)',I2);
+        dNm2 = kron(dN(:,2)*dN(:,2)',I2);
+        dNm3 = kron(dN(:,1)*dN(:,2)',I2);
+        kgeo = kgeo + ( dNm1*sig(1)+dNm2*sig(2)+(dNm3 + dNm3')*sig(4) ) * detJ * wg ;          
+    end
+ 
+    % Terminate Computation
+    if jterm == 1 ; break ; end
+    
+    % Local Element Stiffness
+    kel = kmat + kgeo ;
+    
+    % Structure Stiffness and Stress Divergence Term
+    R(ie,1)  = R(ie,1)  + rel ;
+    K(ie,ie) = K(ie,ie) + kel ;
+end

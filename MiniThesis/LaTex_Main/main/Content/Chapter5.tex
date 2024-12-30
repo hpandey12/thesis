@@ -1,0 +1,19 @@
+\chapter{Conclusion}
+\label{Chapter5}
+
+A general nonlinear framework for the solution of rotation-free solid membranes is presented. The theory in Section \ref{Chapter2} details
+ the solution of general elliptic partial differential equations using the Finite Element Method. The function spaces of the test
+ and trial functions are introduced for the well-posedness of the weak formulation necessary for a meaningful solution of the
+ boundary value problem. Dirichlet, Neumann, and mixed boundary conditions are considered and the isoparametric parametric concept
+ along with numerical quadrature is used to simplify the implementation of the solution on MATLAB. Section \ref{Chapter3} develops a
+ nonlinear framework for the solution of problems involving large deformations of beams in a Euclidean basis. Discretisation of
+ general kinematical quantities, balance laws, and constitution is introduced. The resulting nonlinear system of equations is solved using the Newton-Raphson method. 
+ This framework is validated using simple numerical examples while comprehensively covering the load and displacement driven boundary conditions. 
+ After a thorough development of the foundation, Section \ref{Chapter4} extends the previous chapters to develop the framework for curved structures.
+ Based on the differential geometry of curved surfaces, the resulting framework is general, accounts for large deformations, and general material laws.
+ The use of curvilinear coordinates further eases computation as the resulting formulation only uses three degrees of freedom, avoids the use
+ of a local cartesian coordinate system, the transformation of derivatives, and allows the splitting of the strong and weak forms
+ into the in-plane and out-of-plane parts allowing an easy extension of the framework to liquid membranes. The solution of the final nonlinear system
+ is conducted using the theory developed in the previous chapters with the volume constraints being included in the system using
+ the Lagrange multiplier method. This framework is validated through the consideration of the inflation of a square sheet. It is expected
+ that the MATLAB implementation of the formuation will be able to reproduce the results of \cite{sauer2014} in the future. 

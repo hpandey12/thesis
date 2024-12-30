@@ -1,0 +1,95 @@
+\appendix % Cue to tell LaTeX that the following "chapters" are Appendices
+
+% Include the appendices of the thesis as separate files from the Appendices folder
+% Uncomment the lines as you write the Appendices
+
+% Appendix A
+
+\chapter{Nonlinear Framework} % Main appendix title
+
+\label{AppendixA} % For referencing this appendix elsewhere, use \ref{AppendixA}
+
+
+\section{Material Model Expressed in \emph{\textbf{S}}}
+    Given the Cauchy stress tensor \eqref{neo_hookean_definition} and the definition of the Second
+     Piola-Kircchhof stress tensor,~\eqref{eq:19} can be written as,
+    \begin{equation}
+        \begin{split}
+        {\boldsymbol{S}} &= {J \boldsymbol{F^{-1}}} \left[ \frac{\mu}{J} \left(\boldsymbol{b} - \boldsymbol{I}\right) + \frac{\Lambda}{J}\ln{J}\boldsymbol{I}\right] \boldsymbol{F^{-T}}\\
+        &= {J}  {\left[ \frac{\mu}{J} \left(\boldsymbol{F^{-1}b} - \boldsymbol{F^{-1}}\right) + \frac{\Lambda}{J}\ln{J}\boldsymbol{F^{-1}}\right] \boldsymbol{F^{-T}}}\\
+        &= {J} {\left[ \frac{\mu}{J} \left(\boldsymbol{F^{-1}}\left(\boldsymbol{FF^T}\right) - \boldsymbol{F^{-1}}\right) + \frac{\Lambda}{J}\ln{J}\boldsymbol{F^{-1}}\right]} \boldsymbol{F^{-T}}\\ 
+        &= {J} {\left[ \frac{\mu}{J} \left(\boldsymbol{F^T} - \boldsymbol{F^{-1}} \right) \boldsymbol{F^{-T}} + \frac{\Lambda}{J} \ln{J}\boldsymbol{F^{-1}F^{-T}} \right]}\\ 
+        &= \mu \left( {\boldsymbol{F^TF^{-T}}} - \left( {\boldsymbol{F^TF}} \right)^{-1} \right) + \Lambda{\ln{J}\left(\boldsymbol{F^TF}\right)^{-1}}
+        \end{split}
+    \end{equation}
+    
+    \begin{equation}\label{S_neohookean}
+        \therefore {\boldsymbol{S} = \mu\left(\boldsymbol{I} - \boldsymbol{C^{-1}}\right) + \Lambda\ln{J}\boldsymbol{C^{-1}}}
+    \end{equation}
+    %-------------------------------------------------------------------------------------------
+\section{Derivation of Compliance Matrix in Reference Configuration}
+    As the formulation assumes the existence of a cartesian basis, the right Cauchy-Green tensor and its inverse can be written, 
+    \begin{equation} \label{eq:def_C_comp}
+        \begin{split}
+        {\boldsymbol{C}} &= {C^i_{.j}\, \boldsymbol{e}_i \otimes \boldsymbol{e}^j}\\
+        {\boldsymbol{C}}^{-1} &= {\left(C^{-1}\right)^i_{.j} \boldsymbol{e}_i \otimes \boldsymbol{e}^j}.
+        \end{split}
+    \end{equation}
+Writing~\eqref{S_neohookean} in indicial form using \eqref{eq:def_C_comp} and using the definition~\eqref{compliance_definition}
+    \begin{equation} \label{eq:ref_comp_1}
+        \begin{split}
+            {S^i_{.j}} &= \mu {\left[\delta ^i_{.i} - \left(C^{-1}\right)^i_{.j}\right] + \Lambda \ln{J} \left(C^{-1}\right)^i_{.j}}\\
+        {\Rightarrow 2\frac{\partial S^i_{.j}}{\partial C^a_{.b}}} &= 2\mu {\left[0 - \frac{\partial \left(C^{-1}\right)^i_{.j}}{\partial C^a_{.b}} \right] + 2\Lambda\frac{\partial \left(\ln{J}\left(C^{-1}\right)^i_{.j}\right)}{\partial C^a_{.b}}}\\
+            &= 2\mu {\left[0 - \frac{\partial \left(C^{-1}\right)^i_{.j}}{\partial C^a_{.b}} \right] + 2\Lambda \left(C^{-1}\right)^i_{.j} \boldsymbol{e}_i \otimes \boldsymbol{e}^j \otimes \frac{\partial \left(\ln{J}\right)}{\partial C^a_{.b}} + 2\Lambda\ln{J} \frac{\partial \left(C^{-1}\right)^i_{.j}}{\partial C^a_{.b}}}\\
+            &= {2\left(-\mu + \Lambda\ln{J}\right) \frac{\partial \left(C^{-1}\right)^i_{.j}}{\partial C^a_{.b}} + 2\Lambda\left(C^{-1}\right)^i_{.j} \boldsymbol{e}_i \otimes \boldsymbol{e}^j \otimes \left[\frac{1}{J} \frac{\partial J}{\partial C^a_{.b}}\right]}\\
+        \implies \mathbb{C}^{i.a.}_{.j.b} &= 2\left(-\mu + \Lambda\ln{{J}}\right)\left({C}^{-1}\right)^{i}_{.a} \left({C}^{-1}\right)^{b}_{.j} + \Lambda {\left(C^{-1}\right)^i_{.j} \left(C^{-1}\right)^a_{.b}}
+        \end{split}
+    \end{equation}
+%-------------------------------------------------------------------------------
+\section{Derivation of Compliance Matrix in Current Configuration}
+Given the expression of the compliance matrix in reference configuration
+\begin{equation}\label{eq:22}
+    \mathbb{C} = 2\left(-\mu + \Lambda\ln{J}\right)\left(C^{-1}\right)^i_{.a} \left(C^{-1}\right)^b_{.j} \boldsymbol{e}_{i} \otimes \boldsymbol{e}^{a} \otimes \boldsymbol{e}_{b} \otimes \boldsymbol{e}^{j}
+    + \Lambda \left(C^{-1}\right)^i_{.j} \left(C^{-1}\right)^a_{.b} \boldsymbol{e}_{i} \otimes \boldsymbol{e}^{j} \otimes \boldsymbol{e}_{a} \otimes \boldsymbol{e}^{b}.
+\end{equation}
+\normalsize and using the push-forward transformation to transform \eqref{eq:22} to the current configuration
+\begin{equation}
+    \begin{split}
+    \mathbbmss{c} &= 2\left(-\mu + \Lambda\ln{J}\right)\left(C^{-1}\right)^i_{.a} \left(C^{-1}\right)^b_{.j} 
+    \left(\boldsymbol{F\, e}_i \otimes \boldsymbol{e}^a \, \boldsymbol{F}^T\right) \otimes \left(\boldsymbol{F\,e}_b \otimes \boldsymbol{e}^j \,\boldsymbol{F^T}\right)\\
+    &+ \Lambda \left(C^{-1}\right)^i_{.j} \left(C^{-1}\right)^a_{.b} \left(\boldsymbol{F\,e}_i \otimes \boldsymbol{e}^j \,\boldsymbol{F}^T\right) \otimes \left(\boldsymbol{F\,e}_a \otimes \boldsymbol{e}^b\, \boldsymbol{F}^T\right)\\
+    &:= \mathbb{I} + \mathbb{II}
+    \end{split}
+\end{equation}
+\normalsize Operating on $\mathbb{I}$
+\begin{equation} \label{eq:I}
+    \begin{split}
+        \mathbb{I} &= 2\left(-\mu + \Lambda\ln{J}\right)\left(C^{-1}\right)^i_{.a} \left(C^{-1}\right)^b_{.j} \\
+        &\quad \left[F^p_{.q} \, \boldsymbol{e}_p \,(\boldsymbol{e}^q \cdot \boldsymbol{e}_i)\right] \otimes \left[(\boldsymbol{e}^a \cdot \boldsymbol{e}_r)\, \boldsymbol{e}^s \left(F^T\right)^r_{.s}\right] \left[F^t_{.u} \,\boldsymbol{e}_t \,(\boldsymbol{e}^u \cdot \boldsymbol{e}_b)\right] \otimes \left[(\boldsymbol{e}^j \cdot \boldsymbol{e}_v) \,\boldsymbol{e}^w \left(F^T\right)^v_{.w} \right]\\
+        &= 2\left(-\mu + \Lambda\ln{J}\right) \left(F^{-1}F^{-T}\right)^i_{.a} \left(F^{-1}F^{-T}\right)^b_{.j} \left[F^p_{.q} \: \delta^q_{.i} \: \delta^a_{.r} \: (F^T)^r_{.s} \: F^t_{.u} \: \delta^u_{.b} \: \delta^j_{.v} \: (F^T)^v_{.w} \right] \boldsymbol{e}_p \otimes \boldsymbol{e}^s \otimes \boldsymbol{e}_t \otimes \boldsymbol{e}^w\\
+        \mathbb{I}^{p\,.\,s\,.}_{\,.\,w\,.\,t} & = 2\left(-\mu + \Lambda\ln{J}\right) \left(F^{-1}\right)^i_{.c} \left(F^{-T}\right)^c_{.a} \left(F^{-1}\right)^b_{.d} \left(F^{-T}\right)^d_{.j} \left[F^p_{.i} \: \delta^a_{.r} \: (F^T)^r_{.s} \: F^t_{.b} \: \delta^j_{.v} \: (F^T)^v_{.w}\right]\\
+        & = 2\left(-\mu + \Lambda\ln{J}\right)\left[ F^p_{.i} \: (F^{-1})^i_{.c} \: F^t_{.b} \: (F^{-1})^b_{.d}\right] \left[(F^{-T})^c_{.a} \: \delta^a_{.r} \: (F^T)^r_{.s}\right] \left[(F^{-T})^d_{.j} \:  \delta^j_{.v} \: (F^T)^v_{.w}\right]\\
+        & =  2\left(-\mu + \Lambda\ln{J}\right) \delta^p_{.c} \: \delta^t_{.d} \: (F^{-T})^c_{.r} \: (F^T)^r_{.s} \: (F^{-T})^d_{.v} \: (F^T)^v_{.w} \\
+        &= 2\left(-\mu + \Lambda\ln{J}\right) \delta^p_{.c} \; \delta^t_{.d} \; \delta^c_{.s} \; \delta^d_{.w}\\
+    \implies \mathbb{I} &= 2\left(-\mu + \Lambda\ln{J}\right) \delta^p_{.s} \; \delta^t_{.w} \; \boldsymbol{e}_p \otimes \boldsymbol{e}^s \otimes \boldsymbol{e}_t \otimes \boldsymbol{e}^w
+    \end{split}
+\end{equation}
+Similarly for $\mathbb{II}$
+\begin{equation} \label{eq:II}
+    \begin{split}
+        \mathbb{II} &= \frac{\Lambda}{2}\left(C^{-1}\right)^i_{.j} \left(C^{-1}\right)^a_{.b} \left[F^p_{.q}\, \boldsymbol{e}_p \,(\boldsymbol{e}^q \cdot \boldsymbol{e}_i)\right] \otimes \left[(\boldsymbol{e}^j \cdot \boldsymbol{e}_v) \,\boldsymbol{e}^w \left(F^T\right)^v_{.w}\right] \\
+        &\quad \otimes\left[F^r_{.s}\, \boldsymbol{e}_r \,(\boldsymbol{e}^s \cdot \boldsymbol{e}_a)\right] \otimes \left[(\boldsymbol{e}^b \cdot \boldsymbol{e}_t)\, \boldsymbol{e}^u \left(F^T\right)^t_{.u} \right]\\
+    &= \frac{\Lambda}{2} \left(C^{-1}\right)^i_{.j} \left(C^{-1}\right)^a_{.b} \left[F^p_{.q} \,\delta^q_{.i} \,\delta^j_{.v} \,(F^T)^v_{.w} \,F^r_{.s} \,\delta^s_{.a} \,\delta^b_{.t}\, (F^T)^t_{.u} \right] \boldsymbol{e}_p \otimes \boldsymbol{e}^w \otimes \boldsymbol{e}_r \otimes \boldsymbol{e}^u\\
+    \mathbb{II}^{p\,.\,r\,.}_{\,.\,w\,.\,u} &= \frac{\Lambda}{2} \left(F^{-1}F^{-T}\right)^i_{.j} \left(F^{-1}F^{-T}\right)^a_{.b} \left[F^p_{.i} \,\delta^j_{.v}\, (F^T)^v_{.w} \,F^r_{.a} \,\delta^b_{.t} \,(F^T)^t_{.u} \right]\\
+    &= \frac{\Lambda}{2} \left(F^{-1}\right)^i_{.c} \left(F^{-T}\right)^c_{.j} \left(F^{-1}\right)^a_{.d} \left(F^{-T}\right)^d_{.b} \left[F^p_{.i}\, \delta^j_{.v}\, (F^T)^v_{.w} \,F^r_{.a} \,\delta^b_{.t} \,(F^T)^t_{.u} \right]\\
+    &= \frac{\Lambda}{2}(F^p_{.i} \, (F^{-1})^i_{.c})\,(F^r_{.a}\,(F^{-1})^a_{.d})\left[\left(F^{-T}\right)^c_{.j} \,\delta^j_{.v} \,(F^T)^v_{.w}\right] \left[\left(F^{-T}\right)^d_{.b} \,\delta^b_{.t} \,(F^T)^t_{.u}\right]\\
+    &= \frac{\Lambda}{2} \delta^p_{.c} \: \delta^r_{.d} \: \left[(F^{-T})^c_{.v}\, (F^T)^v_{.w}\right] \left[(F^{-T})^d_{.t}\, (F^T)^t_{.u}\right]\\
+    &= \frac{\Lambda}{2} \delta^p_{.c} \; \delta^r_{.d} \; \delta^c_{.w}\;  \delta^d_{.u} \; \boldsymbol{e}_p \otimes \boldsymbol{e}^w \otimes \boldsymbol{e}_r \otimes \boldsymbol{e}^u\\
+    &= \frac{\Lambda}{2} \underbrace{\delta^p_{.w} \; \delta^r_{.u} \; \boldsymbol{e}_p \otimes \boldsymbol{e}^w \otimes \boldsymbol{e}_r \otimes \boldsymbol{e}^u}_{r \rightarrow s, u \rightarrow t}\\
+\implies \mathbb{II} &= \frac{\Lambda}{2} \; \delta^p_{.w} \; \delta^s_{.t} \; \boldsymbol{e}_p \otimes \boldsymbol{e}^w \otimes \boldsymbol{e}_s \otimes \boldsymbol{e}^t
+\end{split}
+\end{equation}
+\normalsize Using \eqref{eq:I} and \eqref{eq:II}, the compliance matrix in the current configuration in indicial form is
+\begin{equation}
+    \mathbbmss{c}^{p\,.\,s\,.}_{\,.\,w\,.\,t} = 2\left(-\mu + \Lambda\ln{J}\right) \delta^p_{.s} \;\delta^t_{.w} + \frac{\Lambda}{2} \delta^p_{.w} \; \delta^s_{.t}.
+\end{equation}

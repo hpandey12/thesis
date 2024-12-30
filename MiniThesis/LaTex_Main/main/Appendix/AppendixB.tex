@@ -1,0 +1,318 @@
+% Appendix Template
+
+\chapter{Shell Formulations} % Main appendix title
+
+\label{AppendixB} % Change X to a consecutive letter; for referencing this appendix elsewhere, use \ref{AppendixX}
+
+\section{Curviliniear Coordinates}
+    \subsection{Proof: \texorpdfstring{$\boldsymbol{a}_{\alpha;\beta} = (\boldsymbol{n} \otimes \boldsymbol{n}) \boldsymbol{a}_{\alpha, \beta}$}{Cov Derivative}}
+    Using~\eqref{surface_identity}
+    \begin{equation}\label{eq:eq12}
+        \left( \boldsymbol{n} \otimes \boldsymbol{n} \right) = \boldsymbol{\tilde{1}} - \boldsymbol{1},
+    \end{equation}
+    it can be written     
+    \begin{equation}\label{appendices:cov_tangent_derivative}
+        \begin{split}
+            \left( \boldsymbol{n} \otimes \boldsymbol{n} \right) \boldsymbol{a}_{\alpha, \beta} &= \left( \boldsymbol{\tilde{1}} - \boldsymbol{1} \right) \boldsymbol{a}_{\alpha, \beta} \\ &= \boldsymbol{\tilde{1}} \boldsymbol{a}_{\alpha, \beta} - \left( \boldsymbol{a}_{\gamma} \otimes \boldsymbol{a}^{\gamma} \right) \boldsymbol{a}_{\alpha, \beta} \\
+            &= \boldsymbol{a}_{\alpha, \beta} - \left( \boldsymbol{a}_{\alpha, \beta} \cdot \boldsymbol{a}^{\gamma}\right) \boldsymbol{a}_{\gamma} \\
+            &= \boldsymbol{a}_{\alpha, \beta} - \Gamma_{\alpha \beta}^{\gamma} \boldsymbol{a}_{\gamma}\\
+            &= \boldsymbol{n} \cdot \boldsymbol{a}_{\alpha ; \beta}
+        \end{split}
+    \end{equation}
+    \subsection{Computation of Components of \texorpdfstring{$b_{\alpha \beta}$}{Curvature tensor}}
+    Using the results from the previous section of the Appendix,
+    \begin{equation}\label{appendices:curvature_tensor_derivation}
+        \begin{split}
+            \boldsymbol{n} \cdot \boldsymbol{a}_{\alpha ; \beta} &= \boldsymbol{n} \cdot \left( \boldsymbol{n} \otimes \boldsymbol{n} \right) \boldsymbol{a}_{\alpha, \beta} \\
+            &= \left( \boldsymbol{n} \cdot \boldsymbol{n} \right) \left( \boldsymbol{a}_{\alpha, \beta} \cdot \boldsymbol{n} \right) \\
+            &= \boldsymbol{1} \left( \boldsymbol{a}_{\alpha, \beta} \cdot \boldsymbol{n} \right) =: b_{\alpha \beta}
+        \end{split}
+    \end{equation}
+%----------------------------------------------------------------------        
+\section{Weak Form Derivation} \label{appendices:weak_form_derivation}
+
+    \begin{equation}\label{eq:weak_1}
+        \int_{\mathcal{S}} \boldsymbol{w} \left[ \boldsymbol{t}_{; \alpha}^{\alpha} + \boldsymbol{f} \right] \, \mathrm{d} a = 0.
+    \end{equation}
+    Decomposing $\boldsymbol{w}$ into its surface and normal components     
+    \begin{equation}\label{eq:weak_2}
+        0 = \int_{\mathcal{S}} \left[ w_{\gamma} \boldsymbol{a}^{\gamma} + w \boldsymbol{n} \right] \left[ \sigma_{~~; \alpha}^{\beta \alpha} \boldsymbol{a}_{\beta} + \sigma^{\beta \alpha} b_{\beta \alpha} \boldsymbol{n} + \boldsymbol{f} \right] \, \mathrm{d} a
+    \end{equation}
+        
+        \begin{equation}\label{eq:weak_3}
+        0 = \int_{\mathcal{S}} w_{\gamma} \boldsymbol{a}^{\gamma} \left[ \sigma^{\beta \alpha}_{~~; \alpha} \boldsymbol{a}_{\beta} + f^{\alpha} \boldsymbol{a}_{\alpha} \right] \, \mathrm{d} a + \int_{\mathcal{S}} w \boldsymbol{n} \left[ \sigma^{\beta \alpha} b_{\beta \alpha} \boldsymbol{n} + p \boldsymbol{n} \right] \, \mathrm{d} a
+        \end{equation}
+        
+        \begin{equation}\label{eq:weak_4}
+        \begin{split}
+                0 &= \int_{\mathcal{S}} \left( w_{\gamma} \sigma^{\beta \alpha}_{~~; \alpha} \delta^{\gamma}_{\beta} + f^{\alpha} \delta^{\gamma}_{\alpha} \right) \, \mathrm{d} a + \int_{\mathcal{S}} w \left[ \sigma^{\beta \alpha} b_{\beta \alpha} + p \right] \, \mathrm{d} a \\ &= \int_{\mathcal{S}} \left[ w_{\beta} \sigma^{\beta \alpha}_{~~; \alpha} + f^{\gamma} \right] \, \mathrm{d} a + \int_{\mathcal{S}} \left[ w \sigma^{\beta \alpha} b_{\beta \alpha} +  p \right] \, \mathrm{d} a  \\ &= \int_{\mathcal{S}} \left[ w_{\beta} \sigma^{\beta \alpha}_{~~; \alpha} + f^{\gamma} \right] \, \mathrm{d} a + \int_{\mathcal{S}} \left[ w \sigma^{\beta \alpha} b_{\beta \alpha} + p \right] \, \mathrm{d} a \\ &= \int_{\mathcal{S}} \left[ w_{\gamma} \sigma^{\gamma \alpha}_{~~; \alpha} + w_{\gamma} f^{\gamma} \right] \, \mathrm{d} a + \int_{\mathcal{S}} \left[ w \sigma^{\beta \alpha} b_{\beta \alpha} + p \right] \, \mathrm{d} a
+            \end{split}
+        \end{equation}
+        
+        Using divergence theorem
+        
+        \begin{equation}\label{eq:weak_5}
+            \begin{split}
+                \int_{\mathcal{S}} w_{\gamma} \sigma^{\gamma \alpha}_{~~; \alpha} \, \mathrm{d} a &= \int_{\mathcal{S}} \left( w_{\gamma} \sigma^{\gamma \alpha} \right)_{; \alpha} \, \mathrm{d} a - \int_{\mathcal{S}} w_{\gamma ; \alpha} \sigma^{\gamma \alpha} \, \mathrm{d} a \\ &= \int_{\partial \mathcal{S}} w_{\gamma} \sigma^{\gamma \alpha} m_{\alpha} \, \mathrm{d} s - \int_{\mathcal{S}} w_{\gamma ; \alpha} \sigma^{\gamma \alpha} \, \mathrm{d} a
+            \end{split}
+        \end{equation}
+        
+        using $ \boldsymbol{t} = m_{\alpha} \boldsymbol{t}^{\alpha} = m_{\alpha} \sigma^{\beta \alpha} \boldsymbol{a}_{\beta} $ it is possible to rewrite the surfrace integral of~\eqref{eq:weak_5} as
+\begin{equation}\label{eq:weak_6}
+    \int_{\partial \mathcal{S}} w_{\gamma} \sigma^{\gamma \alpha} m_{\alpha} \, \mathrm{d} s = \int_{\partial \mathcal{S}} w_{\gamma} \overline{t}^{\gamma} \, \mathrm{d} s
+\end{equation}
+the weak form can be written as,
+    
+    \begin{equation}\label{eq:wear_7}
+    0 = \int_{\partial \mathcal{S}} w_{\gamma} \overline{t}^{\gamma} \, \mathrm{d} s - \int_{\mathcal{S}} w_{\gamma ; \alpha} \sigma^{\gamma \alpha} \, \mathrm{d} a + \int_{\mathcal{S}} w_{\gamma} f^{\gamma} \, \mathrm{d} a + \int_{\mathcal{S}} w \sigma^{\beta \alpha} b_{\beta \alpha} \, \mathrm{d} a + \int_{\mathcal{S}} w p \, \mathrm{d} s.
+    \end{equation}
+%%%---------------------------------------
+  % w_{a;b}  
+\section{Computation of \texorpdfstring{$w_{\alpha ; \beta}$}{w-a;b}}
+    \begin{equation}\label{appendices:w_ab}
+        \begin{split}
+            w_{\alpha ; \beta} &= \left( \boldsymbol{w} \cdot \boldsymbol{a}_{\alpha} \right)_{; \beta} = \boldsymbol{w}_{; \beta} \cdot \boldsymbol{a}_{\alpha} + \boldsymbol{w} \cdot \boldsymbol{a}_{\alpha ; \beta} \\ &= w_{; \beta} \boldsymbol{a}_{\alpha} + \left( w_{\gamma} \boldsymbol{a}^{\gamma} + w \boldsymbol{n} \right) a_{\alpha ; \beta} \\ &= \boldsymbol{w}_{; \beta} \cdot \boldsymbol{a}_{\alpha} + w_{\gamma} \boldsymbol{a}^{\gamma} \cdot \boldsymbol{a}_{\alpha ; \beta} + w \boldsymbol{n} \cdot \boldsymbol{a}_{\alpha ; \beta} \\ &= \boldsymbol{w}_{; \beta} \cdot \boldsymbol{a}_{\alpha} + w b_{\alpha \beta}
+        \end{split}
+    \end{equation}
+%-----------------------------------------------------
+
+\section{Discretisation of \texorpdfstring{$w_{\alpha ; \beta}$}{w-a;b}}
+Using the following results,
+\begin{equation}\label{eq:w_alp}
+        w_{\alpha} = \boldsymbol{w} \cdot \boldsymbol{a}_{\alpha} = \left( \mathbf{N} \mathbf{w}_{e} \right)^{T} \boldsymbol{a}_{\alpha} = \mathbf{w}_{e}^{T} \mathbf{N}^{T} \boldsymbol{a}_{\alpha} = \mathbf{w}_{e}^{T} \mathbf{N}^{T} \left( \mathbf{N}_{, \alpha} \mathbf{x}_{e} \right),
+    \end{equation}
+
+    \begin{equation}\label{eq:w_n}
+        w \approx \boldsymbol{w} \cdot \boldsymbol{n} = \left( \mathbf{N} \mathbf{w}_{e} \right)^{T} \boldsymbol{n} = \mathbf{w}_{e}^{T} \mathbf{N}^{T} \boldsymbol{n},
+    \end{equation}
+and
+    \begin{equation}\label{eq:w_cov}
+    w_{; \alpha} \approx \mathbf{N}_{, \alpha} \mathbf{w}_{e} + \mathbf{N} \mathbf{w}_{e , \alpha} = \mathbf{N}_{, \alpha} \mathbf{w}_{e},
+    \end{equation}
+the following can be calculated
+    \begin{equation}\label{eq:w_alp_cov}
+        \begin{split}
+            w_{\alpha; \beta} &= \boldsymbol{w}_{; \beta} \boldsymbol{a}_{\alpha} + w b_{\alpha \beta} \\ &\approx \left( \mathbf{N} \mathbf{w}_{e} \right)_{; \beta} \cdot \boldsymbol{a}_{\alpha} + w \boldsymbol{n} \mathbf{N}_{, \alpha \beta} \mathbf{x}_{e} \\ &= \left( \mathbf{N}_{, \beta} \mathbf{w}_{e} \right) \cdot \boldsymbol{a}_{\alpha} + w \boldsymbol{n} \cdot \mathbf{N}_{, \alpha \beta} \mathbf{x}_{e} \\ &= \left( \mathbf{N}_{, \beta} \mathbf{w}_{e} \right) \cdot \left( \mathbf{N}_{, \alpha} \mathbf{x}_{e} \right) + w \boldsymbol{n} \mathbf{N}_{, \alpha \beta} \mathbf{x}_{e} \\ &= \mathbf{w}_{e}^{T} \mathbf{N}_{, \beta}^{T} \mathbf{N}_{, \alpha} \mathbf{x}_{e} + \left( \boldsymbol{w} \cdot \boldsymbol{n} \right) \boldsymbol{n} \cdot \mathbf{N}_{, \alpha \beta} \mathbf{x}_{e} \\ &= \mathbf{w}_{e}^{T} \mathbf{N}_{, \beta}^{T} \mathbf{N}_{, \alpha} \mathbf{x}_{e} + \mathbf{w}_{e}^{T} \mathbf{N}^{T} \boldsymbol{n} \left( \mathbf{N}_{, \alpha \beta} \cdot \boldsymbol{n} \right) \mathbf{x}_{e} \\ &= \mathbf{w}_{e}^{T} \left[ \mathbf{N}_{, \beta}^{T} \mathbf{N}_{, \alpha} + \mathbf{N}^{T} \left( \boldsymbol{n} \otimes \boldsymbol{n} \right) \mathbf{N}_{, \alpha \beta} \right] \mathbf{x}_{e}
+        \end{split}
+    \end{equation}
+
+\section{Linearisation} \label{appendices:curvy_linearisations}
+\subsection{Linearisation of \texorpdfstring{$\boldsymbol{a_{\alpha}}$}{a-a}}
+\begin{equation}\label{eq:a_a_lin}
+    \boldsymbol{a}_{\alpha} = \mathbf{N}_{,\alpha} \mathbf{x}_{e}
+\end{equation}
+According to the definition of the tangent vector \eqref{tangent_parametric}, the linearisation of the undiscretised
+ form is
+    
+Linearising the parametric definition of the surface 
+    \begin{equation}\label{eq:a_a_lin_3}
+        \boldsymbol{x} = \boldsymbol{x} \left( \xi^{1}, \, \xi^{2} \right),
+    \end{equation}
+    
+    \begin{equation}\label{eq:a_a_lin_4}
+       \implies \Delta \boldsymbol{x} = \frac{\partial \boldsymbol{x}}{\partial \xi^{1}} \Delta \xi^{1} + \frac{\partial \boldsymbol{x}}{\partial \xi^{2}} \Delta \xi^{2},
+    \end{equation}
+and using the definition of the tangent vector \eqref{tangent_parametric} 
+\begin{equation}\label{eq:a_a_lin_2}
+    \boldsymbol{a}_{\alpha} = \boldsymbol{x}_{, \alpha} = \frac{\partial}{\partial \xi^{\alpha}} \left( \boldsymbol{x} \left( \xi^{1}, \, \xi^{2} \right) \right), 
+\end{equation}
+the linearisation of $\boldsymbol{a}_{\alpha}$ can be written as 
+    \begin{equation}\label{eq:a_a_lin_6}
+        \Delta \boldsymbol{a}_{\alpha} = \Delta \left( \boldsymbol{x}_{, \alpha}\right) = \frac{\partial}{\xi^{1}} \left[ \frac{\partial \boldsymbol{x}}{\partial \xi^{\alpha}} \right] \Delta \xi^{1} + \frac{\partial}{\partial \xi^{2}} \left[ \frac{\partial \boldsymbol{x}}{\partial \xi^{\alpha}} \right] \Delta \xi^{2}.
+    \end{equation}
+    
+Using the property that the differential operator commutes and \eqref{eq:a_a_lin_4}     
+    \begin{equation}\label{eq:a_a_lin_7}
+        \Delta \boldsymbol{a}_{\alpha} = \frac{\partial}{\partial \xi^{\alpha}} \left[ \frac{\partial \boldsymbol{x}}{\partial \xi^{1}} \Delta \xi^{1} + \frac{\partial \boldsymbol{x}}{\partial \xi^{2}} \Delta \xi^{2} \right] = \frac{\partial}{\partial \xi^{\alpha}} \Delta \boldsymbol{x}.
+    \end{equation}
+Substituting the discretised value of $\Delta \boldsymbol{x}$ in \eqref{eq:a_a_lin_7},    
+    \begin{equation}\label{eq:a_a_lin_8}
+        \Delta \boldsymbol{a}_{\alpha} \approx \frac{\partial}{\partial \xi^{\alpha}} \left[ \mathbf{N} \Delta \mathbf{x}_{e} \right] = \mathbf{N}_{, \alpha} \Delta \mathbf{x}_{e}
+    \end{equation}
+%--------------------------------------------
+\subsection{Linearisation of \texorpdfstring{$a_{\alpha \beta}$}{a-ab}} 
+\begin{equation}\label{eq:del_aab_1}
+    a_{\alpha \beta} = \boldsymbol{a}_{\alpha} \cdot \boldsymbol{a}_{\beta}
+\end{equation}
+Using \eqref{eq:a_a_lin_8}
+\begin{equation}\label{eq:del_aab_2}
+    \begin{split}
+        \Delta a_{\alpha \beta} &= \Delta \left( \boldsymbol{a}_{\alpha} \cdot \boldsymbol{a}_{\beta} \right) = \Delta \boldsymbol{a}_{\alpha} \cdot \boldsymbol{a}_{\beta} + \boldsymbol{a}_{\alpha} \cdot \Delta \boldsymbol{a}_{\beta} = \boldsymbol{a}_{\beta} \cdot \Delta \boldsymbol{a}_{\alpha} + \boldsymbol{a}_{\alpha} \cdot \Delta \boldsymbol{a}_{\beta} \approx \left( \boldsymbol{a}_{\beta} \cdot \mathbf{N}_{\alpha} + \boldsymbol{a}_{\alpha} \cdot \mathbf{N}_{\beta} \right) \Delta \mathbf{x}_{e} \\ &= \left[ \left( \mathbf{N}_{, \beta} \mathbf{x}_{e} \right) \cdot \mathbf{N}_{, \alpha} \right] \Delta \mathbf{x}_{e} + \left[ \left( \mathbf{N}_{\alpha} \mathbf{x}_{e} \right) \cdot \mathbf{N}_{\beta} \right] \Delta \mathbf{x}_{e} = \left[ \mathbf{x}_{e}^{T} \mathbf{N}_{, \beta}^{T} \mathbf{N}_{\alpha} + \mathbf{x}_{e}^{T} \mathbf{N}_{, \alpha}^{T} \mathbf{N}_{, \beta} \right] \Delta \mathbf{x}_{e} \\ &= \mathbf{x}_{e}^{T} \left[ \mathbf{N}_{, \beta}^{T} \mathbf{N}_{, \alpha} + \mathbf{N}_{, \alpha}^{T} \mathbf{N}_{, \beta} \right] \Delta \mathbf{x}_{e}
+    \end{split}
+\end{equation}
+%-------------------------------------------------------------------
+\subsection{Linearisation of J}
+Using the chain rule it can be written 
+\begin{equation}\label{eq:J_lin_1}
+    \Delta J = \frac{\partial J}{\partial J_{a}} \frac{\partial J_{a}}{\partial a_{\gamma \delta}} \frac{a_{\gamma \delta}}{\partial a_{\alpha}} \Delta \boldsymbol{a}_{\alpha}.
+\end{equation}
+Using the definitions in \eqref{area_something_man}
+\begin{equation} \label{eq:J_lin_2}
+    \begin{split}
+        \Delta J &= \frac{1}{J_{A}} \frac{\partial \sqrt{\det a_{\gamma \delta}}}{\partial a_{\gamma \delta}} \frac{\partial a_{\gamma \delta}}{\partial \boldsymbol{a}_{\alpha}} \Delta \boldsymbol{a}_{\alpha} \\
+        & = \left(\frac{1}{J_{A}}\right) \left(\frac{1}{2\,\sqrt{\det a_{\gamma \delta}}} \frac{\partial \left(\det a_{\gamma \delta}\right)}{\partial a_{\gamma \delta}}\right) \left(\frac{\partial a_{\gamma \delta}}{\partial \boldsymbol{a}_{\alpha}}\right) \Delta \boldsymbol{a}_{\alpha} \\
+        & = \left(\frac{1}{J_{A}}\right) \left(\frac{1}{2 J_{a}} J_{a}^{2} a^{\gamma \delta}\right) \left(\frac{\partial a_{\gamma \delta}}{\partial \boldsymbol{a}_{\alpha}}\right) \Delta \boldsymbol{a}_{\alpha} \\
+        & = \frac{J_{a}}{2 J_{A}} a^{\gamma \delta} \frac{\partial \left(\boldsymbol{a}_{\gamma} \cdot \boldsymbol{a}_{\delta}\right)}{\partial \boldsymbol{a}_{\alpha}} \Delta \boldsymbol{a}_{\alpha}\\
+        & = \frac{J}{2} a^{\gamma \delta} \left[\delta^{\alpha}_{.\gamma} \boldsymbol{a}_{\delta} + \boldsymbol{a}_{\gamma} \delta_{\delta}^{.\alpha}\right] \Delta \boldsymbol{a}_{\alpha}\\
+        & = \frac{J}{2} \left[a^{\alpha \delta} \boldsymbol{a}_{\delta} + a^{\alpha \gamma} \boldsymbol{a}_{\gamma}\right] \Delta \boldsymbol{a}_{\alpha}\\
+        & = \frac{J}{2}\left(2 \boldsymbol{a}^{\alpha}\right) \Delta \boldsymbol{a}_{\alpha}\\
+        \implies \Delta J & = J \boldsymbol{a}^{\alpha} \Delta \boldsymbol{a}_{\alpha}
+    \end{split}
+\end{equation}
+With the discretised definitions \eqref{eq:J_lin_2} is given as
+\begin{equation}\label{eq:J_lin_3}
+    \Delta J \approx J \boldsymbol{a}^{\alpha} \cdot \mathbf{N}_{,\alpha} \Delta \mathbf{x}_{e}.
+\end{equation}
+%-----------------------------------------------------------------------------------------
+\subsection{Linearisation of \texorpdfstring{$a^{\alpha \beta}$}{contravariant metric}}
+Using \eqref{contravar_def}, the definition \eqref{contravar_metric_def} can be rewritten as
+\begin{equation}\label{eq:del_a_ab_1}
+    a^{\alpha \beta} = \frac{1}{a} e^{\alpha \gamma} a_{\gamma \delta} e^{\delta \beta}
+\end{equation}
+where $a$ is the determinant of the metric tensor and $e^{\alpha \gamma}$ is the unit alternator.
+Thus, the linearisation of \eqref{eq:del_a_ab_1} is
+\begin{equation}\label{eq:del_a_ab_2}
+    \begin{split}
+    \Delta a^{\alpha \beta} &= \frac{\partial a^{\alpha \beta}}{\partial a_{\rho \phi}} \Delta a_{\rho \phi} = \frac{\partial \left[ a^{-1} e^{\alpha \gamma} a_{\gamma \delta} e^{\delta \beta} \right]}{\partial a_{\rho \phi}} \Delta a_{\rho \phi}\\ &= \underbrace{\frac{\partial a^{-1}}{\partial a_{\rho \phi}} e^{\alpha \gamma} a_{\gamma \delta} e^{\delta \beta} \Delta a_{\rho \phi}}_{I} + \underbrace{\frac{1}{a} e^{\alpha \gamma} \frac{\partial a_{\gamma \delta}}{\partial a_{\rho \phi}} e^{\delta \beta} \Delta a_{\rho \phi}}_{II}.
+    \end{split}
+\end{equation}
+Here
+\begin{equation}\label{eq:del_a_ab_3}
+    \begin{split}
+        I &= \frac{\partial a^{-1}}{\partial a_{\rho \phi}} e^{\alpha \gamma} a_{\gamma \delta} e^{\delta \beta} \Delta a_{\rho \phi} = \left( -1 \right) a^{-2} a a^{\rho \phi} e^{\alpha \gamma} a_{\gamma \delta} e^{\delta \beta} \Delta a_{\rho \phi} \\ &= - \frac{1}{a} a^{\rho \phi} e^{\alpha \gamma} a_{\gamma \delta} e^{\delta \beta} \Delta a_{\rho \phi} = - a^{\rho \phi} \left[ \frac{1}{a} e^{\alpha \gamma} a_{\gamma \delta} e^{\delta \beta} \right] \left[ \boldsymbol{a}_{\rho} \Delta \boldsymbol{a}_{\phi} + \boldsymbol{a}_{\phi} \Delta \boldsymbol{a}_{\rho} \right] \\ &= - a^{\rho \phi} a^{\alpha \beta} \left[ \boldsymbol{a}_{\rho} \Delta \boldsymbol{a}_{\phi} + \boldsymbol{a}_{\phi} \Delta \boldsymbol{a}_{\rho} \right] = \underbrace{- a^{\rho \phi} a^{\alpha \beta} \boldsymbol{a}_{\rho} \Delta \boldsymbol{a}_{\phi}}_{\rho \rightarrow \gamma, \, \phi \rightarrow \delta} - \underbrace{a^{\rho \phi} a^{\alpha \beta} \boldsymbol{a}_{\phi} \Delta \boldsymbol{a}_{\rho}}_{\rho \rightarrow \delta, \, \phi \rightarrow \delta} \\ &= - a^{\gamma \delta} a^{\alpha \beta} \boldsymbol{a}_{\gamma} \Delta \boldsymbol{a}_{\delta} - a^{\delta \gamma} a^{\alpha \beta} \boldsymbol{a}_{\gamma} \Delta \boldsymbol{a}_{\delta} = - \left( a^{\gamma \delta} + a^{\delta \gamma} \right) a^{\alpha \beta} \boldsymbol{a}_{\gamma} \Delta \boldsymbol{a}_{\delta} \\ &= - 2 a^{\gamma \delta} a^{\alpha \beta} \boldsymbol{a}_{\gamma} \Delta \boldsymbol{a}_{\delta}.
+\end{split}
+\end{equation}
+
+As the metric tensor is symmetric
+\begin{equation}\label{eq:daabaab}
+\frac{\partial a_{\gamma \delta}}{\partial a_{\rho \phi}} = \frac{1}{2} \frac{\partial \left[ a_{\gamma \delta}+ a_{\delta \gamma} \right]}{\partial a_{\rho \phi}},
+\end{equation}
+
+\begin{equation}\label{eq:del_a_ab_5}
+    \begin{split}
+        II &= \frac{1}{a} e^{\alpha \gamma} \frac{\partial a_{\gamma \delta}}{\partial a_{\rho \phi}} e^{\delta \beta} \Delta a_{\rho \phi}\\
+        &= \frac{1}{a} e^{\alpha \gamma} \left[\frac{1}{2} \frac{\partial \left( a_{\gamma \delta}+ a_{\delta \gamma} \right)}{\partial a_{\rho \phi}}\right] e^{\delta \beta} \Delta a_{\rho \phi}\\    
+        &= \frac{1}{a} e^{\alpha \gamma} \frac{1}{2} \frac{\partial a_{\gamma \delta}}{\partial a_{\rho \phi}} e^{\delta \beta} \Delta a_{\rho \phi} + \frac{1}{a} e^{\alpha \gamma} \frac{1}{2} \frac{\partial a_{\delta \gamma}}{\partial a_{\rho \phi}} e^{\delta \beta} \Delta a_{\rho \phi} \\
+        &= \frac{1}{2a} e^{\alpha \gamma} \left[ \delta^{\rho}_{\gamma} \delta^{\phi}_{\delta} \right] e^{\delta \beta} \left[ \boldsymbol{a}_{\rho} \Delta \boldsymbol{a}_{\phi} + \boldsymbol{a}_{\phi} \Delta \boldsymbol{a}_{\rho} \right] + \frac{1}{2a} e^{\alpha \gamma} \left[ \delta^{\rho}_{\delta} \delta^{\phi}_{\gamma} \right] e^{\delta \beta} \left[ \boldsymbol{a}_{\rho} \Delta \boldsymbol{a}_{\phi} + \boldsymbol{a}_{\phi} \Delta \boldsymbol{a}_{\rho} \right] \\
+        &= \frac{1}{2a} e^{\alpha \gamma} e^{\delta \beta} \left[ \boldsymbol{a}_{\rho} \delta^{\rho}_{\gamma} \Delta \boldsymbol{a}_{\phi} \delta^{\phi}_{\delta} + \boldsymbol{a}_{\phi} \delta^{\phi}_{\delta} \Delta \boldsymbol{a}_{\rho} \delta^{\rho}_{\delta} \right] + \frac{1}{2a} e^{\alpha \gamma} e^{\delta \beta} \left[ \boldsymbol{a}_{\rho} \delta^{\rho}_{\delta} \Delta \boldsymbol{a}_{\phi} \delta^{\phi}_{\gamma} + \boldsymbol{a}_{\phi} \delta^{\phi}_{\gamma} \Delta \boldsymbol{a}_{\rho} \delta^{\rho}_{\delta} \right] \\
+        &= \frac{1}{2a} e^{\alpha \gamma} e^{\delta \beta} \left[ \boldsymbol{a}_{\gamma} \Delta \boldsymbol{a}_{\delta} + \boldsymbol{a}_{\delta} \Delta \boldsymbol{a}_{\gamma} \right] + \frac{1}{2a} e^{\alpha \gamma} e^{\delta \beta} \left[ \boldsymbol{a}_{\delta} \Delta \boldsymbol{a}_{\gamma} + \boldsymbol{a}_{\gamma} \Delta \boldsymbol{a}_{\delta} \right] \\
+        &= \frac{1}{a} e^{\alpha \gamma} e^{\delta \beta} \left[ \boldsymbol{a}_{\gamma} \Delta \boldsymbol{a}_{\delta} + \boldsymbol{a}_{\delta} \Delta \boldsymbol{a}_{\gamma} \right] = \frac{1}{a} e^{\alpha \gamma} e^{\delta \beta} \left[ \boldsymbol{a}_{\gamma} \Delta \boldsymbol{a}_{\delta} + \boldsymbol{a}_{\delta} \Delta \boldsymbol{a}_{\gamma} \right] \\
+        &= \frac{1}{a} e^{\alpha \gamma} e^{\delta \beta} \boldsymbol{a}_{\gamma} \Delta \boldsymbol{a}_{\delta} + \frac{1}{a} e^{\alpha \gamma} e^{\delta \beta} \boldsymbol{a}_{\delta} \Delta \boldsymbol{a}_{\gamma} = \frac{1}{a} e^{\alpha \gamma} e^{\delta \beta} \boldsymbol{a}_{\gamma} \Delta \boldsymbol{a}_{\delta} + \frac{1}{a} e^{\alpha \delta} e^{\gamma \beta} \boldsymbol{a}_{\gamma} \Delta \boldsymbol{a}_{\delta} \\
+        &= \frac{1}{a} \left( e^{\alpha \gamma} e^{\delta \beta} + e^{\alpha \delta} e^{\gamma \beta} \right) \boldsymbol{a}_{\gamma} \Delta \boldsymbol{a}_{\delta}
+    \end{split}
+\end{equation}
+Using \eqref{eq:del_a_ab_3}, \eqref{eq:del_a_ab_5}, and the appropriate discretisations, equation \eqref{eq:del_a_ab_2} can be written as
+\begin{equation}\label{eq:del_a_ab_6}
+\Delta a^{\alpha \beta} = -2 a^{\alpha \beta} a^{\gamma \delta} \boldsymbol{a}_{\gamma} \Delta \boldsymbol{a}_{\delta} + \frac{1}{a} \left( a^{\alpha \gamma} e^{\delta \beta} + e^{\alpha \delta} e^{\gamma \beta} \right) \boldsymbol{a}_{\gamma} \Delta \boldsymbol{a}_{\delta} = m^{\alpha \beta \gamma \delta} \boldsymbol{a}_{\gamma} \Delta \boldsymbol{a}_{\delta} \approx m^{\alpha \beta \gamma \delta} \boldsymbol{a}_{\gamma} \mathbf{N}_{,\delta} \Delta \mathbf{x}_{e}
+\end{equation}
+
+where
+
+\begin{equation}\label{eq:mabgd}
+m^{\alpha \beta \gamma \delta} = \frac{1}{a} \left( e^{\alpha \gamma} e^{\delta \beta} + e^{\alpha \delta} e^{\gamma \beta} \right) - 2 a^{\alpha \beta} a^{\gamma \delta}
+\end{equation}
+%-----------------------------------------------------------
+\subsection{Linearisation of \texorpdfstring{$\tau^{\alpha \beta}$: Derivation of Compliance Matrix}{Kircchhof stress tensor}} \label{appendices:compliance_matrix_curvy}
+\begin{itemize}
+\item With the help of equations~\eqref{eq:NH_strain} and~\eqref{eq:CGtrace}, the Kircchhof stress tensor can be written as
+\begin{equation}\label{eq:kirch_NH}
+    \begin{split}
+        \tau^{\alpha \beta} &= 2 \frac{\partial W}{\partial a_{\alpha \beta}} = 2 \left[ \frac{\Lambda}{4} \left( \frac{\partial J^{2}}{\partial a_{\alpha \beta}} - 2 \frac{\partial \ln{J}}{\partial a_{\alpha \beta}} \right) + \frac{\mu}{2} \left( \frac{\partial I_{1}}{\partial a_{\alpha \beta}} - 2 \frac{\partial \ln{J}}{\partial a_{\alpha \beta}} \right) \right] \\ &= \frac{\Lambda}{2} \left( \frac{\partial J^{2}}{\partial J} \frac{\partial J}{\partial a_{\alpha \beta}} - 2 \frac{\partial \ln{J}}{\partial J} \frac{\partial J}{\partial a_{\alpha \beta}} \right) + \mu \left( \frac{\partial I_{1}}{\partial a_{\alpha \beta}} - 2 \frac{\partial \ln{J}}{\partial J} \frac{\partial J}{\partial a_{\alpha \beta}} \right) 
+    \end{split}
+\end{equation}
+Computing the derivative of J as defined in \eqref{area_something_man} with respect to the metric tensor on the surface,
+\begin{equation}\label{eq:dJdaab}
+    \begin{split}
+    \frac{\partial J}{\partial a_{\alpha \beta}} &= \frac{1}{J_{A}} \frac{\partial J_{a}}{\partial (a_{\alpha \beta})} = \frac{1}{J_{A}} \frac{\partial \left(\sqrt{\det{a_{\alpha \beta}}}\right)}{\partial \left(\det{a_{\alpha \beta}}\right)} \frac{\partial \left(\det{a_{\alpha \beta}}\right)}{\partial a_{\alpha \beta}} \\ &= \frac{1}{J_{A}} \frac{1}{2} \left(\det{a_{\alpha \beta}}\right)^{-\frac{1}{2}} \left(\det{a_{\alpha \beta}}\right) \left( a_{\alpha \beta}^{-1} \right)^{T}\\ &= \frac{1}{2 J_{A}}\, J_{a} \,a^{\alpha \beta} = \frac{J}{2} a^{\alpha \beta}
+    \end{split}
+\end{equation}
+
+and using~\eqref{eq:CGtrace} and~\eqref{eq:dJdaab}, equation~\eqref{eq:kirch_NH} can be written as
+
+\begin{equation}\label{eq:kirch_NH_2}
+    \begin{split}
+        \tau^{\alpha \beta} &= \frac{\Lambda}{2} \left( 2 J \frac{J}{2} a^{\alpha \beta} - \frac{1}{J} \frac{J}{2} a^{\alpha \beta} \right) + \mu \left( A^{\alpha \beta} - 2 \frac{1}{J} \frac{J}{2} a^{\alpha \beta} \right) \\ &= \frac{\Lambda}{2} \left( J^{2} - 1 \right) a^{\alpha \beta} + \mu \left( A^{\alpha \beta} - a^{\alpha \beta} \right).
+    \end{split}
+\end{equation}
+The compliance matrix in the current configuration is defined as
+\begin{equation}\label{eq:cabgd}
+    c^{\alpha \beta \gamma \delta} = \frac{\partial^{2} W}{\partial a_{\alpha \beta} \partial a_{\gamma \delta}} = 2 \frac{\partial \tau^{\alpha \beta}}{\partial a_{\gamma \delta}}
+\end{equation}
+
+Equation~\eqref{eq:kirch_NH_2} can be rewritten as
+
+\begin{equation}\label{eq:kirch_NH_3}
+    \tau^{\alpha \beta} = \frac{\Lambda}{2} \left( J^{2} - 1 \right) + \mu A^{\alpha \beta} - \mu a^{\alpha \beta} = \left( \frac{\Lambda}{2} \left( J^{2} - 1 \right) - \mu \right) a^{\alpha \beta} - \mu A^{\alpha \beta} 
+\end{equation}
+
+With~\eqref{eq:kirch_NH_3}, equation~\eqref{eq:cabgd} can be written as
+
+\begin{equation}\label{eq:cabgd_2}
+    \begin{split}
+        c^{\alpha \beta \gamma \delta} = \Delta \tau^{\alpha \beta} &= 2 \left[ \frac{\partial }{\partial a_{\gamma \delta}} \left( \frac{\Lambda}{2} \left( J^{2} - 1 \right) - \mu \right) a^{\alpha \beta} + \left( \frac{\Lambda}{2} \left( J^{2} - 1 \right) - \mu \right) \frac{\partial a^{\alpha \beta}}{\partial a_{\gamma \delta}} \right] \\ &= 2 \left[ \frac{\Lambda}{2} \frac{\partial J^{2}}{\partial a_{\gamma \delta}} a^{\alpha \beta} + \left( \frac{\Lambda}{2} \left( J^{2} - 1 \right) - \mu \right) \frac{1}{2} m^{\alpha \beta \gamma \delta} \right] \\ &= \Lambda J^{2} a^{\alpha \beta} a^{\gamma \delta} + \left( \frac{\Lambda}{2} \left( J^{2} - 1 \right) - \mu \right) m^{\alpha \beta \gamma \delta}
+    \end{split}
+\end{equation}
+
+
+\item For another Neo-Hookean material with the Cauchy stress tensor given as, 
+\begin{equation}\label{eq:sig_ab}
+    \sigma^{\alpha \beta} = \frac{\mu}{J} \left( A^{\alpha \beta} - \frac{a^{\alpha \beta}}{J^{2}} \right) 
+    \end{equation}
+and the definition of the Kircchhof stress tensor,     
+    \begin{equation}\label{eq:kirch}
+    \boldsymbol{\tau} = J \boldsymbol{\sigma}
+    \end{equation}
+the components of the tensor can be written as
+    \begin{equation}\label{eq:kirch_2}
+    \tau^{\alpha \beta} = \mu \left( A^{\alpha \beta} - a^{\alpha \beta} J^{-2} \right).
+    \end{equation}
+Thus the linearisation of \eqref{eq:kirch_2} using \eqref{eq:cabgd} is
+    \begin{equation}\label{eq:del_kirch}
+        \Delta \tau^{\alpha \beta} = \mu \Delta \left( A^{\alpha \beta} \right) - \mu \Delta \left( a^{\alpha \beta} J^{-2} \right) = \underbrace{\mu \Delta \left( A^{\alpha \beta} \right)}_{\substack{= 0 \\ \text{as reference metric}}} - \frac{\mu}{J^{2}} \Delta a^{\alpha \beta} - \mu a^{\alpha \beta} \Delta \left( J^{-2} \right)
+    \end{equation}
+    
+    \begin{equation}\label{eq:del_kirch_2}
+    \implies \Delta \tau^{\alpha \beta} = - \frac{\mu}{J^{2}} \Delta a^{\alpha \beta} - \mu a^{\alpha \beta} - \frac{2}{J^{3}} \Delta J.
+    \end{equation}
+Using~\eqref{eq:J_lin_3} and~\eqref{eq:del_a_ab_6}, it is possible to rewrite~\eqref{eq:del_kirch_2} as
+\begin{equation}\label{eq:del_kirch_3}
+    \begin{split}
+        \Delta \tau^{\alpha \beta} &\approx - \frac{\mu}{J^{2}} m^{\alpha \beta \gamma \delta} \boldsymbol{a}_{\gamma} \mathbf{N}_{, \delta} \Delta \mathbf{x}_{e} + \frac{2}{J^{3}} \mu a^{\alpha \beta} \left( J \boldsymbol{a}^{\delta} \mathbf{N}_{\delta} \Delta \mathbf{x}_{e} \right) \\ &= - \frac{\mu}{J^{2}} \left[ 2 a^{\alpha \beta} a^{\delta \gamma} \boldsymbol{a}_{\gamma} \mathbf{N}_{, \delta} \Delta \mathbf{x}_{e} - m^{\alpha \beta \gamma \delta} \boldsymbol{a}_{\gamma} \mathbf{N}_{, \delta} \Delta \mathbf{x}_{e}\right] \\ &= \frac{\mu}{J^{2}} \left[ 2 a^{\alpha \beta} a^{\delta \gamma} - m^{\alpha \beta \gamma \delta} \right] \boldsymbol{a}_{\gamma} \mathbf{N}_{, \delta} \Delta \mathbf{x}_{e} \\ 
+        c^{\alpha \beta \gamma \delta} &= \frac{\mu}{J^{2}} \left[ 4 a^{\alpha \beta} a^{\delta \gamma} - \frac{1}{a} \left( a^{\alpha \gamma} e^{\delta \beta} + e^{\alpha \delta} e^{\gamma \beta}\right)  \right] \boldsymbol{a}_{\gamma} \cdot \mathbf{N}_{, \delta} \Delta \mathbf{x}_{e}
+    \end{split}
+\end{equation}
+\end{itemize}
+
+
+
+\subsection{Linearisation of \texorpdfstring{$\mathbf{f}_{\text{int}}^{e}$}{Internal Force Vector}}
+Given the internal force vector for an element
+\begin{equation}\label{eq:f_int}
+    \mathbf{f}_{\mathrm{int}}^{e} = \int_{\Omega^{e}} \mathbf{N}^{T}_{, \alpha} \tau^{\alpha \beta} \mathbf{N}_{, \beta} \, \mathrm{d} A \mathbf{x}_{e},
+    \end{equation}
+the linearisation of \eqref{eq:f_int} with respect to $\mathbf{x}$ can be derived as follows
+    \begin{equation}\label{eq:del_f_int}
+        \begin{split}
+        \Delta \mathbf{f}_{\mathrm{int}}^{e} &= \int_{\Omega^{e}} \Delta \left[\mathbf{N}^{T}_{, \alpha} \tau^{\alpha \beta} \mathbf{N}_{, \beta} \mathbf{x}_{e}\right] \, \mathrm{d} A \\ 
+        &= \int_{\Omega^{e}} \mathbf{N}^{T}_{, \alpha} \Delta \tau^{\alpha \beta} \mathbf{N}_{, \beta} \, \mathrm{d} A \mathbf{x}_{e} + \int_{\Omega^{e}} \mathbf{N}_{, \alpha}^{T} \tau^{\alpha \beta} \mathbf{N}_{, \beta} \, \mathrm{d} A \Delta \mathbf{x}_{e} \\ &= \int_{\Omega^{e}} \mathbf{N}_{, \alpha}^{T} c^{\alpha \beta \gamma \delta} \boldsymbol{a}_{\gamma} \cdot \mathbf{N}_{\delta} \Delta \mathbf{x}_{e} \mathbf{N}_{, \beta} \, \mathrm{d} A \mathbf{x}_{e} + \int_{\Omega^{e}} \mathbf{N}_{, \alpha}^{T} \tau^{\alpha \beta} \mathbf{N}_{, \beta} \, \mathrm{d} A \Delta \mathbf{x}_{e} \\ &= \int_{\Omega^{e}} \mathbf{N}^{T}_{,\alpha} c^{\alpha \beta \gamma \delta} \left( \boldsymbol{a}_{\gamma} \cdot \mathbf{N}_{\delta} \right) \left( \mathbf{N}_{, \beta} \mathbf{x}_{e} \right) \, \mathrm{d} A \Delta \mathbf{x}_{e} + \int_{\Omega^{e}} \mathbf{N}_{, \alpha}^{T} \tau^{\alpha \beta} \mathbf{N}_{, \beta} \, \mathrm{d} A \Delta \mathbf{x}_{e} \\ &= \int_{\Omega^{e}} c^{\alpha \beta \gamma \delta} \mathbf{N}_{, \alpha}^{T} \left( \boldsymbol{a}_{\gamma} \mathbf{N}_{\delta} \right) \boldsymbol{a}_{\beta} \, \mathrm{d} A \Delta \mathbf{x}_{e} + \int_{\Omega^{e}} \mathbf{N}_{, \alpha}^{T} \tau^{\alpha \beta} \mathbf{N}_{, \beta} \, \mathrm{d} A \Delta \mathbf{x}_{e} \\ &= \int_{\Omega^{e}} c^{\alpha \beta \gamma \delta} \mathbf{N}_{, \alpha}^{T} \left( \boldsymbol{a}_{\alpha} \otimes \boldsymbol{a}_{\gamma} \right) \mathbf{N}_{, \delta} \, \mathrm{d} A \Delta \mathbf{x}_{e} + \int_{\Omega^{e}} \mathbf{N}_{, \alpha}^{T} \tau^{\alpha \beta} \mathbf{N}_{, \beta} \, \mathrm{d} A \Delta \mathbf{x}_{e}\\
+        &= \int_{\Omega^{e}} \left[ c^{\alpha \beta \gamma \delta} \mathbf{N}_{, \alpha}^{T} \left( \boldsymbol{a}_{\beta} \otimes \boldsymbol{a}_{\gamma} \right) \mathbf{N}_{, \delta} + \mathbf{N}_{, \alpha}^{T} \tau^{\alpha \beta} \mathbf{N}_{, \beta} \right] \, \mathrm{d} A \Delta \mathbf{x}_{e}.
+        \end{split}
+    \end{equation}
+
+\subsection{Linearisation of \texorpdfstring{$\mathbf{f}_{\text{ext}}^{e}$}{External Force Vector}}
+Given the reduced external force vector based for dead loading 
+\begin{equation}
+    \mathbf{f}_{\mathrm{ext}}^{e} = \int_{\Omega^{e}} \mathbf{N}^{T} p \boldsymbol{n} \, \mathrm{d} a,
+\end{equation}
+the linearisation carried out with respect to $\mathbf{x}$ and $p$\footnote{only in the case of hydrostatic loading} can be written as follows
+    \begin{equation}\label{eq:del_f_ext_dead_2}
+        \begin{split}
+            \Delta \mathbf{f}_{\mathrm{ext}}^{e} &= \int_{\Omega^{e}} \Delta \left[\mathbf{N}^{T} p \boldsymbol{n} \, \mathrm{d} a\right]\\
+            &= \int_{\Omega^{e}} \mathbf{N}^{T} \Delta \left(p\right) \boldsymbol{n} \,d a + \int_{\Omega^{e}}\mathbf{N}^{T} p \Delta\left(\boldsymbol{n}\,da\right)\\
+            &= \int_{\Omega^{e}} \mathbf{N}^{T} \Delta \left(\rho \mathbf{g} \cdot \boldsymbol{x}\right) \boldsymbol{n}\,da + \int_{\Omega^{e}} \mathbf{N}^{T} p \Delta\left(\boldsymbol{n}\,da\right)\\
+            &= \int_{\Omega^{e}} \mathbf{N}^{T} \rho \left(\underbrace{\Delta \mathbf{g} \cdot \boldsymbol{x}}_{=0} + \mathbf{g} \cdot \Delta \mathbf{x}_{e}\right) \boldsymbol{n}\,da + \int_{\Omega^{e}} \mathbf{N}^{T} p \Delta\left(\boldsymbol{n}\,da\right)\\
+            &= \int_{\Omega^{e}} \rho \mathbf{N}^{T} \left( \boldsymbol{g} \cdot \Delta \mathbf{x}_{e} \right) \boldsymbol{n} \, \mathrm{d} a + \int_{\Omega^{e}} \mathbf{N}^{T} p \Delta \left( \boldsymbol{n} \, \mathrm{d} a \right) \\ &= \int_{\Omega^{e}} \rho \mathbf{N}^{T} \left( \boldsymbol{n} \otimes \boldsymbol{g} \right) \, \mathrm{d} a \Delta \mathbf{x}_{e} + \int_{\Omega^{e}} p \mathbf{N}^{T} \left( \boldsymbol{n} \otimes \boldsymbol{a}^{\alpha} - \boldsymbol{a}^{\alpha} \otimes \boldsymbol{n} \right) \mathbf{N}_{, \alpha} \, \mathrm{d} a \Delta \mathbf{x}_{e}
+        \end{split}
+    \end{equation}
+
+\afterpage{\blankpage}

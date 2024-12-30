@@ -1,0 +1,322 @@
+\documentclass[../main.tex]{subfiles}
+\graphicspath{{\subfix{../images/}}}
+\begin{document}
+
+\subsection{Curvilinear Coordinates} \label{sec:curvy_coords}
+Extending the Continuum Mechanics formulation to the formulation of shells,
+ it becomes impossible to describe them using an orthogonal basis system for obvious reasons.
+ Thus it is necessary to use a curvilinear coordinate system to account for the bent surface.
+ Although shell model are often formulated using local cartesian coordinate systems as the
+ classical relations described in the previous section can be extended to account for shells.
+ However, the formulation under investigation feels unnecessary to make this detour and the relevant
+ mathematics is described using curvilinear coordinates.
+
+The membrane surface, denoted $\mathcal{S}$, is fully characterised by 
+ the parametric description,
+ \begin{equation} \label{parametric_definition}
+    \boldsymbol{x} = \boldsymbol{x}(\xi^{1}, \xi^{2}) \, .
+ \end{equation}
+This is the mappinng of the point $(\xi^{1}, \xi^{2})$ in the parameter domain $\mathcal{P}$
+ to the material point $\boldsymbol{x} \in \mathcal{S}$.
+According to the non-standard Tensor notation used in Continuum Mechanics,
+ Greek indices take on the values 1 and 2 on the surface. And as in the previous section,
+ lower case Latin indices take the values 1, 2, and 3, in Euclidean space and summation is
+ implied on repeated indices.
+The tangent vectors that form the basis at a coordinate $\xi^(\alpha)$ at point $\boldsymbol{x} \in \mathcal{S}$ are
+ given by,
+ \begin{equation}\label{tangent_parametric}
+    \boldsymbol{a}_{\alpha} = \frac{\partial \boldsymbol{x}}{\partial \xi^{\alpha}}, \,\,\, \alpha = 1, 2
+ \end{equation}
+In general, they are not orthonomal. This basis is thus characterised by the covariant metric tensor,
+\begin{equation}\label{metric_def}
+    a_{\alpha \beta} := \boldsymbol{a}_{\alpha} \cdot \boldsymbol{a}_{\beta}.
+\end{equation}
+In case of an orthonormal basis system, the covariant metric tensor reduces to the Identity tensor.
+
+The covariant components of the metric tensor can be obtained by its inversion,
+\begin{equation}\label{contravar_metric_def}
+    [a^{\alpha \beta}] := [a_{\alpha \beta}]^{-1}.
+\end{equation}
+This enables the construction of a dual basis - the contra-variant counterparts of the covariant base vectors, $\boldsymbol{a}_{\alpha}$,
+\begin{align}\label{contravar_def}
+    \boldsymbol{a}^{\alpha} &:= a^{\alpha \beta} \boldsymbol{a}_{\beta},\\
+    \boldsymbol{a}^{\alpha} &\cdot \boldsymbol{a}^{\beta} = a^{\alpha \beta},\\
+    \boldsymbol{a}_{\alpha} &\cdot \boldsymbol{a}^{\beta} = \delta^{\beta}_{\alpha},
+\end{align}
+where $\delta^{\beta}_{\alpha}$ is the Kronecker delta.
+%
+The unit normal at a point $\boldsymbol{x} \in \mathcal{S}$ is defined by,
+\begin{equation}\label{normal}
+    \boldsymbol{n} = \frac{\boldsymbol{a}_{1} \times \boldsymbol{a}_{2}}{\| \boldsymbol{a}_{1} \times \boldsymbol{a}_{2} \|}
+    = \frac{\boldsymbol{a}_{1} \times \boldsymbol{a}_{2}}{\sqrt{\det a_{\alpha \beta}}}.
+\end{equation}
+
+Any vector, $\boldsymbol{v}$ on $\mathcal{S}$ can thus be decomposed using the covariant or the contravariant basis,
+\begin{equation}
+    \boldsymbol{v} = v^{\alpha} \boldsymbol{a}_{\alpha} + v_{\mathrm{n}}\boldsymbol{n} = v_{\alpha} \boldsymbol{a}^{\alpha} + v_{\mathrm{n}},
+\end{equation}
+ where $v_{\alpha}$ and $v^{\alpha}$ denote the covariant and the contravariant components of the vector respectively.
+The derivative and the co-variant derivative of the tangent vectors, $\boldsymbol{a}_{\alpha}$, can be defined as,
+\begin{align}\label{tangent_derivatives}
+    \boldsymbol{a}_{\alpha , \beta} &= \frac{\partial \boldsymbol{a}_{\alpha}}{\partial \xi^{\beta}},\\
+    \boldsymbol{a}_{\alpha ; \beta} := \boldsymbol{a}_{\alpha , \beta} - &(\boldsymbol{a}_{\alpha , \beta} \cdot \boldsymbol{a}^{\gamma}) \boldsymbol{a}_{\gamma} = \boldsymbol{a}_{\alpha , \beta} - \Gamma^{\gamma}_{\alpha \beta} \boldsymbol{a}_{\gamma},
+\end{align}
+where $\Gamma^{\gamma}_{\alpha \beta}$ are the Christoffel symbols of the second kind.
+Defining the identity tensor on the surface, $\mathcal{S}$,
+\begin{equation}\label{surface_identity}
+    \boldsymbol{1} = \boldsymbol{a}_{\alpha} \otimes \boldsymbol{a}^{\alpha} = \boldsymbol{a}^{\alpha} \otimes \boldsymbol{a}_{\alpha} = \boldsymbol{\tilde{1}} - \boldsymbol{n} \otimes \boldsymbol{n}, 
+\end{equation}
+where $\boldsymbol{\tilde{1}}$ is the usual identity tensor in $\mathbb{R}^{3}$, two results can be derived.
+\begin{equation}\label{con_tgnt}
+    \boldsymbol{a}_{\alpha ; \beta} = (\boldsymbol{n} \otimes \boldsymbol{n}) \boldsymbol{a}_{\alpha,\beta}.
+\end{equation}
+And the definition of the curvature tensor with covariant components \footnote{The proofs to \eqref{con_tgnt} and \eqref{curvature_tensor_def} can be found in the appendix, \eqref{appendices:cov_tangent_derivative} and \eqref{appendices:curvature_tensor_derivation}.}
+ , $\boldsymbol{b} = b_{\alpha \beta} \boldsymbol{a}^{\alpha}
+ \otimes \boldsymbol{a}^{\beta}$,
+\begin{equation} \label{curvature_tensor_def}
+    b_{\alpha \beta} := \boldsymbol{n} \cdot \boldsymbol{a}_{\alpha ; \beta} = \boldsymbol{n} \cdot \boldsymbol{a}_{\alpha,\beta}.
+\end{equation}
+\subsection{Kinematics}
+%---------------------------------------------------------------------------------
+As defined in Section \ref{sec:continuum_kinematics}, to consider the deformation of the membrane surface, we distinguish between the reference configuration,
+ $\mathcal{S}_{0}$, and the current configuration, $\mathcal{S}$. To describe quantities on $\mathcal{S}$,
+ are written in lowercase symbols - $\boldsymbol{x}, \boldsymbol{a}_{\alpha}, \boldsymbol{a}^{\alpha}, \boldsymbol{n}, a_{\alpha \beta}, b_{\alpha \beta}$.
+ Correspondingly, uppercase symbols are used to describe the quantities on $\mathcal{S}_{0}$.
+ The deformation of a line element in $\mathcal{S}_{0}$ can be described using the Deformation tensor,
+\begin{equation}\label{curvy_F}
+    \begin{split}
+    \mathrm{d}\boldsymbol{x} &= {\boldsymbol{a}_{\alpha} \otimes \boldsymbol{A}^{\alpha}} \mathrm{d} \boldsymbol{X},\\
+    &\text{where } \mathrm{d} \boldsymbol{X} = \frac{\partial \boldsymbol{X}}{\partial \xi^{\alpha}} = \boldsymbol{A}_{\alpha} \mathrm{d} \xi^{\alpha}, \notag\\
+    &\text{and } \mathrm{d} \boldsymbol{x} = \boldsymbol{a}_{\alpha} \mathrm{d} \xi^{\alpha}. \notag
+\end{split}
+\end{equation}
+
+The following transformations can be described using \textbf{F},
+\begin{align}\label{a_and_A}
+    \boldsymbol{a}_{\alpha} &= \left(\boldsymbol{a}_{\alpha} \otimes \boldsymbol{A}^{\alpha}\right) \boldsymbol{A}_{\alpha} = \boldsymbol{FA}_{\alpha},  &  \boldsymbol{a}^{\alpha} &= \left(\boldsymbol{a}^{\alpha} \otimes \boldsymbol{A}_{\alpha}\right) \boldsymbol{A}^{\alpha} = \boldsymbol{F}^{-T} \boldsymbol{A}^{\alpha},\\
+    \boldsymbol{A}_{\alpha} &= \left(\boldsymbol{A}_{\alpha} \otimes \boldsymbol{a}^{\alpha}\right) \boldsymbol{a}_{\alpha} = \boldsymbol{F}^{-1} \boldsymbol{a}_{\alpha},  &   \boldsymbol{A}^{\alpha} &= \left(\boldsymbol{A}^{\alpha} \otimes \boldsymbol{a}_{\alpha}\right) \boldsymbol{a}^{\alpha} = \boldsymbol{F}^{T} \boldsymbol{a}^{\alpha}.
+\end{align}
+
+The right and left Cauchy-Green surface tensors are,
+\begin{align}\label{curvy_strain}
+    \boldsymbol{C} &= \boldsymbol{F}^{T} \boldsymbol{F} = a_{\alpha \beta} \boldsymbol{A}^{\alpha} \otimes \boldsymbol{A}^{\beta},   &   \boldsymbol{C}^{-1} &= (\boldsymbol{F}^{T} \boldsymbol{F})^{-1} = a^{\alpha \beta} \boldsymbol{A}_{\alpha} \otimes \boldsymbol{A}_{\beta},\\
+    \boldsymbol{b} &= \boldsymbol{F} \boldsymbol{F}^{T} = A^{\alpha \beta} \boldsymbol{a}_{\alpha} \otimes \boldsymbol{a}_{\beta},  &   \boldsymbol{b}^{-1} &= (\boldsymbol{F} \boldsymbol{F}^{T})^{-1} = A_{\alpha \beta} \boldsymbol{a}^{\alpha} \otimes \boldsymbol{a}^{\beta}.
+\end{align}
+
+Similar to Section \ref{sec:continuum_kinematics}, the area elements on the surfaces can be related to each other
+ with the help of the parametric coordinates $(\xi^{1}, \xi^{2})$. The differential surface area in the current and reference configuration and their relation can be given as,
+ \begin{gather} \label{area_something_man}
+    \mathrm{d}a := \Vert (\boldsymbol{a}_{1} \mathrm{d}\xi^{1}) \times ((\boldsymbol{a}_{2} \mathrm{d}\xi^{2})) \Vert = \Vert \boldsymbol{a}_{1} \times \boldsymbol{a}_{2} \Vert\, \mathrm{d}\square = \sqrt{\det a_{\alpha \beta}}\,\, \mathrm{d}\square =: J_{a} \mathrm{d}\square,\\
+    \mathrm{d}A := \Vert \boldsymbol{A}_{1} \times \boldsymbol{A}_{2} \Vert \, \mathrm{d}\square = \sqrt{\det A_{\alpha \beta}}\,\, \mathrm{d}\square =: J_{A} \mathrm{d}\square,\\    
+    \implies \mathrm{d}a = \frac{J_{a}}{J_{A}} \mathrm{d}A =: J \mathrm{d}A
+\end{gather}
+ where $\mathrm{d} \square := \mathrm{d} \xi^{1} \, \mathrm{d} \xi^{2}$. 
+\subsection{Momentum Balance}
+%---------------------------------------------------------------------------------
+At any given point, the Cauchy stress tensor $\boldsymbol{\sigma}$ can be written as,
+\begin{equation}\label{curvy_stress}
+    \boldsymbol{\sigma} = \sigma^{\alpha \beta} \boldsymbol{a}_{\alpha} \otimes \boldsymbol{a}_{\beta} + \sigma^{3\alpha}(\boldsymbol{n}
+    \otimes \boldsymbol{a}_{\alpha} + \boldsymbol{a}_{\alpha} \otimes \boldsymbol{n}) + \sigma^{33} \boldsymbol{n} \otimes \boldsymbol{n}.
+\end{equation}
+As can be seen from \eqref{curvy_stress}, $\boldsymbol{\sigma}$ is symmetric in this formulation. For membranes, it can be assumed that $\sigma^{3\alpha} = \sigma^{33} = 0$,
+ which reduces the stress tensor to the \emph{in-plane Cauchy stress tensor}
+\begin{equation}\label{curvy_planar_stress}
+    \boldsymbol{\sigma} = \sigma^{\alpha \beta} \boldsymbol{a}_{\alpha} \otimes \boldsymbol{a}_{\beta}.
+\end{equation}
+From the in-plane Cauchy tensor, the internal traction acting on the surface perpendicular to $\boldsymbol{a}^{\alpha}$ can be written as\footnote{The proof to \eqref{traction_def} can be found in the appendix},
+\begin{equation}\label{traction_def}
+    \boldsymbol{t}^{\alpha} = \boldsymbol{\sigma} \boldsymbol{a}^{\alpha} = \sigma^{\beta \alpha} \boldsymbol{a}_{\beta},
+\end{equation}
+
+Given a distributed surface force, \textbf{f},
+\begin{equation}\label{surface_force}
+    \boldsymbol{f} = f_{\alpha} \boldsymbol{a}^{\alpha} + p \boldsymbol{n} = f^{\alpha} \boldsymbol{a}_{\alpha} + p \boldsymbol{n}.
+\end{equation}
+the balance of linear momentum in its strong form is (STEIGMANN REFERENCE),
+\begin{equation}\label{lin_momentum_curvy}
+    \boldsymbol{t}^{\alpha}_{;\alpha} + \boldsymbol{f} = \boldsymbol{0}.\
+\end{equation}
+Using \eqref{traction_def} and \eqref{curvature_tensor_def}, it can be derived that the covariant derivative of $\boldsymbol{t}^{\alpha}$ can be written as
+\begin{equation} \label{traction_cov_derivative}
+    \boldsymbol{t}^{\alpha}_{;\alpha} = \sigma ^{\beta \alpha}_{;\alpha}\boldsymbol{a}_{\beta} + \sigma^{\beta \alpha} b_{\beta \alpha} \boldsymbol{n}.
+\end{equation}
+This enables the decomposition of \eqref{lin_momentum_curvy} into an equation for in-plane and out-of-plane equilibrium.
+\begin{equation}\label{lin_momentum_curvy_decomposition}
+    \begin{cases}
+        \sigma^{\beta \alpha}_{;\alpha} + f^{\beta} = 0 \,\,\, \text{(in-plane)}\\
+        \sigma^{\beta \alpha} b_{\beta \alpha} + p = 0 \, \, \, \text{(out-of-plane)}
+    \end{cases}
+\end{equation}
+\linebreak
+\subsection{Weak Form} \label{sec:curvy_weak_form}
+With the help of a mathematically admissible test function $\boldsymbol{w}$ on $\mathcal{S}$, to derive the weak form \eqref{lin_momentum_curvy} can be written as  
+\begin{equation}\label{weak_form_1}
+    \int_{\mathcal{S}} \boldsymbol{w} \left[ \boldsymbol{t}_{; \alpha}^{\alpha} + \boldsymbol{f} \right] \, \mathrm{d} a = 0.
+\end{equation}
+Decomposing $\boldsymbol{w}$ into its surface and normal components     
+\begin{equation}\label{weak_form_2}
+    0 = \int_{\mathcal{S}} \left[ w_{\gamma} \boldsymbol{a}^{\gamma} + w \boldsymbol{n} \right] \left[ \sigma_{~~; \alpha}^{\beta \alpha} \boldsymbol{a}_{\beta} + \sigma^{\beta \alpha} b_{\beta \alpha} \boldsymbol{n} + \boldsymbol{f} \right] \, \mathrm{d} a
+\end{equation}
+and using $ \boldsymbol{t} = m_{\alpha} \boldsymbol{t}^{\alpha} = m_{\alpha} \sigma^{\beta \alpha} \boldsymbol{a}_{\beta} $,
+ the weak form can be written as \footnote{The complete derivation can be found in the Appendix \ref{appendices:weak_form_derivation}},
+    
+    \begin{equation}\label{weak_form_curvy}
+    0 = \int_{\partial \mathcal{S}} w_{\gamma} \overline{t}^{\gamma} \, \mathrm{d} s - \int_{\mathcal{S}} w_{\gamma ; \alpha} \sigma^{\gamma \alpha} \, \mathrm{d} a + \int_{\mathcal{S}} w_{\gamma} f^{\gamma} \, \mathrm{d} a + \int_{\mathcal{S}} w \sigma^{\beta \alpha} b_{\beta \alpha} \, \mathrm{d} a + \int_{\mathcal{S}} w p \, \mathrm{d} s.
+    \end{equation}
+    
+    And thus it is possible to write
+    
+    \begin{equation}\label{eq:weak_8}
+        G_{int} - G_{ext} = 0 \quad \forall \boldsymbol{w} \in \mathcal{W}
+    \end{equation}
+    
+    with 
+    
+    \begin{equation}\label{curvy_Gint}
+        G_{\mathrm{int}} := \int_{\mathcal{S}} w_{\alpha ; \beta} \sigma^{\alpha \beta} \, \mathrm{d} a - \int_{\mathcal{S}} w \sigma^{\alpha \beta} b_{\alpha \beta} \, \mathrm{d} a 
+    \end{equation}
+    
+    \begin{equation}\label{curvy_Gext}
+        G_{\mathrm{ext}} := \int_{\mathcal{S}} w_{\alpha} f^{\alpha} \, \mathrm{d} a + \int_{\partial_{t} \mathcal{S}} w_{\alpha} \overline{t}^{\alpha} \, \mathrm{d} s + \int_{\mathcal{S}} w p \, \mathrm{d} a
+    \end{equation}
+    
+    
+    
+    With~\eqref{appendices:w_ab} it is possible to rewrite~\eqref{curvy_Gint} as
+    
+    \begin{equation}\label{eq:weak_11}
+    G_{\mathrm{int}} = \int_{\mathcal{S}} \boldsymbol{w}_{; \alpha} \cdot \sigma^{\alpha \beta} \boldsymbol{a}_{\beta} \, \mathrm{d} a
+    \end{equation}
+%---------------------------------------------------------------------------------
+%
+%
+\subsection{Material Constitution}
+For a Neo-Hookean material with a given strain energy density function
+\begin{equation}\label{eq:NH_strain}
+    W = \frac{\Lambda}{4} \left( J^{2} - 1 - 2 \ln{J} \right) + \frac{\mu}{2} \left( I_{1} - 2 - 2 \ln{J} \right) 
+\end{equation}
+%
+and the traces of the right and left Cauchy-Green tensors in~\eqref{curvy_strain}
+\begin{equation}\label{eq:CGtrace}
+    I_{1} := \boldsymbol{C} : \boldsymbol{I}_{0} = \boldsymbol{B} : \boldsymbol{I} = a_{\alpha \beta} \boldsymbol{A}^{\alpha} \otimes \boldsymbol{A}^{\beta} : \boldsymbol{A}_{\gamma} \otimes \boldsymbol{A}^{\gamma} = a_{\alpha \beta} \delta^{\alpha}_{\gamma} A^{\beta \delta} = a_{\gamma \beta} A^{\beta \gamma} = a_{\alpha \beta} A^{\alpha \beta}
+\end{equation}
+the Kirchhoff stress tensor can be written as 
+\begin{equation}\label{kirchhoff_stress_def}
+        \tau^{\alpha \beta} = 2 \frac{\partial W}{\partial a_{\alpha \beta}} = \left( \frac{\Lambda}{2} \left( J^{2} - 1 \right) - \mu \right) a^{\alpha \beta} - \mu A^{\alpha \beta}.
+\end{equation}
+Using~\eqref{kirchhoff_stress_def}, the compliance matrix in the current configuration
+\begin{equation}\label{curvy_compliance_current_def}
+    c^{\alpha \beta \gamma \delta} = \frac{\partial^{2} W}{\partial a_{\alpha \beta} \partial a_{\gamma \delta}} = 2 \frac{\partial \tau^{\alpha \beta}}{\partial a_{\gamma \delta}}
+\end{equation}
+%
+can be written as\footnote{A complete derivation can be found in the Appendix \ref{appendices:compliance_matrix_curvy}}
+\begin{equation}\label{curvy_compliance_current}
+        c^{\alpha \beta \gamma \delta} = \Lambda J^{2} a^{\alpha \beta} a^{\gamma \delta} + \left( \frac{\Lambda}{2} \left( J^{2} - 1 \right) - \mu \right) m^{\alpha \beta \gamma \delta}.
+\end{equation}
+where
+\begin{equation} \label{mabgd}
+    m^{\alpha \beta \gamma \delta} = \frac{1}{a} \left( e^{\alpha \gamma} e^{\delta \beta} + e^{\alpha \delta} e^{\gamma \beta} \right) - 2 a^{\alpha \beta} a^{\gamma \delta}
+\end{equation}
+%---------------------------------------------------------------------------------
+%
+%
+\subsection{Volume Constraint}
+%---------------------------------------------------------------------------------
+%
+%
+\subsection{Discretization}
+Following the procedures and nomenclature defined in Section \ref{sec:nonlinear_discretisation}, for quadrilateral finite elements $\Omega^{e}_{0}$ and $\Omega^{e}$
+ related to a reference element in the parametric space, the discretisations of the nodal variables in the current and the reference configurations are given according to \eqref{nodal_discretisations}.
+The tangent vectors~\eqref{tangent_parametric} can be approximated by
+\begin{equation} \label{tangent_parametric_discrete}
+    \boldsymbol{a}_{\alpha} \approx \sum^{n_{en}}_{I} N_{I,\alpha} \boldsymbol{x}_{I} = \mathbf{N}_{,\alpha} \mathbf{x}_{e}
+\end{equation}
+where summation is carried out over the $n_{en}$ nodes of the element. The shape function matrix and its derivative with respect to the parametric coordinates
+ is given as
+\begin{align} \label{curvy_shape_function}
+    N &:= \left[N_{1}\boldsymbol{\tilde{1}}, N_{2} \boldsymbol{\tilde{1}},\dots, N_{n_{en}} \boldsymbol{\tilde{1}}\right],\\
+    N_{I,\alpha} & = \frac{\partial N_{I}}{\partial \xi^{\alpha}}.
+\end{align}
+%
+Using~\eqref{eq:w_cov}, and~\eqref{tangent_parametric_discrete}, the internal virtual work
+ over a finite element is discretised as
+ \begin{equation} \label{curvy_Gint_discrete}
+    \begin{split}
+    G^{e}_{\text{int}} = \int_{\Omega_{0}^{e}} \boldsymbol{w}_{;\alpha} \cdot \tau^{\alpha \beta} \boldsymbol{a}_{\beta} \,dA 
+    &\approx \mathbf{w}^{T}_{e} \int_{\Omega_{0}^{e}} \mathbf{N}^T_{,\alpha} \tau^{\alpha \beta} \mathbf{N}_{,\beta}\,dA \,\, \mathbf{x}_{e}\\ & =: \mathbf{w}^{T}_{e} \mathbf{f}^{e}_{int}.
+    \end{split}
+ \end{equation}
+The internal virtual work~\eqref{curvy_Gint} can further be decomposed and discretised into its in-plane and out-of-plane components
+ using~\eqref{eq:w_alp_cov} and the discretisation of the curvature tensor <<MENTION??>> in order to obtain the corresponding force vectors, $\mathbf{f}^{e}_{\text{inti}}$
+ and $\mathbf{f}^{e}_{\text{into}}$
+\begin{align} \label{curvy_Gint_decomposed_discretised}
+    G_{\text{inti}}^{e} &= \int_{\Omega_{0}} w_{\alpha;\beta} \tau^{\alpha \beta}\,dA \approx \mathbf{w}_{e}^{T} \mathbf{f}^{e}_{\text{inti}} = \mathbf{w}_{e}^{T} \int_{\Omega_{0}^{e}} \tau^{\alpha \beta}
+    \left[ \mathbf{N}_{, \alpha}^{T} \mathbf{N}_{, \beta} + \mathbf{N}^{T} \left( \boldsymbol{n} \otimes \boldsymbol{n} \right) \mathbf{N}_{, \alpha \beta} \right]\,dA \mathbf{x}_{e},\\
+    G_{\text{into}}^{e} &= -\int_{\Omega_{0}^{e}} w \tau^{\alpha \beta} b_{\alpha \beta}\,dA 
+    \approx \mathbf{w}_{e}^{T} \mathbf{f}^{e}_{\text{into}} = - \mathbf{w}_{e}^{T}\int_{\Omega_{0}^{e}} \tau^{\alpha \beta}\mathbf{N}^{T} \left( \boldsymbol{n} \otimes \boldsymbol{n} \right) \mathbf{N}_{, \alpha \beta}\,dA \mathbf{x}_{e}.
+\end{align}
+
+The external virtual work~\eqref{curvy_Gext} can be discretised to yield the external force vector $\mathbf{f}^{e}_{\text{ext}}$, 
+\begin{equation}\label{curvy_Gext_discretised}
+    \begin{split}
+        G_{\text{ext}}^{e} &= \int_{\Omega_{0}^{e}} \boldsymbol{w} \cdot \boldsymbol{f}_{0}\,dA + \int_{\partial_{t}\Omega^{e}} \boldsymbol{w}\cdot \overline{\boldsymbol{t}}\,ds + \int_{\Omega^{e}} wp \,da,\\
+        &\approx \mathbf{w}^{T}_{e} \left(\int_{\Omega_{0}^{e}} \mathbf{N}^{t} \boldsymbol{f}_{0} \,dA + \int_{\partial_{t} \Omega^{e}} \mathbf{N}^{T} \overline{\boldsymbol{t}}\,ds + \int_{\Omega^{e}} \mathbf{N}^{T} p \boldsymbol{n} \,da \right) =: \mathbf{w}^{T}_{e} \mathbf{f}^{e}_{\text{ext}}.
+    \end{split}
+\end{equation}
+In~\eqref{curvy_Gext_discretised}, the external loading is assumed to be of the form $\boldsymbol{f} = \boldsymbol{f}_{0}/J + p\boldsymbol{n}$, where $\boldsymbol{f}_{0}$ and $p$ are the specified loading parameters. 
+Using \eqref{curvy_Gint_discrete} and \eqref{curvy_Gext_discretised}, the discretised weak form can be written as
+\begin{equation} \label{curvy_weak_form_discretised}
+    \mathbf{w}^{T}\left[\mathbf{f}^{e}_{\text{int}} - \mathbf{f}^{e}_{\text{ext}}\right] = \boldsymbol{0}.
+\end{equation}
+Since the discretised test functions $\mathbf{w}$ are arbitrary and zero on the Dirichlet boundary, the system of discretised nonlinear equilibrium equations
+ to be solved for the unknown nodal positions $\mathbf{x}$ is
+ \begin{equation} \label{curvy_f_system}
+    \mathbf{f} := \mathbf{f}_{\text{int}} - \mathbf{f}_{\text{ext}} = \boldsymbol{0}.
+ \end{equation} 
+
+\subsection{Linearization}
+As in Section <REF>, \eqref{curvy_f_system} will be solved using Newton's method. This would require consistent linearisation of $\mathbf{f}_{\text{int}}$ and $\mathbf{f}_{\text{ext}}$ with respect to
+ X AND WHAT??. The derivations of linearised quantities required to formulate $\Delta \mathbf{f}_{\text{int}}^{e}$ and $\Delta \mathbf{f}_{\text{ext}}^{e}$ can be found in the Appendix \ref{appendices:curvy_linearisations}.
+\begin{equation}\label{eq:f_int}
+\mathbf{f}_{\mathrm{int}}^{e} = \int_{\Omega^{e}} \mathbf{N}^{T}_{, \alpha} \tau^{\alpha \beta} \mathbf{N}_{, \beta} \, \mathrm{d} A \mathbf{x}_{e}
+\end{equation}
+
+\begin{equation}\label{eq:del_f_int}
+    \begin{split}
+    \Delta \mathbf{f}_{\mathrm{int}}^{e} &= \int_{\Omega^{e}} \mathbf{N}^{T}_{, \alpha} \Delta \tau^{\alpha \beta} \mathbf{N}_{, \beta} \, \mathrm{d} A \mathbf{x}_{e} + \int_{\Omega^{e}} \mathbf{N}_{, \alpha}^{T} \tau^{\alpha \beta} \mathbf{N}_{, \beta} \, \mathrm{d} A \Delta \mathbf{x}_{e} \\ &= \int_{\Omega^{e}} \mathbf{N}_{, \alpha}^{T} c^{\alpha \beta \gamma \delta} \boldsymbol{a}_{\gamma} \cdot \mathbf{N}_{\delta} \Delta \mathbf{x}_{e} \mathbf{N}_{, \beta} \, \mathrm{d} A \mathbf{x}_{e} + \int_{\Omega^{e}} \mathbf{N}_{, \alpha}^{T} \tau^{\alpha \beta} \mathbf{N}_{, \beta} \, \mathrm{d} A \Delta \mathbf{x}_{e} \\ &= \int_{\Omega^{e}} \mathbf{N}^{T}_{,\alpha} c^{\alpha \beta \gamma \delta} \left( \boldsymbol{a}_{\gamma} \cdot \mathbf{N}_{\delta} \right) \left( \mathbf{N}_{, \beta} \mathbf{x}_{e} \right) \, \mathrm{d} A \Delta \mathbf{x}_{e} + \int_{\Omega^{e}} \mathbf{N}_{, \alpha}^{T} \tau^{\alpha \beta} \mathbf{N}_{, \beta} \, \mathrm{d} A \Delta \mathbf{x}_{e} \\ &= \int_{\Omega^{e}} c^{\alpha \beta \gamma \delta} \mathbf{N}_{, \alpha}^{T} \left( \boldsymbol{a}_{\gamma} \mathbf{N}_{\delta} \right) \boldsymbol{a}_{\beta} \, \mathrm{d} A \Delta \mathbf{x}_{e} + \int_{\Omega^{e}} \mathbf{N}_{, alpha}^{T} \tau^{\alpha \beta} \mathbf{N}_{, \beta} \, \mathrm{d} A \Delta \mathbf{x}_{e} \\ &= \int_{\Omega^{e}} c^{\alpha \beta \gamma \delta} \mathbf{N}_{, \alpha}^{T} \left( \boldsymbol{a}_{\alpha} \otimes \boldsymbol{a}_{\gamma} \right) \mathbf{N}_{, \delta} \, \mathrm{d} A \Delta \mathbf{x}_{e} + \int_{\Omega^{e}} \mathbf{N}_{, \alpha}^{T} \tau^{\alpha \beta} \mathbf{N}_{, \beta} \, \mathrm{d} A \Delta \mathbf{x}_{e}
+    \end{split}
+\end{equation}
+
+\begin{equation}\label{eq:del_f_int_2}
+    \begin{split}
+        \Delta \mathbf{f}_{\mathrm{int}}^{e} &= \int_{\Omega^{e}} \left[ c^{\alpha \beta \gamma \delta} \mathbf{N}_{, \alpha}^{T} \left( \boldsymbol{a}_{\beta} \otimes \boldsymbol{a}_{\gamma} \right) \mathbf{N}_{, \delta} + \mathbf{N}_{, \alpha}^{T} \tau^{\alpha \beta} \mathbf{N}_{, \beta} \right] \, \mathrm{d} A \Delta \mathbf{x}_{e} \\ &= \underbrace{\int_{\Omega^{e}} c^{\alpha \beta \gamma \delta} \mathbf{N}_{, \alpha}^{T} \left( \boldsymbol{a}_{\beta} \otimes \boldsymbol{a}_{\gamma} \right) \mathbf{N}_{, \delta} \, \mathrm{d} A}_{=: k_{\mathrm{mat}}^{e}} + \underbrace{\int_{\Omega^{e}} \mathbf{N}_{,\alpha}^{T} \tau^{\alpha \beta} \mathbf{N}_{, \beta} \, \mathrm{d} A}_{=: k_{\mathrm{geo}}^{e}}
+    \end{split}
+\end{equation}
+
+\begin{equation}\label{eq:del_f_int_3}
+\Delta \mathbf{f}_{\mathrm{int}}^{e} = \left( k_{\mathrm{mat}}^{e} + k_{\mathrm{geo}}^{e} \right) \Delta \mathbf{x}_{e}
+\end{equation}
+
+\begin{equation}\label{eq:f_ext}
+    \mathbf{f}_{\mathrm{ext}}^{e} = \int_{\Omega^{e}} \mathbf{N}^{T} \boldsymbol{f}_{0} \, \mathrm{d} A + \int_{\partial_{t} \Omega^{e}} \mathbf{N}^{T} \overline{\boldsymbol{t}} \, \mathrm{d} s + \int_{\Omega^{e}} \mathbf{N}^{T} p \boldsymbol{n} \, \mathrm{d} a
+\end{equation}
+
+For dead loading~\eqref{eq:f_ext} can be written as
+
+\begin{equation}\label{eq:f_ext_dead}
+\mathbf{f}_{\mathrm{ext}}^{e} = \int_{\Omega^{e}} \mathbf{N}^{T} p \boldsymbol{n} \, \mathrm{d} a
+\end{equation}
+
+\begin{equation}\label{eq:del_f_ext_dead}
+    \begin{split}
+    \Delta \mathbf{f}_{\mathrm{ext}}^{e} &= \int_{\Omega^{e}} \mathbf{N}^{T} \Delta p \boldsymbol{n} \, \mathrm{d}a + \int_{\Omega^{e}} \mathbf{N}^{T} p \Delta \left( \boldsymbol{n}\, \mathrm{d} a \right) = \int_{\Omega^{e}} \mathbf{N}^{T} \Delta \left( \rho \boldsymbol{g} \cdot \boldsymbol{x} \right) \boldsymbol{n} \, \mathrm{d} a + \int_{\Omega^{e}} \mathbf{N}^{T} p \Delta \left( \boldsymbol{n} \, \mathrm{d} a \right) \\ &= \int_{\Omega^{e}} \mathbf{N}^{T} \rho \left( \underbrace{\Delta \boldsymbol{g} \cdot \boldsymbol{x}}_{= 0} + \boldsymbol{g} \cdot \Delta \boldsymbol{x}_{e} \right) \boldsymbol{n} \, \mathrm{d} a + \int_{\Omega^{e}} \mathbf{N}^{T} p \Delta \left( \boldsymbol{n} \, \mathrm{d} a \right) 
+    \end{split}
+\end{equation}
+
+\begin{equation}\label{eq:del_f_ext_dead_2}
+    \begin{split}
+        \Delta \mathbf{f}_{\mathrm{ext}}^{e} &= \int_{\Omega^{e}} \rho \mathbf{N}^{T} \left( \boldsymbol{g} \cdot \Delta \mathbf{x}_{e} \right) \boldsymbol{n} \, \mathrm{d} a + \int_{\Omega^{e}} \mathbf{N}^{T} p \Delta \left( \boldsymbol{n} \, \mathrm{d} a \right) \\ &= \int_{\Omega^{e}} \rho \mathbf{N}^{T} \left( \boldsymbol{n} \otimes \boldsymbol{g} \right) \, \mathrm{d} a \Delta \mathbf{x}_{e} + \int_{\Omega^{e}} p \mathbf{N}^{T} \left( \boldsymbol{n} \otimes \boldsymbol{a}^{\alpha} - \boldsymbol{a}^{\alpha} \otimes \boldsymbol{n} \right) \mathbf{N}_{, \alpha} \, \mathrm{d} a \Delta \mathbf{x}_{e}
+    \end{split}
+\end{equation}
+
+\end{document}

@@ -1,0 +1,35 @@
+% Deformed Mesh Plot
+% Roger Sauer - 15.12.10
+
+
+% Plot Elements  
+figure(fig)
+for i = 1:nel
+  
+  if pstrs == 0   % Plot Colored Mesh
+      
+    X = [PX(CON(i,1),1) PX(CON(i,2),1) PX(CON(i,4),1) PX(CON(i,3),1) PX(CON(i,1),1)] ;
+    Y = [PX(CON(i,1),2) PX(CON(i,2),2) PX(CON(i,4),2) PX(CON(i,3),2) PX(CON(i,1),2)] ;        
+    
+    if col == 'o'
+        plot(X,Y,'k') ; hold on
+    else
+        fill(X,Y,col) ; hold on    
+    end
+    
+  else  % Plot Stresses onto Mesh
+      
+    X = [ PX(CON(i,1),1) PX(CON(i,2),1) ; PX(CON(i,4),1) PX(CON(i,3),1) ] ;
+    Y = [ PX(CON(i,1),2) PX(CON(i,2),2) ; PX(CON(i,4),2) PX(CON(i,3),2) ] ;        
+    Z = [ RL(CON(i,1),pstrs)  RL(CON(i,2),pstrs) ;  
+          RL(CON(i,4),pstrs)  RL(CON(i,3),pstrs) ] ;  
+    
+    pcolor(X,Y,Z) ; hold on    
+    shading interp           % note: this interpolation is inaccurate
+    
+  end
+  
+end
+
+axis(axe)
+axis equal

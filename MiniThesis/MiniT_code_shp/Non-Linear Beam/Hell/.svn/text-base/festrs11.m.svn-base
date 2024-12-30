@@ -1,0 +1,96 @@
+% Stress Recovery: 11. Finite Bilinear Quad 
+% Roger Sauer - 15.12.10
+
+
+% Initialize
+RL = zeros(nno,6) ;
+KL = zeros(nno,1) ;
+
+% Element Loop
+for i = 1:nel   
+
+    % Previous Timestep Dofs
+    con = 2*CON(i,:) ;
+    ie = [con(1)-1 con(1) con(2)-1 con(2) con(3)-1 con(3) con(4)-1 con(4)] ;
+    
+    % Current Nodal Coordinates and local Displacements
+    XI = Xn(CON(i,:),:) ;
+    xI = xn(CON(i,:),:) ;
+    %uI = U(ie) ; 
+    
+    % Loop over Gauss Points 
+    sel = zeros(4,4) ;
+    bel = zeros(4,2) ;
+    mel = zeros(4,4) ;
+    mll = zeros(4,1) ;
+    
+    
+    % Gauss Point Loop (Volume Intgrals)
+    for gp = 1:ngp
+ 
+        % Gauss point coordinates and weights
+        xi = xigv(gp,1) ; eta = xigv(gp,2) ; wg = xigv(gp,3) ;
+        
+        % Shape Functions
+        N1 = ( 1 - xi )*( 1 - eta )/4 ;
+        N2 = ( 1 + xi )*( 1 - eta )/4 ;
+        N3 = ( 1 + xi )*( 1 + eta )/4 ;
+        N4 = ( 1 - xi )*( 1 + eta )/4 ;
+        N  = [N1 N2 N3 N4] ;
+              
+        % Shape Fct (xi,eta)-Derivatives
+        dpN = [ -( 1 - eta )  -( 1 - xi ) ;
+                 ( 1 - eta )  -( 1 + xi ) ;
+                 ( 1 + eta )   ( 1 + xi ) ;
+                -( 1 + eta )   ( 1 - xi ) ]/4 ;
+        
+        % Jacobian between Current Configuration and Master Element
+        Jac = zeros(2,2) ;
+        for j = 1:4
+           Jac = Jac + xI(j,:)' * dpN(j,:) ;
+        end
+        detJ = det(Jac) ; 
+        invJ = inv(Jac) ;
+        
+        % Shape Fct (x,y)- Spatial Derivatives
+        dN   = zeros(4,2) ;
+        for j = 1:4
+           dN(j,:)  =  dpN(j,:) * invJ ;
+        end
+           
+        % Deformation Gradient
+        invF = zeros(2,2) ;
+        for j = 1:4
+           invF = invF + XI(j,:)' * dN(j,:) ; 
+        end
+        Fgr  = inv(invF) ; 
+        detF = det(Fgr) ;
+        
+        % Constitution (in Voigt notation; plane strain NH only)     
+        % Cauchy Stress
+        Upr = lam/detF * log(detF) ;
+        sit = mu/detF * ( Fgr*Fgr' - I2 ) ;
+        sig = [ sit(1,1)+Upr ; sit(2,2)+Upr ; Upr ; sit(1,2) ] ;    
+        
+        % Stress Projection
+        sel = sel + N'*sig' * detJ * wg ;
+        
+        % Body Forces projected onto the deformed Configuration
+        bel = bel + N' * g'/detF * detJ * wg ;
+        
+        % 'Mass' Matrix
+        mll = mll + N'   * detJ * wg ;
+        
+    end
+    
+    % Structure Arrays
+    RL(CON(i,:),:) = RL(CON(i,:),:) + [sel bel] ; 
+    KL(CON(i,:),1) = KL(CON(i,:),1) + mll ;
+    
+end
+
+
+% Lumped Mass Solution
+for i = 1:nno
+    RL(i,:) = RL(i,:)/KL(i,1) ;
+end

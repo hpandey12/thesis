@@ -1,0 +1,7 @@
+numpy
+ipykernel
+jpype1
+pandas
+matplotlib
+scipy
+rasterio
