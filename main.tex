@@ -98,13 +98,23 @@
 Null.
 
 \section{Modelling Multiphase Flows}
+Two fundamentally different formulations fo the macroscopic field equations:
+\begin{itemize}
+\item Two Fluid Model: considers each phase separately; two sets of conservation equations of mass, momentum, and energy; coupling terms using the jump conditions.
+\item Drif Flux (Mixture) Model: consider mixture as a whole; three mixture conservation equations in addition to one diffusion equation (continuity) equation which takes into account the concentration changes~-~a mixture conservation equation is obtained by adding two conservation equations with an appropriate jump condition~\cite{ishiiThermoFluidDynamicsTwoPhase2011}. 
+\end{itemize}
 Several different models and simulation approaches for various two-phase flow conditions have evolved:
 \begin{itemize}
 \item Euler-Euler: Treats the two phase flow as interpenetrating continua. The governing equations of the fluid are solved for each phase on the Eulerian grid, and the interactions of the two phases at the interface are represented through suitable exchange terms.
 \item Euler-Lagrange: Models treat one phase as a continuous solution on an Eulerian grid. The second phase is dispersed and treated as discrete particles in a Lagrangian framework. Here, it is assumed that the bubbles, droplets, or solids represented by the particles can be treated as rigid bodies with homogenous properties within the partile and that they are in a dilute flow. The effect of the flow field around the particles is them subsumed as appropriate forces~\cite{Gartner2024-zh}
 \item Multiphase Mixture: Simplified Euler-Euler approach. 
 \end{itemize}
-Among different approaches, the homogenous equilibrium model is generally recognised as the simplest. Within this approach, the flashing flow is considered as pseudo single-phase flowing through the nozzle at the equilibrium state. The HEM approach can be applied to relatively long nozzles (that allow for a smooth phase change inside them), however, in short nozzles, this can result in large errors as the equilibrium assumption is no longer valid. To accomodate the nonequilibrium effects, empirical correction factors, slip between phases (mixture models), and two fluid models are used. The needed closure models (flow pattern details, information about bubble size distributions and bubble shapes) are not general and are selected on a case-by-case basis. Approaches to modelling flashing flows need to consider: (a) the change of phase during flashing flow and (b) the interaction between the liquid phase and the vapor phase during the vaporization process.~\cite{dangleComputationalFluidDynamics2018}
+
+Among different approaches, the homogenous equilibrium model is generally recognised as the simplest.
+Within this approach, the flashing flow is considered as pseudo single-phase flowing through the nozzle at the equilibrium state.
+The HEM approach can be applied to relatively long nozzles (that allow for a smooth phase change inside them), however, in short nozzles, this can result in large errors as the equilibrium assumption is no longer valid.
+To accomodate the nonequilibrium effects, empirical correction factors, slip between phases (mixture models), and two fluid models are used. The needed closure models (flow pattern details, information about bubble size distributions and bubble shapes) are not general and are selected on a case-by-case basis.
+Approaches to modelling flashing flows need to consider: (a) the change of phase during flashing flow and (b) the interaction between the liquid phase and the vapor phase during the vaporization process.~\cite{dangleComputationalFluidDynamics2018}
 
 Concering the change of phase during flashing flow, the models can be classified into two main categories:
 \begin{itemize}
@@ -113,9 +123,198 @@ Concering the change of phase during flashing flow, the models can be classified
 \end{itemize}
 
 \subsection{Local Instaneous Balance Equations}
+\subsection{Averaging Techniques}
+~\cite{bloschVolumeAveragedMacroscopicTransport1997, tryggvasonDirectNumericalSimulations2011}~\cite{ghiaasiaanTwoPhaseFlowBoiling2007, wornerCompactIntroductionNumerical}
+\subsection{Volume Averages}
+All averaging procedures yield formally the same structure~\cite{tryggvasonDirectNumericalSimulations2011}
+\subsubsection{Prerequisites}
+\begin{itemize}
+	\item Phase Indicator Function: Given domains $\Omega_{k}(t)$, where $k=1,2$.
+		\begin{itemize}
+		\item \begin{equation}
+				\Omega = \Omega_{1}(t) + \Omega_{2}(t) \end{equation} is constant.
+		\item interface separating the fluids is, $S_{i}(t) = (\partial \Omega_{1} \bigcup \partial \Omega_{2}) / \partial \Omega$
+		\item phase indicator or characteristic function,
+			\begin{equation}
+					\gamma_{k}(\mathbf{x}, t) = 1, if x \in \Omega_{k}(t)
+			\end{equation}
+		\item \begin{math} \nabla \gamma_{k} = \mathbf{\hat{n}_k} \delta (\mathbf{x} - \mathbf{x}_{i}, t) \end{math}
+		\item Topological equation which expresses the fact that the material derivative of $\gamma_{k}$ is zero, 
+			\begin{equation}
+				\frac{\partial \gamma_{k}}{\partial t} + \mathbf{v}_{i} \cdot \nabla \gamma_{k} = 0
+			\end{equation}
+		\end{itemize}
+	\item Volume Averaging Operators: consider a general representative volume element V, bounded by $\partial V$, and invariant with respect to time and space. The centroid is at $\mathbf{x}$, with a relative position vector $\mathbf{\eta}$~\newline
+			$\implies \mathbf{x}_{\eta} = \mathbf{x} + \mathbf{\eta}$
+			\begin{itemize}
+				\item $ \therefore$ Volume Fraction of Phase k,~\newline
+						\begin{equation}
+							g_{k} = \frac{1}{V} \int_{V} \gamma_{k}(\mathbf{x} + \mathbf{\eta}, t) d\mathbf{x}_{\eta} = \frac{V_{k}}{V}
+						\end{equation}
+				\item for a general scalar or vector quantity. $\psi_{k}$, over the entire volume element $V$ and the volume $V_{k}$ occupied solely by the phase $k$,~\newline
+						\begin{equation}
+							\overline{\psi_{k}}^{V} = \frac{1}{V} \int_{V} \psi_{k}(\mathbf{x} + \mathbf{\eta}, t) X_{k}(\mathbf{x} + \mathbf{\eta}, t) d\mathbf{x}_{\eta},\\
+						\end{equation}
+						\begin{equation}
+							\overline{\psi_{k}}^{k} = \frac{1}{V_{k}} \int_{V} \psi_{k}(\mathbf{x} + \mathbf{\eta}, t) X_{k}(\mathbf{x} + \mathbf{\eta}, t) d\mathbf{x}_{\eta}
+						\end{equation}
+				\item these averages are linearly related as, $\overline{\psi_{k}}^{V} = g_{k} \overline{\psi_{k}}^{k}$
+			\end{itemize}
+	\item Gau\ss~and Leibnitz Rules
+	\item Fluctuation Component
+	\item Theorems
+\end{itemize}
+\subsection{Average macroscopic transport equations}
+Applying the general microscopic transport equation to phase $k$,~\newline
+\begin{equation}
+	\frac{\partial \Phi_{k}}{\partial t} + \nabla \cdot (\Phi_{k}\mathbf{V}_{k}) = \nabla \cdot \mathbf{J}_{k} + S{k}.\\
+\end{equation}
+Multiplying by $\gamma_{k}$ and averaging over $dV$,~\newline
+\begin{equation}\
+	\frac{1}{dV}\int_{dV}\,\frac{\partial \Phi_{k}}{\partial t}\gamma_{k}\,dv + \frac{1}{dV}\int_{dV}\,\nabla \cdot (\Phi_{k} \mathbf{V}_{k}) \gamma_{k}\,dv
+		= \frac{1}{dV}\int_{dV}\,\nabla \cdot \mathbf{J}_{k} \gamma_{k}\,dv + \frac{1}{dV}\int_{dV}\,S_{k}\gamma_{k}\,dv.\\
+\end{equation}
+Using Theorems 1 and 2, we get the exact form of the macroscopic transport equations~\cite{bloschVolumeAveragedMacroscopicTransport1997},~\newline
+\begin{multline} \label{macro_balance}
+	\frac{\partial \Phi_{k}}{\partial t} + \nabla \cdot g_{k}\overline{\Phi_k}^{k} \overline{\mathbf{V}_{k}}^{k} = \nabla \cdot \overline{\mathbf{J}_{k}} + \overline{S_{k}}\\
+		+ \underbrace{\nabla \cdot \frac{1}{dV}\int_{dV}\,(-\hat{\Phi}_{k} \hat{\mathbf{V}}_{k})\,dv}_{I_{k}^{D}} + \underbrace{\frac{1}{dV}\int_{dA{k}}\,\mathbf{J}_{k}\cdot\mathbf{n}_{k}\,da}_{I_{k}^{J}}\\
+		+ \underbrace{\frac{1}{dV}\int_{dA_{k}}\, \Phi_{k}(\mathbf{w}_{k} - \mathbf{V}_{k}) \cdot \mathbf{n}_{k}\,da}_{I_{k}^{Q}}.
+\end{multline}
+Here, $I_{k}^{D}$ is the microscopic deviation term and $I_{k}^{J}$ and $I_{k}^{Q}$ are the interfacial terms.
 
-\printbibliography
-\end{document}
+\subsubsection{Assumptions}
+\begin{itemize}
+	\item Two phases only
+	\item Variations of material properties in $dV_k$ are neglected, although they may globally vary, 
+	\begin{align}
+		\text{averaged density of the phase k}\overline{\rho_k}^{k} &= \rho_k = \overline{\rho_k}/g_k,\\
+		\overline{\rho_k \Phi_k} &= \rho_k \overline{\Phi_k},\\
+		\overline{\mu_k}^{k} &= \mu_k,\\
+		\overline{k_k}^{k} &= k_k,\\
+		\overline{D_k}^{k} &= D_k.
+	\end{align}
+\end{itemize}
+\subsubsection{Mass Conservation}
+$\Phi=0,\,\mathbf{J} = \mathbf{0},\, \text{and } S = 0$, thus, using equation~\ref{macro_balance},
+\begin{equation}\label{macro_mass_conservation}
+	\frac{\partial \overline{\rho_k}}{\partial t} + \nabla\cdot g_k \rho_k \overline{\mathbf{V_k}}^k = I_k^{Q},
+\end{equation}
+where $I_k^{Q} = \frac{1}{dV}\int_{dA_{k}}\, \Phi_{k}(\mathbf{w}_{k} - \mathbf{V}_{k}) \cdot \mathbf{n}_{k}\,da$.
+The microscopic deviation term is zero due to assumption 2. Considering the interfacial mass flux balance, $I_1^{Q} + I_2^{Q} = 0$. Thus,\newline
+\begin{equation}
+	\sum_{k=1}^{2}\frac{\partial \overline{\rho_k}}{\partial t} + \sum_{k=1}^{2} \nabla\cdot g_k \rho_k \overline{\mathbf{V}_k}^k = 0.
+\end{equation}
+
+As $\overline{\rho_k} = \rho_k g_k$, and substituting angle brackets for overlines and using \textit{u} instead of $V$~,
+\begin{equation}\label{gov_mass}
+	\frac{\partial}{\partial t} [\langle \rho_{k} \rangle g_{k}]  + \nabla \cdot  [ g_{k} \langle \rho_{k} \mathbf{u}_{k} \rangle] = \Gamma_{k},
+\end{equation}
+where 
+\begin{equation}
+\Gamma = - \frac{1}{V} \int_{S_{i}} \rho_k \footnote{this is not the averaged value} (\mathbf{u}_{k} - \mathbf{u}_{\text{interface}}) \cdot \mathbf{n}_{k}\, dS_{i},
+\end{equation}
+and 
+\begin{equation}
+	\sum_{k=1}^{2} \Gamma_{k} = 0.
+\end{equation}
+The convective mass flux of the phase across the interface is~\cite{tryggvasonDirectNumericalSimulations2011}, 
+\begin{equation}
+	\dot{m}_{k} = \rho_k (\mathbf{u}_{k} - \mathbf{u}_{\text{interface}}) \cdot \mathbf{n}_{k}.
+\end{equation}
+Written in one dimension, equation~\ref{gov_mass} can be written~\cite{hewittModellingStrategiesTwoPhase2018} as,
+\begin{equation}\label{gov_mass_1d}
+	\frac{\partial}{\partial t} [\langle \rho_{k} \rangle g_{k}] + \frac{1}{A}\frac{\partial}{\partial z} [g_{k} \langle \rho_{k} u_{k} \rangle A] = \Gamma_{k}
+\end{equation}
+
+And in cylindrical coordinates, this can be rewritten as~\cite{hewittModellingStrategiesTwoPhase2018, ishiiThermoFluidDynamicsTwoPhase2011},
+\begin{multline}\label{gov_mass_cylindrical}
+	\frac{\partial}{\partial t}[\langle \rho_{k} \rangle g_{k}] + \frac{1}{r}\frac{\partial}{\partial r}[r g_{k} \langle \rho_{k} u_{rk} \rangle]
+	+ \frac{1}{r}\frac{\partial}{\partial \theta}[g_{k} \langle \rho_{k} u_{\theta k} \rangle]\\ + \frac{\partial}{\partial z}[g_{k} \langle \rho_{k} u_{zk}\rangle] = \Gamma_k.
+\end{multline}
+
+If flow is axisymmetric, there are no dependencies on $\theta$ and thus,
+\begin{equation}
+	\frac{\partial}{\partial t}[r \langle \rho_{k} \rangle g_{k}] + \frac{1}{r}\frac{\partial}{\partial r}[ r g_{k} \langle \rho_{k} u_{rk} \rangle]
+	+ \frac{\partial}{\partial z}r [g_{k} \langle \rho_{k} u_{zk}\rangle] = r\Gamma_k.
+\end{equation}
+
+to solve the $\langle \rho_k \mathbf{u}_{k} \rangle$ issue, the weighted velocity (Favre average) can be taken so that $\langle \rho_{k} \mathbf{u}_{k} \rangle = \mathbf{\hat{u}}_{k} \langle \rho_{k} \rangle$.
+\subsubsection{Momentum Conservation}
+$\Phi=\rho \mathbf{u}$ and $S = \mathbf{b}$, where $\mathbf{b}$ is the body force.
+
+For a Newtonian fluid flow, $\mathbf{J} + -\nabla P + \mu[\nabla \mathbf{u} + {(\nabla \mathbf{u})}^{T}]$. Thus, the averaged momentum equation yields,
+\begin{multline}
+	\frac{\partial}{\partial t}[\rho \overline{\mathbf{u}_{k}}] + \nabla \cdot g_{k} \rho_{k} \overline{\mathbf{u}_k}^{k}\overline{\mathbf{u}_k}^{k}\\
+	= -\nabla \overline{P_{k}} + \nabla \cdot {[\overline{\mu_{k} \nabla \mathbf{u}_{k}} + {\overline{\mu_{k} {(\nabla \mathbf{u}_{k})}^{T}}}]} + I^{D}_{k} + I^{Q}_{k} + I^{J}_{k} + \overline{\mathbf{b}_{k}}
+\end{multline}
+
+In a similar formulation,
+\begin{equation}\label{gov_mom}
+	\frac{\partial}{\partial t}[g_{k} \langle \rho_{k} \mathbf{u}_{k} \rangle] + \nabla \cdot [g_{k} \langle \rho_{k} \mathbf{u}_{k} \mathbf{u}_{k} \rangle] = 
+	-\nabla(g_{k} \langle p_{k} \rangle) + \nabla \cdot [g_{k} \langle \mathbb{T}_{k} \rangle ] + g_{k}\langle\rho_{k} \mathbf{g} \rangle + \mathbf{M}_k
+\end{equation}
+$\mathbf{M_{k}}$ represents the momentum transfer across the interface,\
+\begin{equation}
+	\mathbf{M}_{k} = -\overline{(-p_{k}\mathbf{\mathbb{I}} + \mathbf{\mathbb{T}}_{k}) \cdot \nabla X_{k}}^{V},
+\end{equation}
+along with the jump,
+\begin{equation}
+	\sum_{k=1}^{2}\mathbf{M}_k - \mathbf{M}_m = 0
+\end{equation}
+where $\mathbf{M}_{m}$ is the mixture source.
+In one dimension, the momentum conservation for phase-$k$ is~\cite{hewittModellingStrategiesTwoPhase2018},
+\begin{multline}
+\frac{\partial}{\partial t}[g_{k}\langle \rho_{k} u_{k}\rangle] + \frac{1}{A} \frac{\partial}{\partial z}[g_{k} \langle \rho_{k} u_{k} u_k\rangle A]
+= - g_{k} \frac{\partial p}{\partial z}\\ + g\langle\rho_{k}\rangle g_{k} \cos \theta - \frac{1}{A} (P_{wk}u_{wk}) - \frac{1}{A} (P_i \tau_i) + \Gamma_k u_i.
+\end{multline}
+The shear stresses acting on the phase at the wall and at the interface are denoted by $\tau_{wk}$ and $\tau_{ik}$ respectively. The part of wall perimeter wetted by phase $k$ is $P_{wk}$, while $P_i$ is the interfacial perimeter.
+\subsubsection{Energy Conservation}
+$\Phi=\rho H$, where $H$ is the total enthalpy, and $S = 0$. 
+\subsubsection{Interface Stuff}
+\begin{itemize}
+	\item At the interface, if there is phase change then the normal velocities at the interface are discontinious. The interface is no longer a material surface, since a mass transfer occures between the two phases.
+\end{itemize}
+
+\subsubsection{Summary of Equations}
+In following the spirit of the subject, a complete change of notation. [MISSING CITATION!!]
+\begin{itemize}
+	\item $\alpha_{jk}$ is the following fraction of field-$j$ of phase-$k$.
+	\item $\Gamma_{jk}$ is the volumetric mass transfer rate due to phase change in field-$j$ of phase-$k$
+	\item $m'''_{jk}$ is the mass source of field-$j$ from other fields of phase-$k$
+	\item $\underline{\underline{\overline{\mathbf{\tau}}}}_{jk}^T$ is the Reynolds stress for field-$j$ of phase-$k$
+	\item $\underline{\mathbf{M}}_{jk}, \underline{\mathbf{M}}_{jk}^{w}$ are the interfacial and wall forces (per unit volume)
+	\item $\underline{\mathbf{v}}_{i}$ is the velocity of the interface
+	\item $\mu = h - p/\rho$ (internal energy)
+	\item $\underline{\mathbf{q}}^{\prime \prime T}_{jk} = - \overline{h'_{jk} \underline{\mathbf{v}}'_{jk}}$ (turbulent heat flux)
+	\item $q''_{i_{jk}} = \overline{\underline{\mathbf{q}}''_{jk} \cdot \nabla X_{k}}$ (interfacial heat flux)
+	\item $\mathcal{D}_{jk} = \overline{X_{k} \underline{\underline{\mathbf{\tau}}}_{j} : \nabla \underline{\mathbf{v}}_{j}}$ (dissipation)
+	\item $p_{jk} = \overline{X_{k} p_{j}}$ (static pressure)
+\end{itemize}
+Mass conservation (field~-~j, phase~-~k):
+\begin{equation}
+	\frac{\partial}{\partial t}(\alpha_{jk} \rho_{k}) + \nabla (\alpha_{jk} \rho_{k} \overline{\mathbf{\underline{v}}}_{jk}) = \Gamma_{jk} + m'''_{jk}.
+\end{equation}
+Momentum conservation (field~-~j, phase~-~k):
+\begin{multline}
+	\frac{\partial}{\partial t}(\alpha_{jk} \rho_{k} \overline{\mathbf{\underline{v}}}_{jk}) + \nabla \cdot (\alpha_{jk} \rho_{k} \overline{\mathbf{\underline{v}}}_{jk} \overline{\mathbf{\underline{v}}}_{jk}) = 
+	-\nabla(\alpha_{jk} p_{jk}) + \nabla \cdot (\alpha_{jk} [\underline{\underline{\overline{\mathbf{\tau}}}}_{jk} + \underline{\underline{\overline{\mathbf{\tau}}}}_{jk}^{T}])\\
+	+ \alpha_{jk} \rho_{k} \underline{\mathbf{g}} + \underline{\mathbf{M}}_{jk} + \underline{\mathbf{M}}_{jk}^{w} + \Gamma_{jk}\underline{\mathbf{v}}_{i} + m'''_{jk} \underline{\mathbf{v}}_{jk}.
+\end{multline}
+Energy conservation (field~-~j, phase~-~k):
+\begin{multline}
+	\frac{\partial}{\partial t}(\alpha_{jk} \rho_{k} \overline{h}_{jk}) + \nabla \cdot (\alpha_{jk} \rho_{k} \overline{\mathbf{\underline{v}}}_{jk} \overline{h}_{jk})
+	= -\nabla \cdot \alpha_{jk}(\overline{\underline{\mathbf{q}''}}_{jk} + \underline{\mathbf{q}}^{\prime \prime T}_{jk}) + \alpha_{jk} q'''_{jk} + \mathcal{D}_{jk}\\
+	+ \frac{D p_{jk}}{D t} + q''_{i_{jk}} A'''_{i} + \Gamma_{jk}\mu_{i} + m'''_{jk} \mu_{jk}.
+\end{multline}
+\subsection{Flow Models}
+\subsection{Two Fluid Models}
+\subsection{Drift Flux Models}
+The model consists of two continuity equations and a single combined momentum equation. The model may be completed with a combined energy equation or two energy equations. Wall effects are modelled using algebraic relations.~\cite{tryggvasonDirectNumericalSimulations2011}
+\subsubsection{Homogenous Flow Models}
+The assumption is made that the two phases move with the same velocity and correlation terms are usually ignored. The homogenous model therefore consits of the combined continuity and momentum equations, a rule to calculate the volume fractions and, possibly, a combined energy equation.~\cite{tryggvasonDirectNumericalSimulations2011}
+
+The phases are in so called mechanical equilibrium, thus the relative velocities are zero.~\cite{wornerCompactIntroductionNumerical}
+\printbibliography~\end{document}
 
 
 
