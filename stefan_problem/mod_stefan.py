@@ -115,14 +115,14 @@ def temperature_profile(vars, x_all: bool = False, x_loc: float = 100, t: float 
             return T_probe
     
     elif x_all is True:
-        x = numpy.linspace(0, int(x_loc), 1000)
-        print('x = linspace(0, ', int(x_loc),', 1000)')
+        #x = numpy.linspace(0, int(x_loc), 1000)
+        #print('x = linspace(0, ', int(x_loc),', 1000)')
         T_profile = []
         
         if t_all is None:
             pos_interface = interface_position(vars= vars, t= t)
             T_temp = []
-            for x_i in x:
+            for x_i in x_loc:
                 if x_i < pos_interface:
                     T_temp.append(return_single(x_i, t))
                 
@@ -134,7 +134,7 @@ def temperature_profile(vars, x_all: bool = False, x_loc: float = 100, t: float 
             for t_i in t_all:
                 pos_interface = interface_position(vars= vars, t= t_i)
                 T_temp = []
-                for x_i in x:
+                for x_i in x_loc:
                     if x_i < pos_interface:
                         T_temp.append(return_single(x_i, t_i))
                     
