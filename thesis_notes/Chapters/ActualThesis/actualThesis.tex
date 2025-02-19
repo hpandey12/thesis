@@ -11,18 +11,70 @@ Steps in develop a CFD simulation:
     \item solve the resulting equations and optimize the convergence rate
     \item post processing the result
 \end{itemize}~\cite{wilcoxTurbulenceModelingCFD2006}
-\subsection{General Form of Conservation Laws}
-\subsubsection{Scalar Conservation Law}
-Considering a scalar quantity per unit volume, $U$, defined as a flow related property. For an arbitrary volume $\Omega$, fixed in space and bounded by a surface $S$,
-the general form of the conservation law for $U$ is
-\begin{equation}\label{consv_scalar}
-    \frac{\partial}{\partial t} \int_\Omega U d\Omega + \int_S \mathbf{F} \cdot \mathbf{dS} + \int_{\Omega} Q_V d\Omega + \int_S\mathbf{Q_{S}}\cdot\mathbf{dS}.
+\subsection{Balance Equations}
+Consider a material volume element $\mathcal{V}(t)$ (where $V(t) \in \Omega \in \mathbb{R}^3$) is a volume of fluid with a velocity field $\mathbf{u}(t, \mathbf{x})$, where $\mathbf{u} \in C^{2}$ parallel 
+to the sufficiently smooth boundary surface $\partial\mathcal{V}$. The Reynolds' transport theorem
+states for a differentiable scalar field $\phi(t, \mathbf{x})$ associated with the fluid 
+\begin{equation}\label{theorem_reynolds_tt}
+    \frac{d}{dt} \int_{\mathcal{V}(t)} \phi\,d\mathcal{V} =  \int_{\mathcal{V}(t)}(\frac{\partial \phi}{\partial t} + \nabla \cdot (\phi \mathbf{u}))\,d\mathcal{V} 
 \end{equation}
+Why useful? Recasted weird integral differentiation and helps study the evolution of physical variables in a fluid flow.
+The basic equations of fluid dynamics, the Navier Stokes equations, for the case of an isothermal flow represent the mass and linear momentum conservation laws. 
+Describing the motion of a fluid using the
+\begin{itemize}
+    \item mass density field, $\rho(t, \mathbf{x})$,
+    \item velocity field, $\mathbf{u}(t, \mathbf{x})$,
+    \item and pressure, $P(t, \mathbf{x})$ 
+\end{itemize}
+which are functions of the time, $t \in \mathbb{R}$ and the spatial position $\mathbf{x} \in \Omega$.
+The law of mass conservation states that the rate of change of mass in an arbitrary material volume equals the rate of mass production in the volume~\cite{TOR?BOOK?}. In a closed system with no phase change
+(thus, negating the mass production term), the application of~\ref{theorem_reynolds_tt} to the time rate of change of the total amount of fluid in a material 
+volume $\mathcal{V}(t)$ results in the continuity equation.
+\begin{equation*}
+        \frac{d}{dt} \int_{\mathcal{V}(t)}\rho (t, \mathbf{x})\,d\mathcal{V}= \int_{\mathcal{V}(t)}(\frac{\partial \rho}{\partial t} + \nabla \cdot (\rho \mathbf{u})(t, \mathbf{x}))\,d\mathcal{V} = 0
+\end{equation*}
+\begin{equation}\label{theorem_cont_eqn}
+    \frac{\partial}{\partial t}\rho (t, \mathbf{x}) + \nabla \cdot (\rho (t, \mathbf{x}) \mathbf{u}(t, \mathbf{x})) = 0\,\forall\,t \in (0, T],\,x \in \Omega
+\end{equation}
+Similarly, considering the linear momentum in the arbitrary material volume $\mathcal{V}(t)$ which can be formulated as 
+\begin{equation*}
+        \int_{\mathcal{V}(t)} \rho(t, \mathbf{x}) \mathbf{u}(t, \mathbf{x})\,d \mathcal{V},
+\end{equation*}
+the rate of change of linear momentum in the material volume can be recasted using~\ref{theorem_reynolds_tt} as
+\begin{equation}\label{eqn_linearmomentum}
+    \frac{d}{dt} \int_{\mathcal{V}(t)} \rho \mathbf{u}(t, \mathbf{x})\,d \mathcal{V} = \int_{\mathcal{V}(t)}(
+        \frac{\partial}{\partial t} \rho \mathbf{u}(t, \mathbf{x}) + \nabla \cdot (\rho \mathbf{u}(t, \mathbf{x}) \cross \mathbf{u}^{T}(t, \mathbf{x}))
+        )\,d \mathcal{V}.
+\end{equation}
+Substituting~\ref{eqn_linearmomentum} into Cauchy's momentum equation that describes the momentum transport in a continuum in inertial frames, we get the law of
+conservation of linear momentum
+\begin{equation}\label{theorem_momentum_eqn}
+    \frac{\partial}{\partial t}(\rho(t,x) \mathbf{u}(t, \mathbf{x})) + \nabla \cdot (\rho(t,x) \mathbf{u}(t, \mathbf{x})\mathbf{u}(t, \mathbf{x})) =
+    \nabla \mathbf{\mathbb{\sigma}(t, \mathbf{x})} + \rho(t, \mathbf{x}) \mathbf{b}(t, \mathbf{x})
+\end{equation}
+$\,\forall\,t \in (0, T],\,x \in \Omega$, where $\mathbf{b}$ are body forces and $\mathbf{\mathbb{T}}$ is the Cauchy stress tensor.
+The convection term here is nonlinear even for incompressible flows and is responsible for the appearance of turbulence~\cite{hirschNumericalComputationInternal2007}
+
+When the first law of thermodynamics is applied to the material volume, the conservation of energy can be written as
+\begin{equation}\label{theorem_energy_eqn}
+    \frac{\partial}{\partial t}(\rho(t,x)E) + \nabla \cdot (\rho(t, \mathbf{x}) E \mathbf{u}(t, \mathbf{x}))
+    = \nabla \cdot (\mathbf{u}(t, \mathbf{x}) \cdot \mathbf{\sigma}(t,\mathbf{x})) + (\rho \mathbf{b}) \cdot \mathbf{u}(t, \mathbf{x})
+        -\nabla\cdot\mathbf{q}(t, \mathbf{x}) + S_{E}
+\end{equation}
+where $E$ is the total energy per unit mass, $\mathbf{q}(t, \mathbf{x})$ is the heat flux, and $S_{E}$ is an energy source per unit volume.
+\subsubsection{Non-dimensionalised Navier Stokes Equations}
+\subsection{Consitutive Relations}
+\begin{itemize}
+    \item Eulerian compressible fluid/ideal compressible fluid: $\mathbf{\mathbb{T}} = -p(\rho)\mathbf{\mathbb{I}}$
+    \item Eulerian incompressible fluid/ ideal incompressible fluid: $\mathbf{\mathbb{T}} = -p\mathbf{\mathbb{I}}$
+    \item incompressible Navier Stokes fluid/incompressible linearly viscous/Newtonian fluid: $\mathbf{\mathbb{T}} = -p\mathbf{\mathbb{I}} + 2\mu\mathbf{D}$
+\end{itemize}~\cite{truesdellIntroductionMechanicsFluids2000}
 \subsection{Modelling Turbulence}
 \subsection{Discretisation}
 \subsection{Star-CCM+}
 
 \subsection{Multiphase CFD}
+A gas satisfies the continuum hypothesis if the Knudsen number  is << 1.
 \subsection{Fundamentals}
 \subsection{Interfaces}
 \subsection{Boundary Conditions}
