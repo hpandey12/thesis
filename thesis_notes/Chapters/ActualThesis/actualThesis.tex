@@ -69,10 +69,19 @@ where $E$ is the total energy per unit mass, $\mathbf{q}(t, \mathbf{x})$ is the 
     \item Eulerian incompressible fluid/ ideal incompressible fluid: $\mathbf{\mathbb{T}} = -p\mathbf{\mathbb{I}}$
     \item incompressible Navier Stokes fluid/incompressible linearly viscous/Newtonian fluid: $\mathbf{\mathbb{T}} = -p\mathbf{\mathbb{I}} + 2\mu\mathbf{D}$
 \end{itemize}~\cite{truesdellIntroductionMechanicsFluids2000}
-\subsection{Modelling Turbulence}
-\subsection{Discretisation}
-\subsection{Star-CCM+}
 
+\subsection{FV Methods and Star-CCM+}
+Finite volume methods (FVM) are the popular discretisation method used in computational fluid dynamics. FVMs can be described 
+as discrete evolution equations for cell averages. There is freedom in relation to representing the numerical solution. [cite ansorge sonar]
+The finite volume method uses the integral form of the conservation equation. The solution domain is divided into a finite number of small control volumes (CVs)
+by a grid which defines the control volume boundaries but not the computational nodes. Discrete versions of the integral form of the conservation 
+equations are applied to each control volume in order to obtain a set of linear algebraic equations.[cite starccm] FVms can be viewed as being part
+of the Petrov-Galerkin family of finite element methods with piecewise constant trial functions, enabling the use of 
+unstructured grids and leverage the computational advantages of the finite difference and finite element methods.
+
+
+\subsection{Star-CCM+}
+\subsection{Modelling Turbulence}
 \subsection{Multiphase CFD}
 A gas satisfies the continuum hypothesis if the Knudsen number  is << 1.
 \subsection{Fundamentals}
