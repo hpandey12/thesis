@@ -271,4 +271,23 @@ Setting up a multiphase
 \subsection{Quantifying Flow/Assumptions}
 \subsection{Modelling Turbulence}
 
-\subsection{Geometry and Boundary Conditions}
+\section{Finite Volume Methods}
+- Consistency at control volume faces. When a face is common to two adjacent control volumes, the flux#
+across it must be represented by the same expression in the discretisation equations
+for the two control volumes.
+- Positive coefficients. An increase in the value at one grid point should,
+with other conditions remaining unchanged, lead to an increase in the value
+at the neighbouring grid point.
+- Negative slope linearisation of the source term. When the source
+term is linearised as $\overbar{S} = S_c + S_{p}T_{p}$, the coefficient $S_{p}$ must always
+be less than or equal to others.
+- Sum of the neighbour coefficients. [check and cite patankar]
+\subsection{Properties of the Dsicretised Equations}
+- Conservation. 
+\begin{equation}
+\frac{d}{dt}\int_{\mathcal{V}} \rho \phi d\mathcal{V}
++ \int_{\partial \matchal{V}} \rho \mathbf{u} \phi \cdot d\mathbf{S}
+= \int_{\partial\mathcal{V}}\Tau\nabla\phid\mathbf{S} + \int_{\mathcal{V}} S_{\phi} d\mathcal{V},
+\end{equation}
+where $\phi$ represents the transport of scalar property, $S$ is the surface area 
+of the control volume and $\mathbf{dS}$ denotes the surface vector.
