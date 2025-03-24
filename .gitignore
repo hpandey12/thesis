@@ -316,3 +316,5 @@ tsconfig.lsif.json
 *.lsif
 *.db
 *.tsbuildinfo
+
+.png
