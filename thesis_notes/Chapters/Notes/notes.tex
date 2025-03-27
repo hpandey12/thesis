@@ -291,3 +291,90 @@ be less than or equal to others.
 \end{equation}
 where $\phi$ represents the transport of scalar property, $S$ is the surface area 
 of the control volume and $\mathbf{dS}$ denotes the surface vector.
+
+
+\subsection{FV Methods, Discretisation and Star-CCM+}
+Finite volume methods (FVM) are the popular discretisation method used in computational fluid dynamics. FVMs can be described 
+as discrete evolution equations for cell averages. There is freedom in relation to representing the numerical solution. [cite ansorge sonar]
+The finite volume method uses the integral form of the conservation equation. The solution domain is divided into a finite number of small control volumes (CVs)
+by a grid which defines the control volume boundaries but not the computational nodes. Discrete versions of the integral form of the conservation 
+equations are applied to each control volume in order to obtain a set of linear algebraic equations.[cite starccm] FVms can be viewed as being part
+of the Petrov-Galerkin family of finite element methods with piecewise constant trial functions, enabling the use of 
+unstructured grids and leverage the computational advantages of the finite difference and finite element methods.[needs citation] In genreal, the aim is to provide an adequate
+representation of the solution for the continuous physical domain. This approximate solution must be accurate, correct, and consistent, such that the approximate solution
+tends to the exact solution with the increase in the number of computational nodes. For discretisation of hyperbolic equations using FVMs, it is necessary that the method be consistent
+with the differential equations and be stable in some appropriate sense - meaning that 
+the method approximates it well locally and small errors made per time step do not accumulate too fast respectively. [cite leveque]
+\subsubsection{Domain Discretisation}
+The subdivision of the physical domain encompasses both the spatial and time discretisations. The subdivisions of the spatial and temporal domains are 
+referred to as control volumes and time steps respectively.
+\subsubsection{Equation Discretisation}
+Considering a control volume $\mathcal{V}$ with surface area $S$ and normal to the surface $\mathbf{n}$, the general transport equation for an arbitrary general (scalar or tensor of any order) intensive
+physical quantity $\mathbf{\phi}(t, \mathbf{x})$ can be written in the integral form as
+\begin{equation}\label{eqn_genTransport}
+    \frac{d}{dt}\int_{\mathcal{V}} \rho \mathbf{\phi} d\mathcal{V}
+    + \underbrace{\int_{S} \rho \mathbf{u} \mathbf{\phi} \cdot \mathbf{n}\,dS}_{\text{\small Convective Flux}}
+    = \underbrace{\int_{S}\Gamma\nabla \mathbf{\phi} \cdot \mathbf{n}\,dS}_{\text{\small Diffusive Flux}} + \underbrace{\int_{\mathcal{V}} S_{\mathbf{\phi}} d\mathcal{V}}_{\text{\small Source Term}},
+    \end{equation} %cdot here in the diffusive flux term?? 
+    where $\Gamma_{\mathbf{\phi}}$ is the generic transport coefficient for the diffusive transport of $\mathbf{\phi}$, $S_{\mathbf{phi}}$
+    denotes a generic volumetric source term, and $\rho$ and $\mathbf{u}$ represent the phase density and velocity respectively.     
+
+The integral form of the generic transport equation contains either volume and/or surface integrals. 
+Star-CCM+ approximates the surface integrals on two levels using quadrature approximations. The 
+integral is expressed in terms of variable values at one location on the cell face - where the integral 
+is evaluated as the product of the value at the cell center and the cell face area.
+\begin{equation}
+    \int_{S}
+\end{equation}
+As Star-CCM+ utilises a co-located variable arrangement where the 
+    values of the dependent variables are stored at the cell centers, the values at the 
+    cell face center are approximated through interpolation schemes in terms of the values
+    stored at the cell centers. 
+Volume integrals are approximated by the product of the mean value at the cell center and the
+    cell volume. This approximation is second-order accurate [cite star ccm, cite Leveque]
+\begin{equation}\label{eqn_volumeDisc}
+    \int_{\mathcal{V}_{P}}S_{\phi}\,d\mathcal{V} == S_{P}\mathcal{V}_{P}
+\end{equation}    
+
+
+\subsubsection{Solution Method}
+
+
+- Consistency at control volume faces. When a face is common to two adjacent control volumes, the flux 
+across it must be represented by the same expression in the discretisation equations
+for the two control volumes.
+- Positive coefficients. An increase in the value at one grid point should,
+with other conditions remaining unchanged, lead to an increase in the value
+at the neighbouring grid point.
+- Negative slope linearisation of the source term. When the source
+term is linearised as $\bar{S} = S_c + S_{p} T_{p}$, the coefficient $S_{p}$ must always
+be less than or equal to others.
+- Sum of the neighbour coefficients. [check and cite patankar]
+\subsection{Properties of the Dsicretised Equations}
+- Conservation. 
+
+
+
+\subsection{Star-CCM+}
+\subsection{Modelling Turbulence}
+\subsection{Multiphase CFD}
+A gas satisfies the continuum hypothesis if the Knudsen number  is << 1.
+\subsection{Fundamentals}
+\subsection{Interfaces}
+\subsection{Boundary Conditions}
+\subsubsection{Volume of Fluid Method}
+
+
+\subsection{Validation and Verification}
+\subsection{Stefan Problem}
+
+\section{Free Surface Flow Problem}
+\subsection{Literature Research}
+\subsection{Problem Description}
+\subsection{Rayleigh-Taylor Instability}
+\subsection{Impinging Droplets}
+\subsection{Dam Break}
+\subsection{}
+
+
+
