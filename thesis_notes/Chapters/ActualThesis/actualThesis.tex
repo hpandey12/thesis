@@ -3,6 +3,18 @@
 \subsection{Outline}
 
 \section{CFD}
+Computational Fluid Dynamics (CFD) involves the numerical solution of fluid flow problems based on the continuum hypothesis, 
+which assumes that the smallest volume of interest always contains a sufficient number of molecules for statistical averages 
+to be meaningful (FD-MAE553-Smits). This hypothesis is valid when the mean free path of the molecules is much smaller than the 
+smallest significant dimension of the flow domain. The failure of the continuum hypothesis occurs when the Knudsen number, 
+defined as the ratio of the mean free path to a typical flow dimension, exceeds unity, indicating that rarefied gas effects 
+become important (FD-MAE553-Smits).
+
+CFD relies on the fundamental conservation laws of mass, momentum, and energy to model fluid flows. These laws state that 
+any variation of a conserved intensive quantity within a given volume is due to internal sources and the net flux crossing
+ the boundary surface (Hirsch, 2007, p. 29). CFD relies on solving the fundamental equations of fluid motion, typically the Navier-Stokes equations, which govern
+ the behavior of fluid flow under various conditions. These equations are derived based on conservation laws and constitutive 
+ relations that describe the properties of the fluid.
 Steps in develop a CFD simulation:
 \begin{itemize}
     \item select the mathematical model, defining the approximation to reality
@@ -11,6 +23,14 @@ Steps in develop a CFD simulation:
     \item solve the resulting equations and optimize the convergence rate
     \item post processing the result
 \end{itemize}~\cite{wilcoxTurbulenceModelingCFD2006}
+The governing equations for fluid flow are derived from the conservation laws and result in the Navier-Stokes equations, which are valid for any laminar or turbulent flow of 
+any fluid. These equations relate the changes in momentum to the forces acting on the fluid, including pressure and 
+viscous stresses (Hirsch, 2007, p. 73). They are applicable to both incompressible and compressible flows and form the 
+foundation for CFD analysis.
+
+In applying these equations, it's essential to consider the control volume approach, where the fluid properties are 
+evaluated over a finite volume, and the fluxes across the control surfaces are accounted for. For incompressible flows, 
+the continuity equation simplifies to the statement that the net mass flux out of any control volume is zero (FD-MAE553-Smits).
 \subsection{Balance Equations}
 Consider a material volume element $\mathcal{V}(t)$ (where $V(t) \in \Omega \in \mathbb{R}^3$) is a volume of fluid with a velocity field $\mathbf{u}(t, \mathbf{x})$, where $\mathbf{u} \in C^{2}$ parallel 
 to the sufficiently smooth boundary surface $\partial\mathcal{V}$. The Reynolds' transport theorem
@@ -64,41 +84,310 @@ When the first law of thermodynamics is applied to the material volume, the cons
 where $E$ is the total energy per unit mass, $\mathbf{q}(t, \mathbf{x})$ is the heat flux, and $S_{E}$ is an energy source per unit volume.
 \subsubsection{Non-dimensionalised Navier Stokes Equations}
 \subsection{Consitutive Relations}
+To close the system of equations and solve for the flow variables, constitutive relations are required. These relations 
+connect the fluid's stress tensor to its deformation rates and other properties. For example, in a Newtonian fluid, the 
+viscous stresses are proportional to the rate of strain. The mean or "bulk" pressure in a moving fluid can be defined 
+differently from the static pressure due to the contribution of normal stresses in the fluid (FD-MAE553-Smits).
+
+Constitutive relations are crucial in modeling the behavior of real fluids, as they account for the fluid's rheological 
+properties and enable the computation of viscous stresses, which are essential in the momentum equations.
 \begin{itemize}
     \item Eulerian compressible fluid/ideal compressible fluid: $\mathbf{\mathbb{T}} = -p(\rho)\mathbf{\mathbb{I}}$
     \item Eulerian incompressible fluid/ ideal incompressible fluid: $\mathbf{\mathbb{T}} = -p\mathbf{\mathbb{I}}$
     \item incompressible Navier Stokes fluid/incompressible linearly viscous/Newtonian fluid: $\mathbf{\mathbb{T}} = -p\mathbf{\mathbb{I}} + 2\mu\mathbf{D}$
 \end{itemize}~\cite{truesdellIntroductionMechanicsFluids2000}
+\section{Turbulence}
+Turbulence is characterized by chaotic and irregular fluid motion dominated by eddies and vortices of various scales [Davidson, p.5]. 
+Key features of turbulence include:
+\begin{itemize}
+    \item Irregularity: Turbulent flows exhibit random and unpredictable fluctuations in velocity and pressure [Davidson, p.5].
+    \item iffusivity: Enhanced mixing leads to increased rates of momentum, heat, and mass transfer within the fluid [Davidson, p.5].
+    \item High Reynolds Numbers: Turbulence typically occurs at high Reynolds numbers, where inertial forces significantly outweigh viscous forces [Davidson, p.5].
+    \item Three-Dimensionality: Turbulent flows are inherently three-dimensional due to vortex stretching and tilting processes, 
+    which distribute vorticity in all spatial directions %[Davidson, p.5, LarsDavidson_TurbulenceModels].
+    \item Dissipation: Energy cascades from large to small scales and is eventually dissipated as heat due to viscous effects
+    %[Davidson, p.5, LarsDavidson_TurbulenceModels].
+    \item Continuity: Turbulent flows are considered continuous, with properties varying smoothly except at molecular scales [Davidson, p.6].
+\end{itemize}
+Understanding turbulence is crucial for accurate modeling and simulation of fluid flows in engineering applications. 
+Turbulence involves energy transfer across scales through mechanisms such as vortex stretching and tilting %[LarsDavidson_TurbulenceModels]. 
+This process leads to the formation of smaller eddies and contributes to the energy cascade from larger to smaller scales until dissipation
+occurs at the smallest scales.
 
-\subsection{FV Methods and Star-CCM+}
+Due to the complex nature of turbulence, statistical methods are employed to derive mean flow properties. Averaging procedures, 
+such as Reynolds averaging, decompose flow variables into mean and fluctuating components. These techniques affect the physical interpretation of turbulence
+models and aim to represent solutions accurately while maintaining conservation properties [Henrik\_Rusche-2003-PhD-Thesis]. 
+This leads to the Reynolds-Averaged 
+Navier-Stokes (RANS) equations, where additional terms called Reynolds stresses arise from the nonlinear convective terms [FD-MAE553-Smits].
+The RANS equations are derived by applying Reynolds averaging to the Navier-Stokes equations. They include mean flow terms and 
+additional Reynolds stress terms representing turbulent momentum  and heat transfer.
+Turbulence production, dissipation, and transport are key components in these equations, often represented through turbulence models. 
+The models aim to capture the energy cascade from large to small scales, where kinetic energy is dissipated into heat.
+The closure problem emerges because the Reynolds stresses introduce more unknowns than equations, 
+necessitating turbulence models to provide 
+empirical or semi-empirical relationships \note{cite Hirsch2007}. 
+Common approaches include:
+\begin{itemize}
+    \item Reynolds Stress Models: Provide transport equations for each component of the Reynolds stress 
+    tensor \note{cite Hirsch2007}. The Reynolds-Averaged Navier-Stokes (RANS) approach solves the time-averaged 
+    equations of motion, where all turbulent fluctuations are averaged out. This method requires turbulence models 
+    to account for the effects of turbulence on the mean flow. RANS models range from simple mixing length models to 
+    more complex two-equation models like the $k- \epsilon$ model, which solve transport equations for turbulence quantities 
+    such as the turbulent kinetic energy $k$ and its dissipation rate $\epsilon$ (Hirsch, 2007, p. 69; Dartevelle, 2005, p. 7).
+    Zero, One, and Two-Equation Models: Simplify turbulence effects using models like the $k-\epsilon$ or $k-\omega$ models \note{cite Hirsch2007}
+    RANS is widely used in industrial applications due to its relatively low computational cost. However, 
+    its accuracy is limited by the turbulence models used, which may not capture all the complex 
+    aspects of turbulent flows, especially in cases with strong separations or unsteady phenomena (Hirsch, 2007, p. 92).
+    \item Large Eddy Simulation (LES): Resolves large turbulent structures while modeling smaller scales \note{cite Hirsch2007}. 
+    offers a middle ground between DNS and RANS by resolving the large energy-containing eddies while modeling the smaller 
+    scales using subgrid-scale models. LES relies on spatial filtering to separate the resolved scales from the 
+    subgrid scales (Dartevelle, 2005, p. 8). This approach captures more of the flow's unsteady and three-dimensional 
+    features compared to RANS, providing better accuracy for many turbulent flows.
+    The computational cost of LES is higher than that of RANS but significantly lower than that of DNS. LES is 
+    particularly advantageous for flows where large-scale turbulent structures play a dominant role, such as in 
+    free shear flows. However, near-wall modeling remains a challenge due to the small scale of near-wall turbulence, 
+    which requires fine grid resolution (Hirsch, 2007, p. 88).
+    \item Direct Numerical Simulation (DNS): Solves the Navier-Stokes equations without modeling but is computationally intensive and 
+        limited to low Reynolds numbers \note{cite Hirsch2007}. Direct Numerical Simulation (DNS) involves solving the Navier-
+        Stokes equations without any turbulence modeling, resolving all scales of motion down to the smallest dissipative scales. 
+        While DNS provides the most detailed information about the flow, it is computationally prohibitive for high Reynolds 
+        number flows because the required computational effort scales rapidly with the Reynolds number (Hirsch, 2007, p. 84; 
+        Dartevelle, 2005, p. 7).
+\end{itemize}
+The averaged equations resulting from RANS or LES approaches introduce additional terms representing the effects of turbulence. 
+In RANS, the Reynolds-averaged Navier-Stokes equations include the Reynolds stress tensor, which accounts for the momentum transfer 
+due to turbulent fluctuations. These stresses are modeled using turbulence models, such as the Boussinesq approximation, which relates 
+the Reynolds stresses to the mean rate of strain using an eddy viscosity (Hirsch, 2007, p. 89).
+
+The transport equations for turbulence quantities, like the turbulent kinetic energy $k$ and its dissipation rate $\epsilon$, are derived to 
+provide closure for the turbulence models. These equations involve production, diffusion, and dissipation terms and require empirical or 
+semi-empirical modeling (Davidson, p. 14).
+
+In LES, the filtered Navier-Stokes equations include subgrid-scale stress terms arising from the filtering process. Subgrid-scale models, 
+such as the Smagorinsky model, are used to represent the effects of the unresolved scales on the resolved flow (Dartevelle, 2005, p. 26).
+\subsection{Averaging Procedure}
+In turbulence modeling, various averaging procedures are employed to separate the mean flow from the fluctuations. In RANS, time 
+averaging or ensemble averaging is used to obtain the mean quantities, resulting in additional terms in the governing equations due to correlations 
+between fluctuating quantities (Dartevelle, 2005, p. 26). These terms, such as the Reynolds stresses, require modeling to close the equations.
+
+For variable density flows or multiphase flows, density-weighted averaging, known as Favre averaging, is used to simplify the governing equations and 
+avoid additional terms arising from density fluctuations (Gaertner, 2023). Favre averaging decomposes a variable $\phi$ into its mean and fluctuating 
+components (Dartevelle, 2005, p. 26).
+
+The choice of averaging technique affects the form of the averaged equations and the interpretation of the closure models (Henrik Rusche, 2003). 
+It's essential to select an averaging method appropriate for the flow conditions and the modeling approach being used.
+\subsection{Governing Equations}
+\subsection{Closure Models}
+\section{Multiphase CFD}
+Multiphase CFD involves the simulation of flows with multiple interacting phases, such as gas-liquid or liquid-solid systems. 
+Eulerian two-phase flow models treat each phase as interpenetrating continua, and volume averaging is used to derive the governing 
+equations [Henrik\_Rusche-2003-PhD-Thesis].
+When the interfaces between phases are larger than the grid size, interface tracking 
+methods like the Volume of Fluid (VOF) method can be used to capture the interface directly. 
+However, when the individual droplets or bubbles are smaller than the grid size (sub-grid 
+scale), the fluid can be treated as a mixture of phases, and averaging techniques are 
+applied to obtain the large-scale behavior while neglecting small-scale details (Gaertner, 2023).
+
+In the mixture approach, it's often assumed that the phases are closely coupled and 
+move with the same velocity, which simplifies the momentum equations by removing the need for interphase momentum exchange terms (Gaertner, 2023). The mixture properties are obtained through appropriate mixing rules based on the volume fractions of the phases.
+
+Averaging techniques, such as ensemble averaging or spatial filtering, are used to derive 
+the governing equations for multiphase flows. The single-step technique employs a phase 
+indicator function to describe the space occupation within any control volume by a given 
+phase, allowing for the direct derivation of the Navier-Stokes equations without a separate 
+volume-averaging step (Dartevelle, 2005, p. 10).
+Key considerations in multiphase CFD include:
+\begin{itemize}
+    \item Averaging Techniques: Volume averaging leads to phase-fraction equations that account for the spatial distribution of each phase
+     [Henrik\_Rusche-2003-PhD-Thesis].
+    \item Closure Models: Additional models are required to represent interphase interactions, such as drag, lift, and mass transfer.
+    \item Grid Resolution: The size of control volumes must be appropriate for the scale of the interfacial structures; excessively fine 
+    meshes may violate the assumptions of the averaging technique [Henrik\_Rusche-2003-PhD-Thesis].
+    \item Numerical Methods: Standard FV solvers can be adapted for multiphase flows, but special care is needed to handle issues like 
+    boundedness and numerical diffusion [Henrik\_Rusche-2003-PhD-Thesis].
+\end{itemize}
+Advanced discretization practices, such as compressive schemes, help maintain sharp interfaces between phases while preserving boundedness. 
+However, they may impose limitations on the allowable time step size to ensure stability [Henrik\_Rusche-2003-PhD-Thesis].
+\subsection{Volume of Fluid Method}
+\subsubsection{Governing Equations}
+seems to use the volume fraction transport equations along with the equations for the two phases together.
+
+Volume Fraction Transport Equation
+\begin{multline}\label{eqn_vofvolfractranspot}
+    \frac{\partial}{\partial t} \int_{\Omega} \alpha_{i}\,dV + \int_{\partial \Omega} \mathbf{S} \cdot (\alpha_{i} \mathbf{u})\,dS =\\
+    \int_{\Omega} \left(S(\alpha)_{\alpha_{i}} - \frac{\alpha_{i}}{\rho_{i}} \frac{D}{Dt} \rho_{i}\right)\,dV - \int_{\Omega} \frac{1}{\rho_{i}} \nabla \cdot (\alpha_{i} \rho_{i} \mathbf{u}_{d,i})\,dV
+\end{multline}
+
+Continuity Equation
+\begin{equation}\label{eqn_vofcont}
+    \frac{\partial}{\partial t} \rho + \nabla(\rho \mathbf{u}) = S.
+\end{equation}
+Applying the equation to a single element of the discretised solution domain and using the Gauss theorem,
+\begin{equation}
+    \int_{t_{j}}^{t_{j} + \Delta t_{j}} \left[
+    \int_{\Omega_{P}^{h}}\frac{\partial}{\partial t} \rho\,dV + \int_{\partial\Omega_{P}^{h}}d\mathbf{S} \cdot (\rho \mathbf{u})\right]\,dt  = \int_{t_{j}}^{t_{j} + \Delta t_{j}} \left[\int_{\Omega_{P}^{h}}S\,dV\right]\,dt,
+\end{equation}
+which can be discretised spatially as
+\begin{equation}
+    \int_{t_{j}}^{t_{j} + \Delta t_{j}} \left[
+    \int_{\Omega_{P}^{h}}\frac{\partial}{\partial t} \rho_{P}^{h}\,dV + \sum_{{f}_{P}}\mathbf{S}_{f} \cdot (\rho_{P}^{h} \mathbf{u}_{P}^{h})\right]\,dt  = \int_{t_{j}}^{t_{j} + \Delta t_{j}} \left[\sum_{i}(S_{\alpha_{i},P}\;\rho_{i,P}^{h})\delta\Omega_{P}^{h}\,dV\right]\,dt,
+\end{equation}
+\section{FV Methods and Star-CCM+}
 Finite volume methods (FVM) are the popular discretisation method used in computational fluid dynamics. FVMs can be described 
-as discrete evolution equations for cell averages. There is freedom in relation to representing the numerical solution. [cite ansorge sonar]
+as discrete evolution equations for cell averages. There is freedom in relation to representing the numerical solution.\note{cite ansorge sonar}
 The finite volume method uses the integral form of the conservation equation. The solution domain is divided into a finite number of small control volumes (CVs)
 by a grid which defines the control volume boundaries but not the computational nodes. Discrete versions of the integral form of the conservation 
-equations are applied to each control volume in order to obtain a set of linear algebraic equations.[cite starccm] FVms can be viewed as being part
+equations are applied to each control volume in order to obtain a set of linear algebraic equations.\note{cite starccm} FVms can be viewed as being part
 of the Petrov-Galerkin family of finite element methods with piecewise constant trial functions, enabling the use of 
 unstructured grids and leverage the computational advantages of the finite difference and finite element methods.
 
+\subsection{Discretisation: Problem and Solution Domain}
+subdivion of the spatial domain into a finite set of volume elements that do not overlap and completely fill the computational domain. \note{cite Rusche document starccm fvm isoz}
+- Let $\Omega \subset \mathcal{R}^{3}$ be an open bounded simply connected domain and $\partial \Omega$ be the Lipschitz continuous boundary of $\Omega$. 
+The FV spatial discretisation of $\Omega$ into $m$ finite subdivisions can de denoted $\Omega^{h}$ and is called the FV mesh.
+The FV mesh is a finite family of non-empty connected open subsets of $\Omega$ called control volumes or cells. 
+\begin{equation}\label{def_fvmesh}
+    \Omega \approx \Omega^{h} = \bigcup_{i=1}^{m} \Omega_{i}^{h},\,\text{and}\,\, \Omega_{i}^{h} \cap \Omega_{j}^{h} = \phi,\,\,\forall\, i \neq j
+\end{equation} 
+The volume of an arbitrary cell in the FV mesh $\Omega_{P}^{h}$ can be written as $\delta \Omega_{P}^{h}$. Assuming that
+$\Omega_{P}^{h},\,\,\forall \Omega_{P}^{h} \in \Omega^{h},$ is a convex polyhedron, the cell can be assigned the following attributes:
+\begin{itemize}
+    \item the set of vertices of $\Omega_{P}^{h}:\,\{v\}_{P}$
+    \item the position vector $\mathbf{x}_{P}$ of the point $P$ located at the centroid of the cell $\Omega_{P}^{h}$, such that $\int_{\Omega_{P}^{h}}(\mathbf{x} - \mathbf{x}_{P})\,dV = 0$.
+    \item the set of faces enclosing $\Omega_{P}^{h}$ and forming $\partial\Omega_{P}^{h}:\,\{f\}_{P}$
+    \item the set of neighbouring cells: $\{N\}_{P}$, where for the cell $\Omega_{P}^{h}$ if $|\{N\}_{p}| = |\{f\}_{P}|$, the cell is not a boundary but an internal cell.
+    \item the set of vectors, $\mathbf{x}_{N} - \mathbf{x}_{P}$, connecting the centroid of $\Omega_{P}^{h}$ to the centroids of the neighbouring cells: $\{\mathbf{d}\}_{P}$
+    \item the set of face area vectors corresponding to the faces in $\{f\}_{P}$ with origins at $\mathbf{x}_{f}$, the centroids of $f \in \{f\}_{P}:\,\{\mathbf{S}\}_{P}$. The
+        position vectors of the centroids of the faces can be defines similar to the cell centroids, $\int_{f} (\mathbf{x} - \mathbf{x}_{f})\,dS = 0$. Moreover, the area of the 
+        face $f$ is $\left\|\mathbf{S}_{f}\right\| = area\{f\}$. 
+    \item the volume of the polyhedral cell $\Omega_{P}^{h}$ is given as, $\delta \Omega_{P}^{h} = \frac{1}{3}\sum_{\{f\}_{P}} \mathbf{x}_{f} \cdot \mathbf{S}_{f}$.
+\end{itemize}
+The FV mesh is orthogonal if and only if $\mathbf{S}_{f} \cross \mathbf{d} = 0$. Unstructured meshes are cooler though \note{expand}
+The temporal discretisation can be written simply as 
+\begin{equation}\label{def_tempdiscretisation}
+    (0, T]^{h} = \left[0+\Delta t_{1},\dots,t_{n-1} + \Delta t_{n-1} + T \right],
+\end{equation}
+where the time steps can be variable.
+Together the spatial and temporal discretisations form the discretisation of the solution domain $Q$,
+\begin{equation}\label{def_solnspacediscretisation}
+    Q \approx Q^{h} = (0,T] \cross \Omega^{h}.
+\end{equation}
+\note{comment of collocated and scattered grids}
+\subsection{Equation Discretisation}\label{sec_eqndisc}
+Considering the general form of the standard transport equation for an intensive physical tensor quantity, $\mathbf{\Phi}$, of any order,
+\begin{equation}\label{eqn_stdtransport}
+    \underbrace{\frac{\partial}{\partial t} \rho \mathbf{\Phi}}_{\text{\small transient term}} + 
+    \underbrace{\nabla \cdot (\rho \mathbf{u} \mathbf{\Phi})}_{\text{\small convection term}} = 
+    \underbrace{\nabla \cdot (\Gamma \nabla \mathbf{\Phi})}_{\text{\small diffusion term}} + 
+    \underbrace{S_{\Phi}(\mathbf{\Phi})}_{\text{\small source term}}.
+\end{equation}
+The terms in the standard transport equation represent the rate of change per unit volume (transient term),
+the efflux by convection per unit volume (convection term), the rate of transport due to diffusion (diffusion term), and the rate of production per unit volume (source term).
+With the assumption that~\ref{eqn_stdtransport} holds not only on the solution domain $Q$, but also on its discretisation $Q^{h}$, it 
+is implied that the transport equation will also hold on each of the elements of the discretised domain. The goal of the equation discretisation
+is to transform the transport equation - and similarly, the governing equations - into a set of corresponding algebraic equations. The solution of this
+system of equations approximates the solution to the original equations at pre-determined locations in space and time.
 
-\subsection{Star-CCM+}
-\subsection{Modelling Turbulence}
-\subsection{Multiphase CFD}
-A gas satisfies the continuum hypothesis if the Knudsen number  is << 1.
-\subsection{Fundamentals}
-\subsection{Interfaces}
-\subsection{Boundary Conditions}
-\subsubsection{Volume of Fluid Method}
+The FV discretisation of~\ref{eqn_stdtransport} is formulated by integrating the equation over one element of the solution domain,
+ $(t_{j}, t_{j} + \Delta t_{j}] \cross \Omega_{P}^{h}, \,\,(t_{j}, t_{j} + \Delta t_{j}] \subset (0,T], \,\, \Omega_{P}^{h} \in \Omega^{h}$,
+ \begin{multline}\label{eqn_fvdiscstdtransport}
+    \int_{t_{j}}^{t_{j} + \Delta t_{j}} \left[
+        \int_{\Omega_{P}^{h}}\frac{\partial}{\partial t} \rho \mathbf{\Phi}\,dV + \int_{\Omega_{P}^{h}}\nabla \cdot (\rho \mathbf{u} \mathbf{\Phi})\,dV
+    \right]\,dt =\\
+    \int_{t_{j}}^{t_{j} + \Delta t_{j}} \left[
+        \int_{\Omega_{P}^{h}}\nabla \cdot (\Gamma \nabla \mathbf{\Phi})\,dV + \int_{\Omega_{P}^{h}}S_{\Phi}(\Phi)\,dV
+    \right]\,dt.
+\end{multline}
+Solution converges with the lowest order of the three approximations - approximations of surface and volume integrals, interpolation from cell centroid to integration points at cell
+faces (for convective fluxes), and approximation of gradients at integration points at cell faces (for diffusion fluxes) - thus it is advisable to use methods
+of the same order for all approximations.
+\subsubsection{Face Interpolation}\label{subsec_interpolation}
+Defining a discretisation $\mathbf{\Phi}^{h}: Q^{h} \to \mathbb{R}^{m \cross n}$ for the transported intensive physical quantity 
+$\mathbf{\Phi}: Q \to \mathbb{R}^{n}$, where $m$ and $n$ depend on the nature of the quantity $\mathbf{\Phi}$ as,
+\begin{align*}
+    &\mathbf{\Phi}^{h} = [\mathbf{\Phi}_{1}^{h},\dots,\mathbf{\Phi}_{m}^{h}]^T,\\
+    \mathbf{\Phi}_{P}^{h} &\approx \mathbf{\Phi}(\mathbf{x}),\,\forall \mathbf{x} \in \Omega^{h}_{P},\,\forall \Omega_{P}^{h} \in \Omega^{h}.
+\end{align*} 
+Star-CCM+ uses a collocated arrangement and thus stores variable values at control volume cell centroids. The value, $\mathbf{\Omega}_{P}^{h}$ can be written as a
+spatial average of the function $\mathbf{\Phi}$ over the cell $\Omega_{P}^{h}$,
+\begin{equation*}
+    \mathbf{\Phi}_{P}^{h} = \frac{1}{\delta \Omega_{P}^{h}}\int_{\Omega_{P}^{h}}\mathbf{\Phi}\,dV
+\end{equation*}
+Interpolation of the cell-centred values to the face centres is fundamental to the finite volume method. The interpolated face value of the 
+discretised quantity at the cell centroid $\mathbf{\Phi}_{P}^{h}$, can be written as $\mathbf{\Phi}_{f(F,S,\gamma)}$. The interpolated value is evaluated from 
+the values in the neighbouring cell using an interpolation scheme $S$, which may require a flux $F$ through face $f$, and some other parameters $\gamma$.
+\begin{itemize}
+    \item First-Order upwind
+    \item Second-Order Upwind
+    \item Central-Differencing
+    \item Bounded Central-Differencing
+    \item Hybrid MUSCL 3rd-Order/Central-Differencing
+    \item Hybrid Second-Order Upwind/Central-Differencing
+    \item Hyrbrid Second-Order Upwind/Bounded-Central
+\end{itemize}
+\subsubsection{Convection Term}
+The discretisation of the convection term is performed by integrating over a control volume and transforming the volume integral into a surface integral using
+the Gauss's theorem. Star-CCM+ evaluates this surface integral as the product of the value at the cell face center and the cell face area.
+\begin{equation}
+    \int_{\Omega_{P}^{h}} \nabla \cdot (\rho \mathbf{u} \mathbf{\Phi})\,dV = \int_{\partial\Omega_{P}^{h}} d\mathbf{S}\cdot(\rho \mathbf{u} \mathbf{\Phi})
+    \approx \sum_{\{f\}_{P}} \mathbf{S}_{f} \cdot (\rho \mathbf{u})_{f}\; \mathbf{\Phi}_{f(F,S)} = \sum_{\{f\}_{P}} \mathbf{F}^{\mathbf{\Phi}}_{f} \;\mathbf{\Phi}_{f(F,S)}
+\end{equation},
+where $\mathbf{F}_{f}^{\mathbf{\Phi}}$ is the flux through face $f$ associated with $\mathbf{\Phi}$.
+Default Star-CCM+ scheme to interpolate convective fluxes is the linear upwind scheme.
+\subsubsection{Diffusion Term}
+The diffusion term is discretised similar to the convection term.
+\begin{equation}
+    \int_{\Omega_{P}^{h}} \nabla \cdot (\mathbf{\Gamma} \nabla \mathbf{\Phi})\,dV = \int_{\partial\Omega_{P}^{h}} d\mathbf{S}\cdot (\mathbf{\Gamma} \nabla \mathbf{\Phi})
+    \approx \sum_{\{f\}_{P}} (\mathbf{\Gamma}^{\mathbf{\Phi}}_{f} (\nabla \mathbf{\Phi})_{f} \cdot \mathbf{S}_{f})
+\end{equation}
+The face interpolation of $\mathbf{\Gamma}_{P}^{h}$ can be accomplished by either using the interpolation schemes listed in~\ref{subsec_interpolation} or 
+taking into account the interface/cell-face orientation as $\mathbf{\Gamma}_{P}^{h}$ takes different values within the interiors of different phases. 
+Star-CCM+ calculates the interpolation of $\mathbf{\Gamma}$ at the faces using a harmonic average of the cell values. 
+\subsubsection{Gradient Approximation}
+In order to approximate the gradients at the cell face centres, Star-CCM+ uses the Least Squares method. The value $\mathbf{\Phi}_{P}$ at the cell centroid
+can be related to the value $\mathbf{\Phi}_{N}$ at the neighbouring cell centroid using the distance between the centroids and the gradient $\mathbf{\Phi}_{P}$ as
+\begin{equation*}
+    \mathbf{\Phi}_{N} = \mathbf{\Phi}_{P} + \mathbf{d} \cdot \nabla \mathbf{\Phi}_{P}.
+\end{equation*}
+Thus, the matrix equation can be solved in order to obtain the value of the gradient at the cell centroid
+\begin{equation}
+    \left[\nabla \mathbf{\Phi}_{P}\right] = \left[\mathbf{d}^{-1}\right]\left[\mathbf{\Phi}_{N} - \mathbf{\Phi}_{P}\right].
+\end{equation}
+As the matrices involved in the above equation are not square, no exact solution can be obtained. However, $\nabla \mathbf{\Phi}_{P}$ can be numerically approximated
+by minimising the square of the error, $e = \mathbf{\Phi}_{N} - (\mathbf{\Phi}_{P} + \mathbf{d} \cdot \nabla \mathbf{\Phi}_{P})$.
+Star-CCM+ defines the value of the approximated gradient as
+\begin{equation}\label{eqn_gradleastsquares}
+    \nabla \mathbf{\Phi} = (\beta) \sum_{\{f\}_{P}} \mathbf{M}^{-1} \cdot (w_{f} \mathbf{d}_{f})(\mathbf{\Phi}_{N} - \mathbf{\Phi}_{P}) 
+    = (\beta) \sum_{\{f\}_{P}} \mathbf{q}_{f}(\mathbf{\Phi}_{N} - \mathbf{\Phi}_{P}),
+\end{equation}
+where $\mathbf{M} = \sum_{\{f\}_{P}} \mathbf{w}_{f} \mathbf{d}^T \mathbf{d}$ with the weighting function $w_{\{f\}_{P}} =\norm{\mathbf{S}}/(\norm{d}\;\delta \Omega_{P}^{h})$.
+
+The scalar $\beta$ is computed as 
+\begin{equation}
+    \beta = \min\left(1, \frac{C^{\text{user}}_{\max}}{\max_{i,j}((\mathbf{x}_{f} - \mathbf{x}_{P}) \cdot \mathbf{q}_{j})}\right)
+\end{equation},
+where $C^{\text{user}}_{\max}$ is the specified Maximum Reconstruction Coefficient, $\max_{i,j}$ is over all pairings of cell faces in ${f}_{P}$, and $\mathbf{q}_{j}$
+is defined in equation~\ref{eqn_gradleastsquares}.
+\note{comment on gradient boundedness}
+
+\subsubsection{Transient Term}
+To approximate the time derivative
 
 
-\subsection{Validation and Verification}
+Using the above approximations, the semi-discretised form of the~\ref{eqn_fvdiscstdtransport} is obtained as follows:
+\begin{equation}\label{eqn_semidiscrete}
+    \frac{(\mathbf{\rho\Phi})_{P}^{n+1} - (\mathbf{\rho\Phi})_{P}^{n}}{\delta t} \delta\Omega^{h}_{P} + \sum_{\{f\}_{P}} \mathbf{F}^{\mathbf{\Phi}}_{f} \;\mathbf{\Phi}_{f(F,S)} =\\
+    \sum_{\{f\}_{P}} (\mathbf{\Gamma}^{\mathbf{\Phi}}_{f} (\nabla_{f}\mathbf{\Phi}) \cdot \mathbf{S}_{f}) + S(\mathbf{\Phi})_{P}\delta\Omega^{h}_{P}.
+\end{equation}
+\subsection{Solution Procedures}
+\subsection{Discretised Governing Equations}
+
+\section{Validating Solver}
 \subsection{Stefan Problem}
-
-\section{Free Surface Flow Problem}
-\subsection{Literature Research}
-\subsection{Problem Description}
-\subsection{Rayleigh-Taylor Instability}
-\subsection{Impinging Droplets}
+\subsection{Rayleigh Taylor}
 \subsection{Dam Break}
-\subsection{}
+
+
+
 
 
