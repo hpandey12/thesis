@@ -111,6 +111,7 @@ class dynamic_model:
                     for param in required_params:
                         val_ar.append(self.params[str(param)])
                     results[var_name] = value(*val_ar)
+    
         
         for result in results:
             self.params[result] = results[result]
