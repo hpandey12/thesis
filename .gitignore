@@ -319,3 +319,4 @@ tsconfig.lsif.json
 
 *.png
 *.csv
+*.sim
