@@ -316,10 +316,5 @@ tsconfig.lsif.json
 *.lsif
 *.db
 *.tsbuildinfo
-
-*.png
-*.csv
-<<<<<<< HEAD
-*.sim
-=======
->>>>>>> db48d03de06d3fe2facb61da6cb23294a41115c6
+.csv
+.png
