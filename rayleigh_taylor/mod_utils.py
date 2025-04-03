@@ -1,7 +1,7 @@
 import numpy
 import pandas
 import os
-
+import fnmatch
 
 '''Example Usage to extract columns (name_params) from csv files with iterating name
 range_var = [4, 8, 12, 16, 20]
@@ -119,7 +119,32 @@ class dynamic_model:
 
         self.non_dim_nums = results
         print(self.non_dim_nums)
+
+    def load_solution_data(self, dir, name, name_append, name_vars, ref_t = None):
+        range_var = []
+        for file in os.listdir(dir):
+            if fnmatch.fnmatch(file, name+'*'+name_append):
+                #print(file.split('_')[-1].split(".")[0])
+                range_var.append(int(file.split('_')[-1].split(".")[0]))
+
+        range_var = numpy.sort(range_var)
+        if self.params["timestep"]:
+            self.params['timesteps'] = []
+        else:
+            self.params["timestep"] = int(range_var[1] - range_var[0])
+        print(range_var[1] - range_var[0], self.params["timestep"])
+        [self.params['timesteps'].append(i*self.params["timestep"]) for i in range_var]
+
+        if ref_t and callable(ref_t):
+            self.set_nondim_consts(overwrite= True, ref_t = ref_t)
+        for i in self.params['timesteps']:
+            self.params["nondim_time_time"] = []
+            self.params["nondim_time_time"].append(i*self.params["ref_t"])
     
+
+        self.set_solution_data(dir, name_append, range_var, name, name_vars)
+
+
     def set_solution_data(self, dir, filename_append, range_var, name, name_params):
         df_list = []
         for idx, i in enumerate(range_var):
