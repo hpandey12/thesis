@@ -2,30 +2,63 @@ import numpy
 import pandas
 import os
 import fnmatch
+import sys
+def generate_ini(path, delta_h, amplitude, rho_high, rho_low, sigma, time_end, timestep, timestep_freq, viscosity):
+    ini_template = """-param delta_h {delta_h}
+-param amplitude 0.05
+-param high_rho {rho_high}
+-param low_rho {rho_low}
+-param surface_tension {surface_tension}
+-param time_end {time_end}
+-param timestep {timestep}
+-param timestep_freq {timestep_freq}
+-param viscosity_high {viscosity}
+-param viscosity_low {viscosity}
+"""
 
-'''Example Usage to extract columns (name_params) from csv files with iterating name
-range_var = [4, 8, 12, 16, 20]
-name_vars = {
-    'x_dat': "X (m)",
-    'y_dat': "Y (m)",
-    'v_y': "Velocity[j] (m/s)",
-    'volFrac_high': "Volume Fraction of high_rho",
-    'volFrac_low': "Volume Fraction of low_rho",
-    'min_mixWidth': "minMixWidthEval",
-    'max_mixWidth': "maxMixWidthEval",
-    'massFlux': "Report: massImbalance_highRho (kg)"
-}
+    ini_contents = ini_template.format(
+        delta_h=delta_h,
+        amplitude=amplitude,
+        rho_high=rho_high,
+        rho_low=rho_low,
+        surface_tension=sigma,
+        time_end=time_end,
+        timestep=timestep,
+        timestep_freq = timestep_freq,
+        viscosity=viscosity
+    )
+    with open(os.path.join(path, "params.ini"), "w") as f:
+        f.write(ini_contents)
+    return ini_contents
 
-dir = r'D:\thesis\rayleigh_taylor'
-name = 'line_probe_table_test_'
-name_append = '.csv'
-'''
+def generate_slurm(A, Re, sigma, path):
+    slurm_script = f"""#!/usr/bin/zsh
+#SBATCH --job-name=A{A}_Re{Re}_sig{sigma:.0e}
+#SBATCH --output=A{A}_Re{Re}_sig{sigma:.0e}_%J.out
+#SBATCH --time=08:30:00
+#SBATCH --ntasks-per-node=4
+#SBATCH --nodes=2
+
+cd {os.path.abspath(path)}
+module load STAR-CCM+/18.06.006
+
+export CDLMD_LICENSE_FILE=50015@license.itc.rwth-aachen.de
+
+starccm+ -ini params.ini -bs slurm -mpi intel -xsystemucx -rsh ssh -power -batch mesh,run 0main_surf.sim
+"""
+    with open(os.path.join(path, "run_sim.sh"), "w") as f:
+        f.write(slurm_script)   
+
+
 class dynamic_model:
     def __init__(self, params):
-        self.params = params
-
+        if params:
+            self.params = params
+        else:
+            self.params = {}
         self.non_dim_nums = {}
         self.solution_data = {}
+        self.analysis_data = {}
         
     def set_nondim_consts(self, overwrite = False, **kwargs):
         def get_param_val(key, value):
@@ -62,7 +95,6 @@ class dynamic_model:
         if 'ref_grev' not in self.params and 'grev' in self.params:
             self.params['ref_grev'] = self.params['grev']
 
-    
     def calculate_atwood_number(self):
         if 'high_rho' in self.params and 'low_rho' in self.params:
             return (self.params["high_rho"] - self.params["low_rho"]) / (self.params["high_rho"] + self.params["low_rho"])
@@ -120,7 +152,7 @@ class dynamic_model:
         self.non_dim_nums = results
         print(self.non_dim_nums)
 
-    def load_solution_data(self, dir, name, name_append, name_vars, ref_t = None):
+    def load_solution_data(self, dir, name, name_append, name_vars, ref_t = None, update_params: bool = True):
         range_var = []
         for file in os.listdir(dir):
             if fnmatch.fnmatch(file, name+'*'+name_append):
@@ -128,23 +160,63 @@ class dynamic_model:
                 range_var.append(int(file.split('_')[-1].split(".")[0]))
 
         range_var = numpy.sort(range_var)
-        if self.params["timestep"]:
-            self.params['timesteps'] = []
+        if self.params:
+            self.compare_params(dir, update_params)
         else:
-            self.params["timestep"] = int(range_var[1] - range_var[0])
-        print(range_var[1] - range_var[0], self.params["timestep"])
-        [self.params['timesteps'].append(i*self.params["timestep"]) for i in range_var]
+            self.set_params(dir)
+        try:
+            if self.params["timestep"]:
+                self.params['timesteps'] = []
+        #else:
+        #    self.params["timestep"] = int(range_var[1] - range_var[0])
+        #print('comparing timesteps as read from filenames versus the intial model\'s: ', range_var[1] - range_var[0], self.params["timestep"])
+            [self.params['timesteps'].append(i*self.params["timestep"]) for i in range_var]
+        except:
+            print('no parameter timestep defined in the model. cannot create timesteps array. problem in load solution data.')
 
         if ref_t and callable(ref_t):
             self.set_nondim_consts(overwrite= True, ref_t = ref_t)
+        self.params["nondim_time_time"] = []
         for i in self.params['timesteps']:
-            self.params["nondim_time_time"] = []
             self.params["nondim_time_time"].append(i*self.params["ref_t"])
-    
-
+       
         self.set_solution_data(dir, name_append, range_var, name, name_vars)
+    
+    def set_params(self, dir):
+        with open(os.path.join(dir,"params.ini"),"r") as f:
+            lines = f.readlines()
+        file_params = {}
+        for line in lines:
+            param_name = line.split()[1]
+            param_val = line.split()[-1]
+            try:
+                file_params.update({param_name: float(param_val)})
+            except:
+                pass
+        self.params = file_params
 
+    def compare_params(self, dir, update_params):
+        with open(os.path.join(dir,"params.ini"),"r") as f:
+            lines = f.readlines()
+        print('comparing file params with model params with params.ini \n')
 
+        file_params = {}
+        for line in lines:
+            param_name = line.split()[1]
+            param_val = line.split()[-1]
+            try:
+                file_params.update({param_name: float(param_val)})
+            except:
+                pass
+
+            if param_name in self.params:
+                print(param_name,'-', param_val, ",", self.params[param_name])
+                if update_params:
+                    self.params[param_name] = float(param_val)
+            else:
+                continue    
+            sys.stdout.flush()
+    
     def set_solution_data(self, dir, filename_append, range_var, name, name_params):
         df_list = []
         for idx, i in enumerate(range_var):
@@ -163,36 +235,31 @@ class dynamic_model:
                 
             except KeyError as e:
                 print(f"Column {e} not found in {filepath}. Skipping.")
-
         self.solution_data = df_list
 
-class output_list:
-    def __init__(self, dir, name_append, range_var, name, name_params, timesteps, math_vars):
-        if math_vars is None:
-            pass
-        else: 
-            self.__dict__ = math_vars
-        self.df_list = self.return_outputframe_list(dir, name_append, range_var, name, name_params)
-        self.timesteps = timesteps
+    def calculate_stuff(self):
+        y_bub = []
+        y_spike = []
+        v_bub_file = [] 
+        v_spike_file = []
+        for idx, timestep_data in enumerate(self.solution_data):
+            y_bub_inst = float(numpy.max(timestep_data["y_dat"]) - 2.0)
+            y_spike_inst = float(numpy.min(timestep_data["y_dat"]) - 2.0)
+            self.solution_data[idx]['y_bub'] = y_bub
+            self.solution_data[idx]['y_spike'] = y_spike
+
+            v_bub_file.append(float(timestep_data["v_y"][numpy.argmax(timestep_data["y_dat"])]))
+            v_spike_file.append(float(timestep_data["v_y"][numpy.argmin(timestep_data["y_dat"])]))
+            y_bub.append(y_bub_inst)
+            y_spike.append(y_spike_inst)
+
+        v_bub = numpy.abs(numpy.diff(y_bub))
+        v_spike = numpy.abs(numpy.diff(y_spike))
         
-
-    def return_outputframe_list(self, dir, filename_append, range_var, name, name_params):
-        df_list = []
-        for idx, i in enumerate(range_var):
-            filename = name + str(i) + filename_append
-            filepath = os.path.join(dir, filename)
-            try:
-                df = pandas.read_csv(filepath)
-                # Extract only the specified columns and rename them according to name_params
-                filtered_df = df.loc[:, [value for value in name_params.values() if value in df.columns]]
-                filtered_df.rename(columns={value: key for key, value in name_params.items() if value in filtered_df.columns}, inplace=True)
-       
-                np_df = {col_name: filtered_df[col_name].to_numpy() for col_name in filtered_df.columns}
-                df_list.append(np_df)
-            except FileNotFoundError:
-                print(f"File {filepath} not found. Skipping.")
-                
-            except KeyError as e:
-                print(f"Column {e} not found in {filepath}. Skipping.")
-
-        return df_list
+        self.analysis_data['y_bub'] = y_bub
+        self.analysis_data['y_spike'] = y_spike
+        self.analysis_data['v_bub'] = v_bub
+        self.analysis_data['v_spike'] = v_spike
+        self.analysis_data['v_bub_file'] = v_bub_file
+        self.analysis_data['v_spike_file'] = v_spike_file
+        self.analysis_data['nondim_time'] = self.params["nondim_time_time"]
