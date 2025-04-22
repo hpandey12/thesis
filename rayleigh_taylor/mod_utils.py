@@ -179,7 +179,9 @@ class dynamic_model:
         self.params["nondim_time_time"] = []
         for i in self.params['timesteps']:
             self.params["nondim_time_time"].append(i*self.params["ref_t"])
-       
+        
+        self.params['timesteps'] = numpy.array(self.params['timesteps'])
+        self.params["nondim_time_time"] = numpy.array(self.params["nondim_time_time"])
         self.set_solution_data(dir, name_append, range_var, name, name_vars)
     
     def set_params(self, dir):
@@ -256,10 +258,10 @@ class dynamic_model:
         v_bub = numpy.abs(numpy.diff(y_bub))
         v_spike = numpy.abs(numpy.diff(y_spike))
         
-        self.analysis_data['y_bub'] = y_bub
-        self.analysis_data['y_spike'] = y_spike
-        self.analysis_data['v_bub'] = v_bub
-        self.analysis_data['v_spike'] = v_spike
-        self.analysis_data['v_bub_file'] = v_bub_file
-        self.analysis_data['v_spike_file'] = v_spike_file
-        self.analysis_data['nondim_time'] = self.params["nondim_time_time"]
+        self.analysis_data['y_bub'] = numpy.array(y_bub)
+        self.analysis_data['y_spike'] = numpy.array(y_spike)
+        self.analysis_data['v_bub'] = numpy.array(v_bub)
+        self.analysis_data['v_spike'] = numpy.array(v_spike)
+        self.analysis_data['v_bub_file'] = numpy.array(v_bub_file)
+        self.analysis_data['v_spike_file'] = numpy.array(v_spike_file)
+        self.analysis_data['nondim_time'] = numpy.array(self.params["nondim_time_time"])
