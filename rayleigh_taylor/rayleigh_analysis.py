@@ -50,7 +50,6 @@ model.calculate_nondim_nums(
     )
 
 # %%
-
 #edit as required
 name_vars = {
     'x_dat': "X (m)",
@@ -67,7 +66,7 @@ name_vars = {
     'mean_rho': "Density (kg/m^3)"
 }
 
-dir = r'/home/yy310050/Desktop/rayleigh-taylor/simulations/final_sims/convergence/Re300_At0.5_sigma1e-05_dh0.007'
+dir = r'/home/yy310050/Desktop/thesis/rayleigh_taylor/final_sims/Re3000_Amp01/Re3000_At0.2_sigma1e-05_dh0.0045'
 name = 'isosurface_table_'
 name_append = '.csv'
 
@@ -89,7 +88,6 @@ plt.title("val vs t")
 plt.legend()
 plt.grid(True)
 plt.show()
-
 # %%
 # Plot y_max and y_min on the same graph
 plt.figure(figsize=(8, 5))
@@ -102,8 +100,91 @@ plt.title("y_spike and y_max vs t")
 plt.legend()
 plt.grid(True)
 plt.show()
+# %%
+# single-mode_At0.2_Re3000_A0.1
+dir = r'/home/yy310050/Desktop/thesis/rayleigh_taylor/final_sims/Re3000_Amp01/Re3000_At0.2_sigma1e-05_dh0.0045'
+name = 'isosurface_table_'
+name_append = '.csv'
+#if reference time is different from the reference time initially set
+ref_t = lambda atwood_num: numpy.sqrt(atwood_num)
+model.load_solution_data(dir, name, name_append, name_vars, ref_t= ref_t)
+model.calculate_stuff()
+dns_df = pandas.read_csv(r'/home/yy310050/Desktop/thesis/rayleigh_taylor/dns_compare_data/2D_Single-Mode_At0.2_Re3000_A0.05.csv')
+plt.figure(figsize=(8, 5))
+plt.plot(model.params['timesteps'], model.analysis_data['y_bub'], label='sim_bubble')
+plt.plot(dns_df['Time'], dns_df['Bubble'], label='dns_bubble')
+plt.plot(model.params['timesteps'], model.analysis_data['y_spike'], label='sim_spike')
+plt.plot(dns_df['Time'], dns_df['Spike'], label='dns_spike')
+plt.xlabel("time")
+plt.ylabel("bubble and spike distances")
+plt.title("single-mode_At0.2_Re3000_A0.1")
+plt.legend()
+plt.grid(True)
+plt.show()
+#%%
+#single-mode_At0.5_Re300_A0.1
+dir = r'/home/yy310050/Desktop/thesis/rayleigh_taylor/final_sims/Re3000_Amp01/Re300_At0.5_sigma1e-05_dh0.0045'
+name = 'isosurface_table_'
+name_append = '.csv'
+#if reference time is different from the reference time initially set
+ref_t = lambda atwood_num: numpy.sqrt(atwood_num)
+model.load_solution_data(dir, name, name_append, name_vars, ref_t= ref_t)
+model.calculate_stuff()
+dns_df = pandas.read_csv(r'/home/yy310050/Desktop/thesis/rayleigh_taylor/dns_compare_data/2D_Single-Mode_At0.5_Re300_A0.05.csv')
+plt.figure(figsize=(8, 5))
+plt.plot(model.params['timesteps'], model.analysis_data['y_bub'], label='sim_bubble')
+plt.plot(dns_df['Time'], dns_df['Bubble'], label='dns_bubble')
+plt.plot(model.params['timesteps'], model.analysis_data['y_spike'], label='sim_spike')
+plt.plot(dns_df['Time'], dns_df['Spike'], label='dns_spike')
+#plt.plot(nondimtime, y_s, label='y_min', marker = '.')
+plt.xlabel("time")
+plt.ylabel("bubble and spike distances")
+plt.title("single-mode_At0.5_Re300_A0.1")
+plt.legend()
+plt.grid(True)
+plt.show()
 
 # %%
-#1010, 1414, 1818, 2222, 2626, 3030
+#single-mode_At0.5_Re1000_A0.1
+dir = r'/home/yy310050/Desktop/thesis/rayleigh_taylor/final_sims/Re3000_Amp01/Re1000_At0.5_sigma1e-05_dh0.0045'
+name = 'isosurface_table_'
+name_append = '.csv'
+#if reference time is different from the reference time initially set
+ref_t = lambda atwood_num: numpy.sqrt(atwood_num)
+model.load_solution_data(dir, name, name_append, name_vars, ref_t= ref_t)
+model.calculate_stuff()
+dns_df = pandas.read_csv(r'/home/yy310050/Desktop/thesis/rayleigh_taylor/dns_compare_data/2D_Single-Mode_At0.5_Re1000_A0.05.csv')
+plt.figure(figsize=(8, 5))
+plt.plot(model.params['timesteps'], model.analysis_data['y_bub'], label='sim_bubble')
+plt.plot(dns_df['Time'], dns_df['Bubble'], label='dns_bubble')
+plt.plot(model.params['timesteps'], model.analysis_data['y_spike'], label='sim_spike')
+plt.plot(dns_df['Time'], dns_df['Spike'], label='dns_spike')
+#plt.plot(nondimtime, y_s, label='y_min', marker = '.')
+plt.xlabel("time")
+plt.ylabel("bubble and spike distances")
+plt.title("single-mode_At0.5_Re1000_A0.1")
+plt.legend()
+plt.grid(True)
+plt.show()
 
-
+# %%#single-mode_At0.5_Re3000_A0.1
+dir = r'/home/yy310050/Desktop/thesis/rayleigh_taylor/final_sims/Re3000_Amp01/Re3000_At0.5_sigma1e-05_dh0.0045'
+name = 'isosurface_table_'
+name_append = '.csv'
+#if reference time is different from the reference time initially set
+ref_t = lambda atwood_num: numpy.sqrt(atwood_num)
+model.load_solution_data(dir, name, name_append, name_vars, ref_t= ref_t)
+model.calculate_stuff()
+dns_df = pandas.read_csv(r'/home/yy310050/Desktop/thesis/rayleigh_taylor/dns_compare_data/2D_Single-Mode_At0.5_Re3000_A0.05.csv')
+plt.figure(figsize=(8, 5))
+plt.plot(model.params['timesteps'], model.analysis_data['y_bub'], label='sim_bubble')
+plt.plot(dns_df['Time'], dns_df['Bubble'], label='dns_bubble')
+plt.plot(model.params['timesteps'], model.analysis_data['y_spike'], label='sim_spike')
+plt.plot(dns_df['Time'], dns_df['Spike'], label='dns_spike')
+#plt.plot(nondimtime, y_s, label='y_min', marker = '.')
+plt.xlabel("time")
+plt.ylabel("bubble and spike distances")
+plt.title("single-mode_At0.5_Re3000_A0.1")
+plt.legend()
+plt.grid(True)
+plt.show()

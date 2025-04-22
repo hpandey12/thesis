@@ -325,3 +325,4 @@ tsconfig.lsif.json
 *.sim
 *.sh
 *.sim~
+*.pyc
