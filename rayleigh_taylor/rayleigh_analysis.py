@@ -291,8 +291,9 @@ print("bubble L_inf error: ", numpy.max(Linf_err_bubble))
 dir_list = [
     r'/home/yy310050/Desktop/thesis/rayleigh_taylor/final_sims/convergence/Re300_At0.5_sigma1e-05_dh0.05',
     r"/home/yy310050/Desktop/thesis/rayleigh_taylor/final_sims/convergence/Re300_At0.5_sigma1e-05_dh0.007",
-    #r"/home/yy310050/Desktop/thesis/rayleigh_taylor/final_sims/Re3000_At0.5_sigma1e-05_dh0.0045",
-    r"/home/yy310050/Desktop/thesis/rayleigh_taylor/final_sims/convergence/Re300_At0.5_sigma1e-05_dh0.0025"
+    r"/home/yy310050/Desktop/thesis/rayleigh_taylor/final_sims/convergence/Re300_At0.5_sigma1e-05_dh0.0045",
+    r"/home/yy310050/Desktop/thesis/rayleigh_taylor/final_sims/convergence/Re300_At0.5_sigma1e-05_dh0.0025",
+    #r"/home/yy310050/Desktop/thesis/rayleigh_taylor/final_sims/convergence/Re300_At0.5_sigma1e-05_dh0.0005"
 ]
 name = 'isosurface_table_'
 name_append = '.csv'
