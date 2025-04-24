@@ -319,7 +319,10 @@ tsconfig.lsif.json
 
 *.png
 *.csv
-<<<<<<< HEAD
 *.sim
-=======
->>>>>>> db48d03de06d3fe2facb61da6cb23294a41115c6
+*.csv
+*.png
+*.sim
+*.sh
+*.sim~
+*.pyc
