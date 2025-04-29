@@ -1,0 +1,74 @@
+\section{Subproblem 1: Liquid Infiltration}
+\subsection{Introduction}
+\subsubsection{Physical Background}
+\subsection{Problem Description}
+
+\subsection{Validation Problems}
+\subsubsection{Stefan Problem}
+\begin{itemize}
+    \item \textbf{Introduction}
+    \item \textbf{Physical Background?}
+    \item \textbf{Computational Methodology?}
+    \begin{itemize}
+        \item \textbf{governing equations and stuff: }
+        \item \textbf{dynamic similarity}
+        \item \textbf{simulation details}
+    \end{itemize}
+\end{itemize}
+\newpage
+\subsubsection{Rayleigh-Taylor Instability}
+\begin{itemize}
+    \item \textbf{Introduction}
+    \item \textbf{Physical Background?}
+    \item \textbf{Computational Methodology?}
+    \begin{itemize}
+        \item \textbf{governing equations and stuff: }
+        \item \textbf{dynamic similarity}
+        \item \textbf{simulation details: } the instability is simulated on a 2D rectangular domain, $[0, x_{L}] \cross [0, 4x_{L}]$, where $x_{L}$ is the
+        reference length scale. The initial interface, located at $y_{0}$, represents a single-mode perturbation with amplitude, $A = 0.1 x_{L}$, and wavelength, $\lambda = x_{L}$.
+        \begin{equation*}
+            y_{0} = 2 x_{L} + A \cos(\frac{2\pi}{x_{L}})
+        \end{equation*}
+        The lower limit of the high Atwood number regime requires the Atwood number to be atleast one half~\cite{HutchinsonDISSERTATIONSUBMITTEDFACULTY}.
+        Gravitational acceleration acts in a downward direction with a magnitude of $g = 1.0$. Slip boundary conditions are used for all flow quantities at the top and bottom
+        boundaries of the domain. The left and right boundaries are extended using periodic boundary conditions. The physical parameters are selected in order to
+        make the simulations dynamically similar to the ones studied in~\cite{hamzehlooDirectNumericalSimulations2021}.
+        According to~\cite{MIRJALILI2019221}, a reasonable solution to the RT instability with $At \approx 0.75$ can be obtained with a $128 \cross 512$ mesh.
+        With similar mesh resolutions being used in~\cite{hamzehlooDirectNumericalSimulations2021, HuangConsistentEssentiallyConservative2020} to study
+        similar RT instabilities, in addition to a mesh convergence study being performed, the domain is discretised using a uniform trimmer mesh
+        with size $\delta_{h} = 0.0045$. 
+        The timestep for the simulations is selected as $\delta t = 2.5 \cross 10e-4/\sqrt{At}$ similar to~\cite{DingDiffuseInterfaceModel2007,hamzehlooDirectNumericalSimulations2021}.
+        The following cases are studied:
+        \begin{tabularx}{0.8 \textwidth}{ >{\centering\arraybackslash}X >{\centering\arraybackslash}X  >{\centering\arraybackslash}X  >{\centering\arraybackslash}X >{\centering\arraybackslash}X}
+            \hline
+            Case & $At$ & $Re$ & $\sigma$ & $\delta_{h}$\\
+            \hline
+            1 & $0.5$ & $300$ & $1e-5$ & $0.05$\\
+            2 & $0.5$ & $300$ & $1e-5$ $0.007$\\
+            3 & $0.5$ & $300$ & $1e-5$ & $0.0045$\\
+            4 & $0.5$ & $300$ & $1e-5$ & $0.0025$\\
+            5 & $0.2$ & $1000$ & $1e-5$ & $0.0045$\\
+            6 & $0.5$ & $1000$ & $1e-5$ & $0.0045$\\
+            5 & $0.5$ & $3000$ & $1e-5$ & $0.0045$\\
+            6 & $0.5$ & $3000$ & $1e-5$ & $0.0045$\\
+            \hline
+        \end{tabularx}
+    \end{itemize}
+\end{itemize}
+
+\subsection{Numerical Analysis}
+\subsubsection{Stefan Problem}
+\begin{itemize}
+    \item \textbf{Convergence}
+    \item \textbf{Results}
+    \item \textbf{Errors}
+\end{itemize}
+
+\subsubsection{Rayleigh-Taylor Instability}
+\begin{itemize}
+    \item \textbf{Convergence}
+    \item \textbf{Results}
+    \item \textbf{Errors}
+\end{itemize}
+
+\subsubsection{Actual Problem}
