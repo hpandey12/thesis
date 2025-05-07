@@ -69,7 +69,7 @@
 \usepackage{framed}
 \usepackage{dashrule}
 \usepackage{hyperref}
-
+\usepackage[latin1,utf8]{inputenc}
 \input{Chapters/symbols.tex}		% Glossar mit Einteilung in Kategorien
 
 
@@ -78,6 +78,8 @@
 \newcommand{\todoin}[1]{\todo[inline]{#1}}
 \newcommand{\g}[1]{{\gls{#1}}}
 \newcommand{\note}[1]{\textcolor{red}{[#1]}}
+\newcommand{\citelater}[1]{\textcolor{blue}{[#1]}}
+\newcommand{\COMMENT}[1]{\textcolor{red}{[#1]}}
 \newcommand{\highlight}[1]{%
 	\colorbox{red!10}{$\displaystyle#1$}}
 
