@@ -18,7 +18,7 @@
 %                                                                           %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\documentclass[paper=a4,12pt,titlepage,listof=totoc,index=totoc,bibliography=totoc]{scrartcl}
+\documentclass[paper=a4,10pt,titlepage,listof=totoc,index=totoc,bibliography=totoc]{scrartcl}
 % paper=a4		Papierformat DinA 4
 % 12pt		Schriftgr��e 12pt
 % titlepage 		Deckblatt
@@ -69,10 +69,10 @@
 \usepackage{framed}
 \usepackage{dashrule}
 \usepackage{hyperref}
-\usepackage[latin1,utf8]{inputenc}
-\input{Chapters/symbols.tex}		% Glossar mit Einteilung in Kategorien
-
-
+\usepackage[T1]{fontenc}
+\usepackage{mathpazo}
+\usepackage{libertine}
+%\input{Chapters/symbols.tex}		% Glossar mit Einteilung in Kategorien
 \newtheorem{defn}{Definition}
 
 \newcommand{\todoin}[1]{\todo[inline]{#1}}
@@ -228,8 +228,8 @@
 %\input{Chapters/Notes/notes.tex}
 \input{Chapters/ActualThesis/chap1.tex}
 \newpage
-\input{Chapters/ActualThesis/mathnotes.tex}
-\newpage
+%\input{Chapters/ActualThesis/mathnotes.tex}
+%\newpage
 \input{Chapters/ActualThesis/subprob1.tex}
 \newpage
 %\input{Chapters/Review/review}

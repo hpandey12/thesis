@@ -1,33 +1,127 @@
 \section{Subproblem: Liquid Infiltration}
-\subsection{Introduction}
-\subsubsection{Physical Background}
-\subsection{Problem Description}
+The first subproblem deals with liquid infiltrating the evaporation chamber. 
+The injection system assembly in the experiment consists of: 
+\begin{itemize}
+    \item the hydraulic accumulator, consisting of two 
+    volumes separated by a diaphragm and occupied by 
+    low-pressure nitrogen and water respectively.
+    \item a pivoted armature valve enabling the flow of water from the 
+    accumulator into the cross manifold
+    \item the cross manifold to distribute incoming fluid flow
+    \item the check valves which finally allow the fluid to flow into the 
+    evaporation chamber.
+\end{itemize}
+During rocket ascent, a pressure relief valve reduces the internal pressure 
+of the evaporation chamber to $0.03\,\text{MPa}$. Shortly before the apogee 
+is reached, the injection assembly starts injecting the fluid into the 
+evaporation chamber. The check valves cut off the flow to the evaporation chamber 
+when the internal pressure rises to $0.05\,\text{MPa}$.
+%\subsection{Introduction}
+%\subsubsection{Physical Background}
+%\subsection{Problem Description}
 
 \subsection{Validation Problems}
 \subsubsection{Stefan Problem}
+Phase changes can be regarded as the growth of the domain of one phase accompanied by the reduction of the domain of the other phase. 
+This growth or reduction in domain sizes can be triggered by thermal as well as non-thermal processes~\citelater{shumon koga} 
+and the representative mathematical dynamic model containing moving boundaries is known as the Stefan system. The associated problem of 
+analysing and finding the solutions to the aforementioned model is known as the Stefan problem.~\citelater{koga}. 
+The classical Stefan problem is a one dimensional solidification or melting problem~citelater{jonas, jonsson}. The one-dimensional 
+Stefan problem under semi-infinite geometry, uniform initial temperature, constant boundary temperature, and 
+thermophysical properties constant in each phase is probably the simplest, explicitly solvable problem of phase 
+change~\citelater{lectures, uni tenessee knoxville lectures}, serving as a good benchmark to validate the phase change VOF solver in Star-CCM+.
+
+Assuming that the region in space, $\Omega \subset \mathbb{R}^{2}$, occupied by the material is the 2D semi-infinite rectangle 
+$\Omega = \{(x,y) \in \mathbb{R} \cross \mathbb{R}:\,x \in [0, \infty),\,y \in [0, \Delta h]\}$, with the solid phase and the liquid phase 
+occupying the regions $\Omega_{s}$ and $\Omega_{l}$ respectively such that $\Omega = \Omega_{s} \cup \Omega_{l}$. At any given time, $t$, the 
+two phases are separated by the interface, $\Gamma(t)$, that marks the change in phase of the material. The boundary of the domain $\Omega$ is 
+denoted by $\partial \Omega$.
+The problem space, $\mathcal{D}$, is the spatial and temporal domain occupied by the material, $\mathcal{D} = \{[t_{0}, t_{f}] \cross \Omega\}$. 
+With the heat equation governing the temperature field in the liquid region, the Stefan condition at the interface, and the respective boundary 
+conditions, the system of equations defining the one-dimensional Stefan problem can be written as,
+\begin{align}\label{stef: eqn_system}
+    \begin{split}
+    \begin{cases}
+        \frac{\partial T}{\partial t} - \alpha \frac{\partial^{2} T}{\partial x^{2}}& = 0,\\
+        \rho h_{m} \frac{d \Gamma(x(t), t)}{d t} + \kappa \frac{\partial \Gamma(x(t), t)}{\partial x}& = 0,\\
+        T(x, 0)& = T_{l},\\
+        \nabla T(x, t) \cdot \mathbf{n}& = 0,\\
+        T(x, 0)& = T_{m}
+    \end{cases}
+\end{split}
+\end{align}   
+- the system of equations is well-posed and has a unique solution. the evolution of the temperature field along with the evolution of the 
+phase change interface is studied. The physical parameters for the simulation are selected according to water ice, as in~\citelater{boledi et al},
+such that -.
 \begin{itemize}
-    \item \textbf{Introduction}
-    \item \textbf{Physical Background?}
-    \item \textbf{Computational Methodology?}
-    \begin{itemize}
-        \item \textbf{governing equations and stuff: }
-        \item \textbf{dynamic similarity}
-        \item \textbf{simulation details}
-    \end{itemize}
+    \item \COMMENT{WRITE ABOUT DISCRETISATION SHIT: } discretisation schemes and their accuracy (spatial and temporal), physics models chosen
+    \item Figure depicts the evolution of the temperature field for the simulation. A clear propagation of the interface from the left to right is observed
+with increasing simulation times. The temperature also gradually decreases in the liquid phase from the Dirichlet boundary at $x = 0$ 
+towards the melting temperature, $T_{m}$ at the interface where it stays constant at the melting temperature in the solid region.
+    \item 'This is exactly what one would expect for a velocity that is decreasing in time as is the case for the classical Stefan problem. 
+One can also see that all simulation results converge to the analytical solution for a finer mesh and a smaller time step.'
+    \item \COMMENT{ABOUT COMPARISON OF TEMPERATURE W ANALYTICAL SOLUTION}
+    \item \COMMENT{ABOUT COMPARISON OF PCI W ANALYTICAL SOLUTION}
 \end{itemize}
-\newpage
+
 \subsubsection{Rayleigh-Taylor Instability}
-When two superposed fluids with differing densities are accelerated in a direction perpendicular to their interface, the surface is unstable when the heavier fluid is accelerated into the lighter fluid.~\citelater{ref 15, p192 - Birkhoff, 1954}. The instability arising therefrom is known as the Rayleigh-Taylor (RT) instability. 
-The growth of perturbations at the interface is characterised by opposing pressure and density gradients~\citelater{Banerjee 2020, Schilling et all 2020, HutchinsonDissertation} and the density difference is represented by the \textit{Atwood number}, $At = (\rho_{H} - \rho_{L})/(\rho_{H} + \rho_{L}).$
-Although not encountered in its ideal form, the RT instability may occur across various natural and technological processes where it is often modified by the presence of additional processes~\COMMENT{mention which processes?}. The principles governing the nonlinear RT instability also govern any motion of one fluid in another of different density~\citelater{Tryggvason rt instability}, thus serving as a good measure to study the infiltration of the evaporation chamber in the first subproblem~\COMMENT{does it even count? If we have air at 30000 Pa, can it be said it is enough fluid for this to count}. The instability has moreover served as a classical benchmark for the evaluation of the behaviour of two phase flows~\citelater{Goulding et al.}~COMMENT{WHY imminent}.
-The instability is simulated on a 2D rectangular domain, $[0, L_{x}] \cross [0, 4L_{x}]$, where $L_{x}$ is the reference length. The initial interface, located at $y_{0}$, represents a single-mode perturbation with amplitude, $A = 0.1 L_{x}$, and wavelength, $\lambda = L_{x}$.
+When two superposed fluids with differing densities are accelerated in a direction perpendicular to their interface, the surface 
+is unstable when the heavier fluid is accelerated into the lighter fluid.~\citelater{ref 15, p192 - Birkhoff, 1954}. The instability 
+arising therefrom is known as the Rayleigh-Taylor (RT) instability. 
+The growth of perturbations at the interface is characterised by opposing pressure and density 
+gradients~\citelater{Banerjee 2020, Schilling et all 2020, HutchinsonDissertation} and the density difference is represented by 
+the \textit{Atwood number}, $At = (\rho_{H} - \rho_{L})/(\rho_{H} + \rho_{L}).$
+Although not encountered in its ideal form, the RT instability may occur across various natural and technological processes where it 
+is often modified by the presence of additional processes~\COMMENT{mention which processes?}. The principles governing the nonlinear 
+RT instability also govern any motion of one fluid in another of different density~\citelater{Tryggvason rt instability}, thus 
+serving as a good measure to study the infiltration of the evaporation chamber in the first 
+subproblem~\COMMENT{does it even count? If we have air at 30000 Pa, can it be said it is enough fluid for this to count}. 
+The instability has moreover served as a classical benchmark for the evaluation of the behaviour of two phase 
+flows~\citelater{Goulding et al.}~\COMMENT{'WHY' imminent}.
+
+We assume that the two immiscible, viscuous, and incompressible fluids occupy the regions,
+\begin{equation*}
+    \Omega_{i}(t) = \{(x,y) \in \mathbb{R} \cross \mathbb{R}: (-1)^{i}(y - h(t,x)) > 0,\,t \geq 0\}, \,\, i = 1,2
+\end{equation*}
+and are separated by the interface, $\Gamma(t)$ where
+\begin{equation*}
+    \Gamma(t) = \{(x,y) \in \mathbb{R} \cross \mathbb{R}: y = h(t,x),\, t \geq 0 \}
+\end{equation*}
+Using the navier stokes equations for incompressible fluids, a mixture density and viscosisty, the jump conditions at the interfaces, and the 
+initial boundary conditions, the governing equation for the Rayleigh-Taylor instability can be written as
+\begin{align}\label{rt: eqn_system}
+    \begin{split}
+    \begin{cases}
+        \rho \frac{\partial (\mathbf{u})}{\partial t} + \rho \nabla \cdot (\mathbf{u} \mathbf{u})& = -\nabla p + \mu \nabla^{2} \mathbf{u} + \mathbf{g}\rho,\\
+        \nabla \cdot \mathbf{u}& = 0,\\
+        [\![S(u, p + \mathbf{g}\rho)\mathbf{n}]\!] &= \sigma \kappa \mathbf{n} + [\![\rho]\!] \mathbf{g} y\\
+        [\![u]\!] &= 0\\
+        V &= \mathbf{u} \cdot \mathbf{n}\\
+        u(0) &= u_{0},\\
+        \Gamma(0) &= \Gamma_{0}
+    \end{cases}
+\end{split}
+\end{align}   
+where $\rho$ is the density, $\mathbf{u}$ is the velocity vector, $p$ is the pressure, $\mu$ is the dynamic viscosity, and $g$ is the gravitational acceleration.
+
+The instability is simulated on a 2D rectangular domain, $[0, L_{x}] \cross [0, 4L_{x}]$, where $L_{x}$ is the reference length. 
+The initial interface, located at $y_{0}$, represents a single-mode perturbation with amplitude, $A = 0.1 L_{x}$, and 
+wavelength, $\lambda = L_{x}$.
         \begin{equation*}
-            y_{0} = 2 L_{x}+ A \cos(\frac{2\pi}{ L_{x} })
+           \Gamma_{0} = 2 L_{x}+ A \cos(\frac{2\pi}{ L_{x} })
         \end{equation*}
+       
+The lower limit of the high Atwood number regime requires the Atwood number to be atleast one half~\cite{HutchinsonDISSERTATIONSUBMITTEDFACULTY}. 
+Gravitational acceleration acts in a downward direction with a magnitude of $g = 1.0$. Periodic boundary conditions are enforced in the 
+horizontal direction and slip wall conditions are applied at the top and bottom boundaries. The physical parameters are selected to make 
+the simulations dynamically similar to the ones studied~\cite{hamzehlooDirectNumericalSimulations2021}.
         
-The lower limit of the high Atwood number regime requires the Atwood number to be atleast one half~\cite{HutchinsonDISSERTATIONSUBMITTEDFACULTY}. Gravitational acceleration acts in a downward direction with a magnitude of $g = 1.0$. Periodic boundary conditions are enforced in the horizontal direction and slip wall conditions are applied at the top and bottom boundaries. The physical parameters are selected to make the simulations dynamically similar to the ones studied~\cite{hamzehlooDirectNumericalSimulations2021}.
-        
-According to~\cite{MIRJALILI2019221}, a reasonable solution to the RT instability with $At \approx 0.75$ can be obtained with a $128 \cross 512$ mesh. With similar mesh resolutions being used in~\cite{hamzehlooDirectNumericalSimulations2021, HuangConsistentEssentiallyConservative2020} to study similar RT instabilities, in addition to a mesh convergence study being performed, the domain is discretised using a uniform trimmer mesh with size $\delta_{h} = 0.0045$. The timestep for the simulations is selected as $\delta t = 2.5 \cross 10e-4/\sqrt{At}$ similar to~\cite{DingDiffuseInterfaceModel2007,hamzehlooDirectNumericalSimulations2021}. The following cases are studied:
+According to~\cite{MIRJALILI2019221}, a reasonable solution to the RT instability with $At \approx 0.75$ can be obtained with 
+a $128 \cross 512$ mesh. With similar mesh resolutions being used in~\cite{hamzehlooDirectNumericalSimulations2021, 
+HuangConsistentEssentiallyConservative2020} to study similar RT instabilities, in addition to a mesh convergence study being performed, 
+the domain is discretised using a uniform trimmer mesh with size $\delta_{h} = 0.0045$. The timestep for the simulations is 
+selected as $\delta t = 2.5 \cross 10e-4/\sqrt{At}$ similar to~\cite{DingDiffuseInterfaceModel2007,hamzehlooDirectNumericalSimulations2021}. 
+The following cases are studied:\\
 \begin{tabularx}{0.8 \textwidth}{ >{\centering\arraybackslash}X >{\centering\arraybackslash}X  >{\centering\arraybackslash}X  >{\centering\arraybackslash}X >{\centering\arraybackslash}X}
     \hline
     Case & $At$ & $Re$ & $\sigma$ & $\delta_{h}$\\
@@ -42,6 +136,7 @@ According to~\cite{MIRJALILI2019221}, a reasonable solution to the RT instabilit
     6 & $0.5$ & $3000$ & $1e-5$ & $0.0045$\\
     \hline
 \end{tabularx}
+\newline
 In a system of two fluids with a perturbed interface, the heavier fluid penetrates the lighter fluid due to gravitation thereby pushing the lighter fluid upwards. The initial perturbations, generally studied using linear stability analysis, lead to an exponential growth~\citelater{andrews and dalziel} and transition into non-lineartiy resulting in the rise and sink of the bubbles of lighter fluid and spikes of the heavier fluid respectively~\citelater{sharp, bannerjee}. Figure~\ref{rt_definitions} illustrates the parameter definitions and nomenclature of an evolving single-mode~\COMMENT{need i define single mode rt?} RT instability interface. The evolution of RT instabilities for Reynolds numbers 300, 1000, and 3000 are depicted in figure~\ref{rt_reynolds}. As the solution evolves, the penetration of the spike increases and it eventually rolls up and forms two transient counter-rotating vortices due to shear forces and Kelvin-Helmholtz type instabilities~\citelater{hamzelhoo}, which go on to contribute to turbulent mixing and chaotic flow features~\citelater{Sharp}.
 
 Figure~\COMMENT{name figure} depicts the evolution of the interface at different times for varying density ratios as simulated in Star-CCM+. Upto high Reynolds numbers, the interface structure and its temporal evolution agree qualitatively with the results published in~\citelater{hamzelhoom huang, ding}.~\COMMENT{why does it look different at high Re}.
@@ -52,19 +147,19 @@ Simulations conducted for Atwood numbers very close to one also qualitatively sh
 ~\COMMENT{Write about mesh convergence study}.
 
 
-\subsection{Numerical Analysis}
-\subsubsection{Stefan Problem}
-\begin{itemize}
-    \item \textbf{Convergence}
-    \item \textbf{Results}
-    \item \textbf{Errors}
-\end{itemize}
+%\subsection{Numerical Analysis}
+%\subsubsection{Stefan Problem}
+%\begin{itemize}
+%    \item \textbf{Convergence}
+%    \item \textbf{Results}
+%    \item \textbf{Errors}
+%\end{itemize}%
 
-\subsubsection{Rayleigh-Taylor Instability}
-\begin{itemize}
-    \item \textbf{Convergence}
-    \item \textbf{Results}
-    \item \textbf{Errors}
-\end{itemize}
+%\subsubsection{Rayleigh-Taylor Instability}
+%\begin{itemize}
+%    \item \textbf{Convergence}
+%    \item \textbf{Results}
+%    \item \textbf{Errors}
+%\end{itemize}
 
-\subsubsection{Actual Problem}
+%\subsubsection{Actual Problem}
