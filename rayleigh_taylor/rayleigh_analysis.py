@@ -7,8 +7,6 @@ import scipy
 import mod_utils as utils
 import matplotlib.pyplot as plt
 import os
-
-# %%
 math_vars = {
     'high_rho': 3,
     'low_rho' : 1,
@@ -49,6 +47,21 @@ model.calculate_nondim_nums(
     eotvos = lambda high_rho, low_rho, ref_grev, ref_l, ref_surface_tension: (high_rho - low_rho)*ref_grev*numpy.pow(ref_l, 2)/ref_surface_tension
     )
 
+name_vars = {
+    'x_dat': "X (m)",
+    'y_dat': "Y (m)",
+    'v_x': "Velocity[i] (m/s)",
+    'v_y': "Velocity[j] (m/s)",
+    'rel_v_x': "Relative Velocity[i] (m/s)",
+    "rel_v_y": "Relative Velocity[j] (m/s)",
+    'volFrac_high': "Volume Fraction of high_rho",
+    'volFrac_low': "Volume Fraction of low_rho",
+    'min_mixWidth': "minMixWidthEval",
+    'max_mixWidth': "maxMixWidthEval",
+    'massFlux': "Report: massImbalance_highRho (kg)",
+    'mean_rho': "Density (kg/m^3)"
+}
+
 # %%
 #edit as required
 name_vars = {
@@ -66,7 +79,7 @@ name_vars = {
     'mean_rho': "Density (kg/m^3)"
 }
 
-dir = r'/home/yy310050/Desktop/thesis/rayleigh_taylor/final_sims/Re3000_Amp01/Re3000_At0.2_sigma1e-05_dh0.0045'
+dir = r'/home/yy310050/Desktop/thesis/rayleigh_taylor/2Fluid/test/HELP3'
 name = 'isosurface_table_'
 name_append = '.csv'
 
@@ -137,7 +150,7 @@ def calc_errors(dns_ar, model_ar):
 ####################################################################
 ############# single-mode_At0.2_Re3000_A0.1 ########################
 ####################################################################
-dir = r'/home/yy310050/Desktop/thesis/rayleigh_taylor/final_sims/Re3000_Amp01/Re3000_At0.2_sigma1e-05_dh0.0045'
+dir = r''
 name = 'isosurface_table_'
 name_append = '.csv'
 #if reference time is different from the reference time initially set
@@ -145,7 +158,7 @@ ref_t = lambda atwood_num: numpy.sqrt(atwood_num)
 model.load_solution_data(dir, name, name_append, name_vars, ref_t= ref_t)
 model.calculate_stuff()
 #----------------------------------------------------
-dns_df = pandas.read_csv(r'/home/yy310050/Desktop/thesis/rayleigh_taylor/dns_compare_data/2D_Single-Mode_At0.2_Re3000_A0.05.csv')
+dns_df = pandas.read_csv(r'/home/yy310050/Desktop/thesis/rayleigh_taylor/dns_compare_data/2D_Single-Mode_At0.5_Re300_A0.05.csv')
 #----------------------------------------------------
 plt.figure(figsize=(8, 5))
 plt.plot(
@@ -289,10 +302,16 @@ print("bubble L_inf error: ", numpy.max(Linf_err_bubble))
 ######################## Convergence Study #########################
 ####################################################################
 dir_list = [
-    r'/home/yy310050/Desktop/thesis/rayleigh_taylor/final_sims/convergence/Re300_At0.5_sigma1e-05_dh0.05',
-    r"/home/yy310050/Desktop/thesis/rayleigh_taylor/final_sims/convergence/Re300_At0.5_sigma1e-05_dh0.007",
-    r"/home/yy310050/Desktop/thesis/rayleigh_taylor/final_sims/convergence/Re300_At0.5_sigma1e-05_dh0.0045",
-    r"/home/yy310050/Desktop/thesis/rayleigh_taylor/final_sims/convergence/Re300_At0.5_sigma1e-05_dh0.0025",
+    #r'/home/yy310050/Desktop/thesis/rayleigh_taylor/final_sims/convergence/Re300_At0.5_sigma1e-05_dh0.05',
+    #r"/home/yy310050/Desktop/thesis/rayleigh_taylor/final_sims/convergence/Re300_At0.5_sigma1e-05_dh0.007",
+    #r"/home/yy310050/Desktop/thesis/rayleigh_taylor/VOF/final_sims/convergence/Re300_At0.5_sigma1e-05_dh0.0045",
+    #r"/home/yy310050/Desktop/thesis/rayleigh_taylor/2Fluid/test/HELP3",
+    #r"/home/yy310050/Desktop/thesis/rayleigh_taylor/2Fluid/test/tuning/relaxation_060",
+    #r"/home/yy310050/Desktop/thesis/rayleigh_taylor/2Fluid/test/tuning/relaxation_060_w_drag",
+    r"/home/yy310050/Desktop/thesis/rayleigh_taylor/2Fluid/test/tuning/relaxation_050_lowiter",
+    r"/home/yy310050/Desktop/thesis/rayleigh_taylor/2Fluid/test/tuning/relaxation_drag_lowiter",
+    r"/home/yy310050/Desktop/thesis/rayleigh_taylor/2Fluid/test/tuning/relaxation_lower_drag_lowiter",
+    #r"/home/yy310050/Desktop/thesis/rayleigh_taylor/final_sims/convergence/Re300_At0.5_sigma1e-05_dh0.0025",
     #r"/home/yy310050/Desktop/thesis/rayleigh_taylor/final_sims/convergence/Re300_At0.5_sigma1e-05_dh0.0005"
 ]
 name = 'isosurface_table_'
@@ -314,24 +333,24 @@ for path in dir_list:
 #----------------------------------------------------
 dns_df = pandas.read_csv(r'/home/yy310050/Desktop/thesis/rayleigh_taylor/dns_compare_data/2D_Single-Mode_At0.5_Re300_A0.05.csv')
 #----------------------------------------------------
-plt.figure(figsize=(8, 5))
+plt.figure(figsize=(20, 15))
 L2_data = []
 Linf_data = []
 for h in h_data:
     plt.plot(
         h['timesteps'][h['timesteps'] < dns_df['Time'].max()], 
         h['y_bub'][h['timesteps'] < dns_df['Time'].max()], 
-        label=str('sim_bubble, dh: ' + h['dh']))
+        label=str('sim_bubble, dh: ' + h['dh']))#, marker = 'o',markerfacecolor='none')
     plt.plot(
         h['timesteps'][h['timesteps'] < dns_df['Time'].max()], 
         h['y_spike'][h['timesteps'] < dns_df['Time'].max()], 
-        label=str('sim_spike, dh: ' + h['dh']))
+        label=str('sim_spike, dh: ' + h['dh']))#, marker = 'x')
     L2_err_spike, Linf_err_spike = calc_errors(dns_df['Spike'], interpolate_central_difference(h['y_spike'], h['timesteps'], dns_df['Time']))
     L2_err_bubble, Linf_err_bubble = calc_errors(dns_df['Bubble'], interpolate_central_difference(h['y_bub'], h['timesteps'], dns_df['Time']))
     L2_data.append([L2_err_spike, L2_err_bubble])
     Linf_data.append([numpy.max(Linf_err_spike), numpy.max(Linf_err_bubble)])
 plt.plot(dns_df['Time'], dns_df['Bubble'], label='dns_bubble', marker = 'o', linestyle='None', markerfacecolor='none')
-plt.plot(dns_df['Time'], dns_df['Spike'], label='dns_spike', marker = 'o', linestyle='None', markerfacecolor='none')
+plt.plot(dns_df['Time'], dns_df['Spike'], label='dns_spike', marker = 'x', linestyle='None', markerfacecolor='none')
 plt.xlabel("time")
 plt.ylabel("bubble and spike distances")
 plt.title("single-mode_At0.5_Re300_A0.1")
