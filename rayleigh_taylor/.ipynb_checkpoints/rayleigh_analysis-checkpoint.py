@@ -304,14 +304,14 @@ print("bubble L_inf error: ", numpy.max(Linf_err_bubble))
 dir_list = [
     #r'/home/yy310050/Desktop/thesis/rayleigh_taylor/final_sims/convergence/Re300_At0.5_sigma1e-05_dh0.05',
     #r"/home/yy310050/Desktop/thesis/rayleigh_taylor/final_sims/convergence/Re300_At0.5_sigma1e-05_dh0.007",
-    r"/hpcwork/yy310050/thesis/rayleigh_taylor/VOF/final_sims/convergence/Re300_At0.5_sigma1e-05_dh0.0045",
+    r"/home/yy310050/Desktop/thesis/rayleigh_taylor/VOF/final_sims/convergence/Re300_At0.5_sigma1e-05_dh0.0045",
     #r"/home/yy310050/Desktop/thesis/rayleigh_taylor/2Fluid/test/HELP3",
     #r"/home/yy310050/Desktop/thesis/rayleigh_taylor/2Fluid/test/tuning/relaxation_060",
     #r"/home/yy310050/Desktop/thesis/rayleigh_taylor/2Fluid/test/tuning/relaxation_060_w_drag",
     #r"/home/yy310050/Desktop/thesis/rayleigh_taylor/2Fluid/test/tuning/relaxation_050_lowiter",
-    r"/hpcwork/yy310050/thesis/rayleigh_taylor/2Fluid/test/tuning/relaxation_lower_drag_lowiter",
-    r"/hpcwork/yy310050/thesis/rayleigh_taylor/2Fluid/test/tuning/more_tuning_tension",
-    r"/hpcwork/yy310050/thesis/rayleigh_taylor/2Fluid/test/tuning/more_relax_verify",
+    r"/home/yy310050/Desktop/thesis/rayleigh_taylor/2Fluid/test/tuning/relaxation_lower_drag_lowiter",
+    r"/home/yy310050/Desktop/thesis/rayleigh_taylor/2Fluid/test/tuning/more_tuning_tension",
+    r"/home/yy310050/Desktop/thesis/rayleigh_taylor/2Fluid/test/tuning/more_relax",
     #r"/home/yy310050/Desktop/thesis/rayleigh_taylor/final_sims/convergence/Re300_At0.5_sigma1e-05_dh0.0025",
     #r"/home/yy310050/Desktop/thesis/rayleigh_taylor/final_sims/convergence/Re300_At0.5_sigma1e-05_dh0.0005"
 ]
