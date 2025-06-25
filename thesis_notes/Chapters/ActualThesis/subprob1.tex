@@ -38,7 +38,7 @@ The classical Stefan problem is a one dimensional solidification or melting prob
 Stefan problem under semi-infinite geometry, uniform initial temperature, constant boundary temperature, and 
 thermophysical properties constant in each phase is probably the simplest, explicitly solvable problem of phase 
 change~\citelater{lectures, uni tenessee knoxville lectures}, serving as a good benchmark to validate the phase change VOF solver in Star-CCM+.
-
+~\COMMENT{DOES IT ALSO SERVE AS A GOOD BENCHMARK FOR SIMPLE HEAT CONDUCTION TOO??? BECOZ TWO BIRDS ONE STONE}
 Assuming that the region in space, $\Omega \subset \mathbb{R}^{2}$, occupied by the material is the 2D semi-infinite rectangle 
 $\Omega = \{(x,y) \in \mathbb{R} \cross \mathbb{R}:\,x \in [0, \infty),\,y \in [0, \Delta h]\}$, with the solid phase and the liquid phase 
 occupying the regions $\Omega_{s}$ and $\Omega_{l}$ respectively such that $\Omega = \Omega_{s} \cup \Omega_{l}$. At any given time, $t$, the 
@@ -59,15 +59,28 @@ conditions, the system of equations defining the one-dimensional Stefan problem 
 \end{split}
 \end{align}   
 - the system of equations is well-posed and has a unique solution. the evolution of the temperature field along with the evolution of the 
-phase change interface is studied. The physical parameters for the simulation are selected according to water ice, as in~\citelater{boledi et al},
-such that -.
+phase change interface is studied.
+The simulation assumes laminar and unsteady flow and solves for the solution variables implicitly using the SIMPLE scheme.
+ The 2D region is discretised using an orthogonal quadrilateral mesh of varying sizes in order to 
+ study the spatial convergence of the solution. The physical parameters for the simulation are selected according to water ice, as in~\citelater{boledi et al}.
+ A constant density $\rho = 1000\,\text{kg}\cdot\text{m}^{-3}$, dynamic viscosity
+ $\mu = 8.8871e-4\,\text{Pa}\cdot\text{s}$, latent heat of fusion $100000 \,\text{J}\cdot\text{kg}^{-1}$, and 
+ specific heat $4200\,\text{J}\cdot\text{kg}^{-1}\cdot\text{K}^{-1}$. Thermal conductivities are defined as $2.33$ and $0.620271$ for the solid and liquid phases respectively. 
+ All four boundaries are assigned a no-slip shear stress specification. The boundary at $x = 0$ is assigned a Dirichlet condition of temperature, $T =273\,\text{K}$, 
+ while the other boundaries are assumed to be adiabatic. 
+ The convection and diffusion
+ terms are discretised using the second-order upwind scheme and the least squares method was used to interpolate the values of the 
+ gradients from the cell centres onto the face centres. The transient term is discretised using the implicit Euler-method which is first-order accurate.
+ First-order HRIC is used to reconstruct the interface. Since Star-CCM+ sets under- and over-relaxation factors conservatively, the values are left unchanged.
+
+The evolution of the temperature field for the simulation with cell size, $\Delta h = 5e-3$ is shown in Figure~\COMMENT{FIG}. A clear propagation of
+ the interface from the left to right is observed with increasing simulation times. The temperature also gradually decreases in the liquid phase from the Dirichlet
+ boundary at $x = 0$ towards the melting temperature, $T_{m}$, at the interface after which it stays constant. 
+
 \begin{itemize}
-    \item \COMMENT{WRITE ABOUT DISCRETISATION SHIT: } discretisation schemes and their accuracy (spatial and temporal), physics models chosen
-    \item Figure depicts the evolution of the temperature field for the simulation. A clear propagation of the interface from the left to right is observed
-with increasing simulation times. The temperature also gradually decreases in the liquid phase from the Dirichlet boundary at $x = 0$ 
-towards the melting temperature, $T_{m}$ at the interface where it stays constant at the melting temperature in the solid region.
     \item 'This is exactly what one would expect for a velocity that is decreasing in time as is the case for the classical Stefan problem. 
 One can also see that all simulation results converge to the analytical solution for a finer mesh and a smaller time step.'
+    \item \COMMENT{ABOUT CONVERGENCE}
     \item \COMMENT{ABOUT COMPARISON OF TEMPERATURE W ANALYTICAL SOLUTION}
     \item \COMMENT{ABOUT COMPARISON OF PCI W ANALYTICAL SOLUTION}
 \end{itemize}
@@ -83,7 +96,7 @@ Although not encountered in its ideal form, the RT instability may occur across 
 is often modified by the presence of additional processes~\COMMENT{mention which processes?}. The principles governing the nonlinear 
 RT instability also govern any motion of one fluid in another of different density~\citelater{Tryggvason rt instability}, thus 
 serving as a good measure to study the infiltration of the evaporation chamber in the first 
-subproblem~\COMMENT{does it even count? If we have air at 30000 Pa, can it be said it is enough fluid for this to count}. 
+subproblem. 
 The instability has moreover served as a classical benchmark for the evaluation of the behaviour of two phase 
 flows~\citelater{Goulding et al.}~\COMMENT{'WHY' imminent}.
 
@@ -111,15 +124,19 @@ initial boundary conditions, the governing equation for the Rayleigh-Taylor inst
 \end{split}
 \end{align}   
 where $\rho$ is the density, $\mathbf{u}$ is the velocity vector, $p$ is the pressure, $\mu$ is the dynamic viscosity, and $g$ is the gravitational acceleration.
-
+The simulation assumer turbulent and unsteady flow, utilising the SIMPLE implicit scheme. The computational domain is discretised using an orthogonal quadrilateral mesh.
+ The convection and diffusion terms are discretised using the second-order upwind scheme while the least squares method is again used to interpolate the values
+ of the gradients from the cell centres onto the face centres. The VOF solver utilises the first-order HRIC scheme to reconstruct the interface.
+ The transient term is discretised using the first-order accurate implicit Euler-method. The modified K-Omega (SST k-omega) model is used to account for turbulence and surface
+ is treated semi-implicitly.~\COMMENT{MENTION INITIAL CONDITIONS}
 The instability is simulated on a 2D rectangular domain, $[0, L_{x}] \cross [0, 4L_{x}]$, where $L_{x}$ is the reference length. 
-The initial interface, located at $y_{0}$, represents a single-mode perturbation with amplitude, $A = 0.1 L_{x}$, and 
-wavelength, $\lambda = L_{x}$.
+ The initial interface, located at $y_{0}$, represents a single-mode perturbation with amplitude, $A = 0.1 L_{x}$, and 
+ wavelength, $\lambda = L_{x}$.
         \begin{equation*}
            \Gamma_{0} = 2 L_{x}+ A \cos(\frac{2\pi}{ L_{x} })
         \end{equation*}
        
-The lower limit of the high Atwood number regime requires the Atwood number to be atleast one half~\cite{HutchinsonDISSERTATIONSUBMITTEDFACULTY}. 
+The lower limit of the high Atwood number regime requires the Atwood number to be atleast $0.5$~\cite{HutchinsonDISSERTATIONSUBMITTEDFACULTY}. 
 Gravitational acceleration acts in a downward direction with a magnitude of $g = 1.0$. Periodic boundary conditions are enforced in the 
 horizontal direction and slip wall conditions are applied at the top and bottom boundaries. The physical parameters are selected to make 
 the simulations dynamically similar to the ones studied~\cite{hamzehlooDirectNumericalSimulations2021}.
