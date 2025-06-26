@@ -150,22 +150,13 @@ def calc_errors(dns_ar, model_ar):
 dir_list = [
     #r'/home/yy310050/Desktop/thesis/rayleigh_taylor/final_sims/convergence/Re300_At0.5_sigma1e-05_dh0.05',
     #r"/home/yy310050/Desktop/thesis/rayleigh_taylor/final_sims/convergence/Re300_At0.5_sigma1e-05_dh0.007",
-    r"/hpcwork/yy310050/thesis/rayleigh_taylor/VOF/final_sims/convergence/Re300_At0.5_sigma1e-05_dh0.0045",
-    #r"/hpcwork/yy310050/thesis/rayleigh_taylor/2Fluid/test/HELP3",
+    #r"/hpcwork/yy310050/thesis/rayleigh_taylor/VOF/final_sims/convergence/Re300_At0.5_sigma1e-05_dh0.0045",
+    #r"/hpcwork/yy310050/thesis/rayleigh_taylor/VOF/final_sims/Re3000_Amp01/Re3000_At0.5_sigma1e-05_dh0.0045",
     #r"/home/yy310050/Desktop/thesis/rayleigh_taylor/2Fluid/test/tuning/relaxation_060",
-    #r"/home/yy310050/Desktop/thesis/rayleigh_taylor/2Fluid/test/tuning/relaxation_060_w_drag",
-    # r"/hpcwork/yy310050/thesis/rayleigh_taylor/2Fluid/test/tuning/relaxation_050_lowiter",
-    #r"/hpcwork/yy310050/thesis/rayleigh_taylor/2Fluid/test/tuning/relaxation_lower_drag_lowiter",
-    #r"/hpcwork/yy310050/thesis/rayleigh_taylor/2Fluid/test/tuning/more_tuning_tension",
-    #r"/hpcwork/yy310050/thesis/rayleigh_taylor/2Fluid/test/tuning/more_relax_verify",
-    r"/hpcwork/yy310050/thesis/rayleigh_taylor/2Fluid/test/tuning/CHEAPER/whack",
-    r"/hpcwork/yy310050/thesis/rayleigh_taylor/2Fluid/test/tuning/CHEAPER/whackier",
-    #r"/hpcwork/yy310050/thesis/rayleigh_taylor/2Fluid/test/tuning/CHEAPER/whack_w_length",
-    #r"/hpcwork/yy310050/thesis/rayleigh_taylor/2Fluid/test/tuning/CHEAPER/whack_w_relax",
-    #r"/hpcwork/yy310050/thesis/rayleigh_taylor/2Fluid/test/tuning/CHEAPER/whack_w_time",
-    r"/hpcwork/yy310050/thesis/rayleigh_taylor/2Fluid/test/tuning/CHEAPER/whackiest",
-    #r"/hpcwork/yy310050/thesis/rayleigh_taylor/2Fluid/test/tuning/CHEAPER/relax_010_lowStepIter",
-    #r"/hpcwork/yy310050/thesis/rayleigh_taylor/2Fluid/test/tuning/CHEAPER/relax_010",
+    r"/hpcwork/yy310050/thesis/rayleigh_taylor/2Fluid/test/tuning/re3000",
+    r"/hpcwork/yy310050/thesis/rayleigh_taylor/2Fluid/test/tuning/CHEAPER/last_whack",
+    #r"/hpcwork/yy310050/thesis/rayleigh_taylor/2Fluid/test/tuning/more_relax_re3000",
+    #r"/hpcwork/yy310050/thesis/rayleigh_taylor/2Fluid/test/tuning/relaxation_lower_drag_lowiter_re3000",
     #r"/home/yy310050/Desktop/thesis/rayleigh_taylor/final_sims/convergence/Re300_At0.5_sigma1e-05_dh0.0025",
     #r"/home/yy310050/Desktop/thesis/rayleigh_taylor/final_sims/convergence/Re300_At0.5_sigma1e-05_dh0.0005"
 ]
@@ -187,6 +178,7 @@ for path in dir_list:
     h_data.append(cur_h_data)
 #----------------------------------------------------
 dns_df = pandas.read_csv(r'/home/yy310050/Desktop/thesis/rayleigh_taylor/dns_compare_data/2D_Single-Mode_At0.5_Re300_A0.05.csv')
+dns_df2 = pandas.read_csv(r'/home/yy310050/Desktop/thesis/rayleigh_taylor/dns_compare_data/2D_Single-Mode_At0.5_Re3000_A0.05.csv')
 #----------------------------------------------------
 plt.figure(figsize=(20, 15))
 L2_data = []
@@ -199,13 +191,16 @@ for h in h_data:
     plt.plot(
         h['timesteps'][h['timesteps'] < dns_df['Time'].max()], 
         h['y_spike'][h['timesteps'] < dns_df['Time'].max()], 
-        label=str('sim_spike, dh: ' + h['dh']))#, marker = 'x')
+        label=str('sim_spike, dh: ' + h['dh']))
+    #, marker = 'x')
     L2_err_spike, Linf_err_spike = calc_errors(dns_df['Spike'], interpolate_central_difference(h['y_spike'], h['timesteps'], dns_df['Time']))
     L2_err_bubble, Linf_err_bubble = calc_errors(dns_df['Bubble'], interpolate_central_difference(h['y_bub'], h['timesteps'], dns_df['Time']))
     L2_data.append([L2_err_spike, L2_err_bubble])
     Linf_data.append([numpy.max(Linf_err_spike), numpy.max(Linf_err_bubble)])
 plt.plot(dns_df['Time'], dns_df['Bubble'], label='dns_bubble', marker = 'o', linestyle='None', markerfacecolor='none')
 plt.plot(dns_df['Time'], dns_df['Spike'], label='dns_spike', marker = 'x', linestyle='None', markerfacecolor='none')
+plt.plot(dns_df['Time'], dns_df2['Bubble'], label='dn2s_bubble', marker = 'o', linestyle='None', markerfacecolor='none')
+plt.plot(dns_df['Time'], dns_df2['Spike'], label='dn2s_spike', marker = 'x', linestyle='None', markerfacecolor='none')
 plt.xlabel("time")
 plt.ylabel("bubble and spike distances")
 plt.title("single-mode_At0.5_Re300_A0.1")
@@ -228,7 +223,7 @@ for i, h in enumerate(h_data):
 ####################################################################
 ############# single-mode_At0.2_Re3000_A0.1 ########################
 ####################################################################
-dir = r''
+dir = r'/home/yy310050/Desktop/thesis/rayleigh_taylor/final_sims/Re3000_At0.2_sigma1e-05_dh0.0045'
 name = 'isosurface_table_'
 name_append = '.csv'
 #if reference time is different from the reference time initially set
