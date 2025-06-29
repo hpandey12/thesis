@@ -1,5 +1,5 @@
 \section{Subproblem: Liquid Infiltration}
-The first subproblem deals with liquid infiltrating the evaporation chamber. 
+The first subproblem deals with water infiltrating the evaporation chamber during rocket ascent. 
 The injection system assembly in the experiment consists of: 
 \begin{itemize}
     \item the hydraulic accumulator, consisting of two 
@@ -11,48 +11,68 @@ The injection system assembly in the experiment consists of:
     \item the check valves which finally allow the fluid to flow into the 
     evaporation chamber.
 \end{itemize}
-During rocket ascent, the internal pressure
- of the evaporation chamber is reduced down to $0.03\,\text{MPa}$. Shortly before the apogee
- is reached, the injection assembly starts injecting the fluid into the
- evaporation chamber. The check valves cut off the flow to the evaporation chamber
- when the internal pressure rises to $0.05\,\text{MPa}$.
 
-\subsection{Objective}
-Study the flow and the transient temperature field in the evaporation chamber (for itself and to estimate the
- intial conditions that would be present in the next subproblem)
+The hydraulic accumulator is pressurised to 3.4+/-0.05 bar and heated in order to maintain the temperature of the water contained at 328K.
+ During the ascent of the rocket, a pressure relief valve reduces the pressure 
+ in the evaporation chamber to $0.03\,\text{MPa}$. Water infiltrates the evaporation chamber shortly before the apogee 
+ is reached and the flow is cut off when the internal pressure rises to $0.05\,\text{MPa}$.
 
-\subsection{Problem Description and Background}
-In order to validate the continuum hypothesis in the evaporation chamber,
- the Knudsen number is estimated. The Knudsen number, defined as the ratio between the mean free path and
- a scale length of a selected macroscopic flow property. Assuming that the air present in the chamber is dry
- with a molar mass $28.96\,\text{g}\cdot\text{mol}^{-1}$ and behaves as an
- ideal gas, the mean free path, $\lambda$, can be estimated using the dynamic viscosity, density, and temperature of
- the air in the evaporation chamber.
- Using the remarks provided in the SED, the temperature at start of the experiment inside the evaporation chamber
- can be assumed to be $280\,\text{K}$ in the worst case. Thus using Sutherland's relation and standard sea-level
- conditions for dry air, the dynamic viscosity, $\mu$ results in $1.716e-5 Pa.s$. Consequently, the mean free path,
+The objective of the first task is to model the water injection into the evaporation chamber and extract quantities of interest in order 
+ to better estimate the initial conditions for the second task. The multiphase physics models provided by Star-CCM+ are also evaluated and validated
+ against the one-dimensional Stefan problem and the two-dimensional Rayleigh-Taylor instability.  
+  
+ 
+ 
+\subsection{Introduction} 
+ The evaporation chamber, although a three-dimensional object in real life,
+ due to its axial symmetry is modelled as a two-dimensional rectangular domain in Star-CCM+. 
+
+
+As no flow measurements are made in the injection assembly, and the hydraulic accumulator only contains a temperature sensor, it becomes 
+necessary to make assumptions about the flow of the water to the evaporation chamber. 
+The reduction adapter reduces the diameter of the outflow pipe from the accumulator, $D$, to the diamter of the rest of pipes used in the 
+rest of the injection system, $d$. This is followed by two threaded connections in the form of brass T-joints leading to the cross manifold.
+Using the Darcy-Weisbach equation to estimate the head loss through the pipe and estimating the minor head losses in the form of diameter contractions
+and threaded connections, the total head loss from the accumulator through to the cross manifold can be written as,
+\begin{equation}
+    h_{A} = (1 - \frac{d^{2}}{D^{2}})\frac{v_{A}}{2} + 2 (0.08 ) \frac{v_{A}^{2}}{2} + f_{A} \frac{L_{A}}{d} \rho \frac{v_{A}^{2}}{2}
+\end{equation}
+The water is distributed through the cross manifold into the brass elbows and through to the evaporation chamber. Similar to the above procedure,
+the head loss from the manifold to the water outlet incorporates the smooth right angled bends in the elbows and the threaded connections.
+Thus,
+\begin{equation}
+    h_{B} = 2(0.3)\frac{v_{B}^{2}}{2} +  2 (0.08) \frac{v_{B}^{2}}{2} + f_{B} \frac{L_{B}}{d} \rho \frac{v_{B}^{2}}{2}
+\end{equation}
+As the pipes used in the injection assembly are congruent, the flow is assumed to be distributed uniformly by the cross manifold.
+The average velocitiey of water in the first part, $v_{A}$ can thus be related to the outlet velocity, $v_{B}$ using the average flow rates $Q_{A}$
+ and $Q_{A}$ respectively.
  \begin{equation}
-    \lambda = \frac{\mu}{\rho} \sqrt{\frac{\pi m}{2 k_{B} T}} \approx 2.0732e-06\,\text{m}
- \end{equation}
- The Knudsen number, $K$, is thus of the order $10^{-5}$, confirming the continuum assumption.
-\begin{itemize}
-    \item \COMMENT{REYNOLDS NUMBER}
-    \item \COMMENT{ATWOOD NUMBER?}
-    \item \COMMENT{INITIAL CONDITIONS}
-    \item \COMMENT{ESTIMATE INITIAL CONDITIONS: WATER MASS FLOW RATE - how to assume inflow to be comprised of two inflows instead of three}\
-    \item \COMMENT{STOPPING CRITERIA}
-\end{itemize}
-The simulation assumes a turbulent and unsteady flow. The problem is modelled on an axisymmetric 2D domain as
- depicted in Figure~\COMMENT{FIGGIF}.
+    v_{A} = \frac{Q_{A}}{A_{A}} = 3 \frac{Q_{B}}{A_{A}} = 3 v_{B} \frac{A_{B}}{A_{A}}
+\end{equation}
+The energy balance for the system is thus written as 
+\begin{equation}
+    \frac{\Delta P}{\rho g} = \Delta h + \frac{v_{B}}{2} + h_{A} + h_{B}
+\end{equation}
+where after using equations and estimating the Darcy friction factor using the Haaland approximation to the Colebrook equation, 
+the velocity, $v_{B}$. With a corresponding Reynolds number, $Re = $, the initial assumption of turbulent flow is validated.
 
-\subsubsection{Computational Methodology}
-The simulation assumes a turbulent and unsteady flow, utlising the SIMPLE implicit scheme to solve for the solution
- variables. The computational domain is discretised using an orthogonal quadrilateral mesh. Similar to the validation studies,
- the convective and diffusive terms are discretised using the second-order upwind scheme. The least squares method
- is used to estimate the values of the gradients at the face centres and the VOF solver uses the first-order HRIC
- scheme to reconstruct the interface. As the simulation emulates the Rayleigh-Taylor instability at high Atwood numbers,
- the modified K-Omega model is used to model turbulence. The transient term is discretised using the first-order
- implicit Euler-method.
+With an initial pressure of $0.03MPa$ in the evaporation chamber, it is also necessary to validate if the continuum hypothesis remains valid 
+for the air present in the chamber. The Knudsen number relates the mean free path, $\lambda$, to the scale length of the macroscopic flow property gradients 
+and helps determine the validity of the continuum hypothesis. The magnitude of the mean free path can be used to estimate the Knudsen number.
+\begin{equation}
+    \lambda = \frac{\mu}{\rho} \sqrt{\frac{\pi m}{2 k_{B} T}}
+\end{equation}
+For dry air, at a pressure and temperature of $0.03MPa$ and $328$ respectively, molecular mass $m = 4.815e-26\,\text{kg}$, and estimating the kinematic
+viscosity using  Sutherland's formula, the mean free path, $\lambda \approx 2.0732e-06 m$.
+
+\begin{itemize}
+    \item Constant density assumption valid? Does that break the rayleigh taylor benchmark test?
+    \item CHANGE INLET FLOW TO ACCOUNT FOR CONSTANCY OF NONDIM NUMBERS
+\end{itemize}
+%\subsubsection{Physical Background}
+\subsection{Problem Description}
+
+
 
 \subsection{Validation Problems}
 \subsubsection{Stefan Problem}
@@ -188,37 +208,29 @@ The following cases are studied:\\
     \hline
 \end{tabularx}
 \newline
-In a system of two fluids with a perturbed interface, the heavier fluid penetrates the lighter fluid due to gravitation thereby pushing the lighter fluid upwards.
- The initial perturbations, generally studied using linear stability analysis, lead to an exponential growth~\citelater{andrews and dalziel} and transition into
- non-lineartiy resulting in the rise and sink of the bubbles of lighter fluid and spikes of the heavier fluid respectively~\citelater{sharp, bannerjee}. 
- Figure~\COMMENT{name figure} illustrates the parameter definitions and nomenclature of an evolving single-mode~\COMMENT{need i define single mode rt?} RT 
- instability interface.
+In a system of two fluids with a perturbed interface, the heavier fluid penetrates the lighter fluid due to gravitation thereby pushing the lighter fluid upwards. The initial perturbations, generally studied using linear stability analysis, lead to an exponential growth~\citelater{andrews and dalziel} and transition into non-lineartiy resulting in the rise and sink of the bubbles of lighter fluid and spikes of the heavier fluid respectively~\citelater{sharp, bannerjee}. Figure~\ref{rt_definitions} illustrates the parameter definitions and nomenclature of an evolving single-mode~\COMMENT{need i define single mode rt?} RT instability interface. The evolution of RT instabilities for Reynolds numbers 300, 1000, and 3000 are depicted in figure~\ref{rt_reynolds}. As the solution evolves, the penetration of the spike increases and it eventually rolls up and forms two transient counter-rotating vortices due to shear forces and Kelvin-Helmholtz type instabilities~\citelater{hamzelhoo}, which go on to contribute to turbulent mixing and chaotic flow features~\citelater{Sharp}.
 
-\begin{itemize}
-    \item \COMMENT{ABOUT SPATIAL AND TEMPORAL CONVERGENCE}
-    \item \COMMENT{ABOUT EVOLUTION OF INTERFACE W VARYING REYNOLDS AND VARYING ATWOOD: } Figure~\COMMENT{FIGFIG} and 
-    figure~\COMMENT{GIFGIF} depict the evolution of the interface at different times for varying density ratios and Reynolds numbers 
-    respectively  as simulated in Star-CCM+. Upto high Reynolds numbers, the temporal evolution and the structural features of the 
-    interface agree qualitatively with the results  published in~\citelater{hamzelhoom huang, ding}. As the solution evolves, 
-    the penetration of the spike increases and it eventually rolls up and forms two transient counter-rotating vortices due to 
-    shear forces and Kelvin-Helmholtz type instabilities~\citelater{hamzelhoo}, which go on to contribute to turbulent mixing and 
-    chaotic flow features~\citelater{Sharp}.~\COMMENT{WHY DO HIGH Re NUM SIMS DEVIATE FROM EXPECTED. MENTION SALIENT FEATURES OF THE EVOLUTION} 
-    Simulations conducted for Atwood numbers very close to one also qualitatively show a 
-    similar progression  and evolution of structures as the simulations in~\citelater{huang}.~\COMMENT{What happens at high atwood 
-    numbers}
-    \item~\COMMENT{ABOUT COMPARISON OF BUBBLE HEIGHTS W DNS DATA AND L2 AND L-INF ERRORS: }  Using the bubble and spike heights, defined as the maximum vertical distance of the spike and bubble as measured from the undisturbed initial interface,
- the results can be quantitatively compared to~\citelater{hamzelhoo} as shown in Figure~\ref{rt_heights}. Table~\ref{table_rt_errs} summarises the root 
- mean square errors and the maximum errors between the simulated results and~\citelater{hamzelhoo}.
-\end{itemize}
+Figure~\COMMENT{name figure} depicts the evolution of the interface at different times for varying density ratios as simulated in Star-CCM+. Upto high Reynolds numbers, the interface structure and its temporal evolution agree qualitatively with the results published in~\citelater{hamzelhoom huang, ding}.~\COMMENT{why does it look different at high Re}.
+Using the bubble and spike heights, defined as the maximum vertical distance of the spike and bubble as measured from the undisturbed initial interface, the results can be quantitatively compared to~\citelater{hamzelhoo} as shown in Figure~\ref{rt_heights}. Table~\ref{table_rt_errs} summarises the root mean square errors and the maximum errors between the simulated results and~\citelater{hamzelhoo}.
 
-\subsubsection{Liquid Infiltration of Evaporation Chamber}
-\begin{itemize}
-    \item \COMMENT{ABOUT CONVERGENCE}
-    \item \COMMENT{ON EVOLUTION OF INTERFACE and FLOW FIELD and RESULTING HEIGHT OF WATER}
-    \item \COMMENT{ON EVOLUTION OF TEMPERATURE FIELD}
-\end{itemize}
+Simulations conducted for Atwood numbers very close to one also qualitatively show a similar progression and evolution of structures as the simulations in~\citelater{huang}.~\COMMENT{What happens at high atwood numbers}
 
-\subsection{Conclusion?}
+~\COMMENT{Write about mesh convergence study. WHY DO RESULTS NOT MATCH?}.
 
+
+%\subsection{Numerical Analysis}
+%\subsubsection{Stefan Problem}
+%\begin{itemize}
+%    \item \textbf{Convergence}
+%    \item \textbf{Results}
+%    \item \textbf{Errors}
+%\end{itemize}%
+
+%\subsubsection{Rayleigh-Taylor Instability}
+%\begin{itemize}
+%    \item \textbf{Convergence}
+%    \item \textbf{Results}
+%    \item \textbf{Errors}
+%\end{itemize}
 
 %\subsubsection{Actual Problem}
