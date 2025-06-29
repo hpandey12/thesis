@@ -1,5 +1,5 @@
 \section{Subproblem: Liquid Infiltration}
-The first subproblem deals with liquid infiltrating the evaporation chamber. 
+The first subproblem deals with water infiltrating the evaporation chamber during rocket ascent. 
 The injection system assembly in the experiment consists of: 
 \begin{itemize}
     \item the hydraulic accumulator, consisting of two 
@@ -12,16 +12,62 @@ The injection system assembly in the experiment consists of:
     evaporation chamber.
 \end{itemize}
 
-A pressure relief valve reduces the internal pressure 
-of the evaporation chamber to $0.03\,\text{MPa}$ during the ascent of the REXUS rocket. Shortly before the apogee 
-is reached, the injection assembly starts injecting the fluid into the 
-evaporation chamber. The check valves cut off the flow to the evaporation chamber 
-when the internal pressure rises to $0.05\,\text{MPa}$.
-\subsection{Introduction}
+The hydraulic accumulator is pressurised to 3.4+/-0.05 bar and heated in order to maintain the temperature of the water contained at 328K.
+ During the ascent of the rocket, a pressure relief valve reduces the pressure 
+ in the evaporation chamber to $0.03\,\text{MPa}$. Water infiltrates the evaporation chamber shortly before the apogee 
+ is reached and the flow is cut off when the internal pressure rises to $0.05\,\text{MPa}$.
+
+The objective of the first task is to model the water injection into the evaporation chamber and extract quantities of interest in order 
+ to better estimate the initial conditions for the second task. The multiphase physics models provided by Star-CCM+ are also evaluated and validated
+ against the one-dimensional Stefan problem and the two-dimensional Rayleigh-Taylor instability.  
+  
+ 
+ 
+\subsection{Introduction} 
+ The evaporation chamber, although a three-dimensional object in real life,
+ due to its axial symmetry is modelled as a two-dimensional rectangular domain in Star-CCM+. 
+
+
+As no flow measurements are made in the injection assembly, and the hydraulic accumulator only contains a temperature sensor, it becomes 
+necessary to make assumptions about the flow of the water to the evaporation chamber. 
+The reduction adapter reduces the diameter of the outflow pipe from the accumulator, $D$, to the diamter of the rest of pipes used in the 
+rest of the injection system, $d$. This is followed by two threaded connections in the form of brass T-joints leading to the cross manifold.
+Using the Darcy-Weisbach equation to estimate the head loss through the pipe and estimating the minor head losses in the form of diameter contractions
+and threaded connections, the total head loss from the accumulator through to the cross manifold can be written as,
+\begin{equation}
+    h_{A} = (1 - \frac{d^{2}}{D^{2}})\frac{v_{A}}{2} + 2 (0.08 ) \frac{v_{A}^{2}}{2} + f_{A} \frac{L_{A}}{d} \rho \frac{v_{A}^{2}}{2}
+\end{equation}
+The water is distributed through the cross manifold into the brass elbows and through to the evaporation chamber. Similar to the above procedure,
+the head loss from the manifold to the water outlet incorporates the smooth right angled bends in the elbows and the threaded connections.
+Thus,
+\begin{equation}
+    h_{B} = 2(0.3)\frac{v_{B}^{2}}{2} +  2 (0.08) \frac{v_{B}^{2}}{2} + f_{B} \frac{L_{B}}{d} \rho \frac{v_{B}^{2}}{2}
+\end{equation}
+As the pipes used in the injection assembly are congruent, the flow is assumed to be distributed uniformly by the cross manifold.
+The average velocitiey of water in the first part, $v_{A}$ can thus be related to the outlet velocity, $v_{B}$ using the average flow rates $Q_{A}$
+ and $Q_{A}$ respectively.
+ \begin{equation}
+    v_{A} = \frac{Q_{A}}{A_{A}} = 3 \frac{Q_{B}}{A_{A}} = 3 v_{B} \frac{A_{B}}{A_{A}}
+\end{equation}
+The energy balance for the system is thus written as 
+\begin{equation}
+    \frac{\Delta P}{\rho g} = \Delta h + \frac{v_{B}}{2} + h_{A} + h_{B}
+\end{equation}
+where after using equations and estimating the Darcy friction factor using the Haaland approximation to the Colebrook equation, 
+the velocity, $v_{B}$. With a corresponding Reynolds number, $Re = $, the initial assumption of turbulent flow is validated.
+
+With an initial pressure of $0.03MPa$ in the evaporation chamber, it is also necessary to validate if the continuum hypothesis remains valid 
+for the air present in the chamber. The Knudsen number relates the mean free path, $\lambda$, to the scale length of the macroscopic flow property gradients 
+and helps determine the validity of the continuum hypothesis. The magnitude of the mean free path can be used to estimate the Knudsen number.
+\begin{equation}
+    \lambda = \frac{\mu}{\rho} \sqrt{\frac{\pi m}{2 k_{B} T}}
+\end{equation}
+For dry air, at a pressure and temperature of $0.03MPa$ and $328$ respectively, molecular mass $m = 4.815e-26\,\text{kg}$, and estimating the kinematic
+viscosity using  Sutherland's formula, the mean free path, $\lambda \approx 2.0732e-06 m$.
+
 \begin{itemize}
-    \item Comment on flow development
-    \item Knudsen number to verify if the continuum hypothesis is valid for air
     \item Constant density assumption valid? Does that break the rayleigh taylor benchmark test?
+    \item CHANGE INLET FLOW TO ACCOUNT FOR CONSTANCY OF NONDIM NUMBERS
 \end{itemize}
 %\subsubsection{Physical Background}
 \subsection{Problem Description}
