@@ -85,6 +85,7 @@ Stefan problem under semi-infinite geometry, uniform initial temperature, consta
 thermophysical properties constant in each phase is probably the simplest, explicitly solvable problem of phase 
 change~\citelater{lectures, uni tenessee knoxville lectures}, serving as a good benchmark to validate the phase change VOF solver in Star-CCM+.
 ~\COMMENT{DOES IT ALSO SERVE AS A GOOD BENCHMARK FOR SIMPLE HEAT CONDUCTION TOO??? BECOZ TWO BIRDS ONE STONE}
+
 Assuming that the region in space, $\Omega \subset \mathbb{R}^{2}$, occupied by the material is the 2D semi-infinite rectangle 
 $\Omega = \{(x,y) \in \mathbb{R} \cross \mathbb{R}:\,x \in [0, \infty),\,y \in [0, \Delta h]\}$, with the solid phase and the liquid phase 
 occupying the regions $\Omega_{s}$ and $\Omega_{l}$ respectively such that $\Omega = \Omega_{s} \cup \Omega_{l}$. At any given time, $t$, the 
@@ -107,12 +108,13 @@ conditions, the system of equations defining the one-dimensional Stefan problem 
 - the system of equations is well-posed and has a unique solution. the evolution of the temperature field along with the evolution of the 
 phase change interface is studied.
 The simulation assumes laminar and unsteady flow and solves for the solution variables implicitly using the SIMPLE scheme.
- The 2D region is discretised using an orthogonal quadrilateral mesh of varying sizes in order to 
+ The 2D region is discretised using a uniform orthogonal quadrilateral mesh of varying sizes in order to 
  study the spatial convergence of the solution. The physical parameters for the simulation are selected according to water ice, as in~\citelater{boledi et al}.
  A constant density $\rho = 1000\,\text{kg}\cdot\text{m}^{-3}$, dynamic viscosity
  $\mu = 8.8871e-4\,\text{Pa}\cdot\text{s}$, latent heat of fusion $100000 \,\text{J}\cdot\text{kg}^{-1}$, and 
- specific heat $4200\,\text{J}\cdot\text{kg}^{-1}\cdot\text{K}^{-1}$. Thermal conductivities are defined as $2.33$ and $0.620271$ for the solid and liquid phases respectively. 
- All four boundaries are assigned a no-slip shear stress specification. The boundary at $x = 0$ is assigned a Dirichlet condition of temperature, $T =273\,\text{K}$, 
+ specific heat $4200\,\text{J}\cdot\text{kg}^{-1}\text{K}^{-1}$. Thermal conductivities are defined as $2.33\,\text{W}\cdot\text{m}^{-1}\text{K}^{-1}$ 
+ and $0.62\,\text{W}\cdot\text{m}^{-1}\text{K}^{-1}$ for the liquid and solid phases respectively. 
+ All four boundaries are assigned a no-slip shear stress specification. The boundary at $x = 0$ is assigned a constant temperature, $T =273\,\text{K}$, 
  while the other boundaries are assumed to be adiabatic. 
  The convection and diffusion
  terms are discretised using the second-order upwind scheme and the least squares method was used to interpolate the values of the 
@@ -170,6 +172,13 @@ initial boundary conditions, the governing equation for the Rayleigh-Taylor inst
 \end{split}
 \end{align}   
 where $\rho$ is the density, $\mathbf{u}$ is the velocity vector, $p$ is the pressure, $\mu$ is the dynamic viscosity, and $g$ is the gravitational acceleration.
+
+In a system of two fluids with a perturbed interface, the heavier fluid penetrates the lighter fluid due to gravitation thereby pushing the lighter fluid upwards.
+ The initial perturbations, generally studied using linear stability analysis, lead to an exponential growth~\citelater{andrews and dalziel} and transition into
+ non-lineartiy resulting in the rise and sink of the bubbles of lighter fluid and spikes of the heavier fluid respectively~\citelater{sharp, bannerjee}. 
+ Figure~\COMMENT{name figure} illustrates the parameter definitions and nomenclature of an evolving single-mode~\COMMENT{need i define single mode rt?} RT 
+ instability interface.
+
 The simulation assumer turbulent and unsteady flow, utilising the SIMPLE implicit scheme. The computational domain is discretised using an orthogonal quadrilateral mesh.
  The convection and diffusion terms are discretised using the second-order upwind scheme while the least squares method is again used to interpolate the values
  of the gradients from the cell centres onto the face centres. The VOF solver utilises the first-order HRIC scheme to reconstruct the interface.
@@ -185,12 +194,12 @@ The instability is simulated on a 2D rectangular domain, $[0, L_{x}] \cross [0, 
 The lower limit of the high Atwood number regime requires the Atwood number to be atleast $0.5$~\cite{HutchinsonDISSERTATIONSUBMITTEDFACULTY}. 
 Gravitational acceleration acts in a downward direction with a magnitude of $g = 1.0$. Periodic boundary conditions are enforced in the 
 horizontal direction and slip wall conditions are applied at the top and bottom boundaries. The physical parameters are selected to make 
-the simulations dynamically similar to the ones studied~\cite{hamzehlooDirectNumericalSimulations2021}.
+the simulations dynamically similar to the ones studied in~\cite{hamzehlooDirectNumericalSimulations2021}.
         
 According to~\cite{MIRJALILI2019221}, a reasonable solution to the RT instability with $At \approx 0.75$ can be obtained with 
 a $128 \cross 512$ mesh. With similar mesh resolutions being used in~\cite{hamzehlooDirectNumericalSimulations2021, 
 HuangConsistentEssentiallyConservative2020} to study similar RT instabilities, in addition to a mesh convergence study being performed, 
-the domain is discretised using a uniform trimmer mesh with size $\delta_{h} = 0.0045$. The timestep for the simulations is 
+the domain is discretised using a uniform orthogonal quadrilateral mesh with size $\delta_{h} = 0.0045$. The timestep for the simulations is 
 selected as $\delta t = 2.5 \cross 10e-4/\sqrt{At}$ similar to~\cite{DingDiffuseInterfaceModel2007,hamzehlooDirectNumericalSimulations2021}. 
 The following cases are studied:\\
 \begin{tabularx}{0.8 \textwidth}{ >{\centering\arraybackslash}X >{\centering\arraybackslash}X  >{\centering\arraybackslash}X  >{\centering\arraybackslash}X >{\centering\arraybackslash}X}
@@ -216,7 +225,31 @@ Using the bubble and spike heights, defined as the maximum vertical distance of 
 Simulations conducted for Atwood numbers very close to one also qualitatively show a similar progression and evolution of structures as the simulations in~\citelater{huang}.~\COMMENT{What happens at high atwood numbers}
 
 ~\COMMENT{Write about mesh convergence study. WHY DO RESULTS NOT MATCH?}.
+\begin{itemize}
+    \item \COMMENT{ABOUT SPATIAL AND TEMPORAL CONVERGENCE}
+    \item \COMMENT{ABOUT EVOLUTION OF INTERFACE W VARYING REYNOLDS AND VARYING ATWOOD: } Figure~\COMMENT{FIGFIG} and 
+    figure~\COMMENT{GIFGIF} depict the evolution of the interface at different times for varying density ratios and Reynolds numbers 
+    respectively  as simulated in Star-CCM+. Upto high Reynolds numbers, the temporal evolution and the structural features of the 
+    interface agree qualitatively with the results  published in~\citelater{hamzelhoom huang, ding}. As the solution evolves, 
+    the penetration of the spike increases and it eventually rolls up and forms two transient counter-rotating vortices due to 
+    shear forces and Kelvin-Helmholtz type instabilities~\citelater{hamzelhoo}, which go on to contribute to turbulent mixing and 
+    chaotic flow features~\citelater{Sharp}.~\COMMENT{WHY DO HIGH Re NUM SIMS DEVIATE FROM EXPECTED. MENTION SALIENT FEATURES OF THE EVOLUTION} 
+    Simulations conducted for Atwood numbers very close to one also qualitatively show a 
+    similar progression  and evolution of structures as the simulations in~\citelater{huang}.~\COMMENT{What happens at high atwood 
+    numbers}
+    \item~\COMMENT{ABOUT COMPARISON OF BUBBLE HEIGHTS W DNS DATA AND L2 AND L-INF ERRORS: }  Using the bubble and spike heights, defined as the maximum vertical distance of the spike and bubble as measured from the undisturbed initial interface,
+ the results can be quantitatively compared to~\citelater{hamzelhoo} as shown in Figure~\ref{rt_heights}. Table~\ref{table_rt_errs} summarises the root 
+ mean square errors and the maximum errors between the simulated results and~\citelater{hamzelhoo}.
+\end{itemize}
 
+\subsubsection{Liquid Infiltration of Evaporation Chamber}
+\begin{itemize}
+    \item \COMMENT{ABOUT CONVERGENCE}
+    \item \COMMENT{ON EVOLUTION OF INTERFACE and FLOW FIELD and RESULTING HEIGHT OF WATER}
+    \item \COMMENT{ON EVOLUTION OF TEMPERATURE FIELD}
+\end{itemize}
+
+\subsection{Conclusion?}
 
 %\subsection{Numerical Analysis}
 %\subsubsection{Stefan Problem}
