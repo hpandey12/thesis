@@ -1,6 +1,6 @@
 # stefan_solver.py
-
 from __future__ import annotations
+import logging
 import math
 import numpy as np
 from typing import List
@@ -103,7 +103,7 @@ class StefanSolver(Solver):
             lam = self.return_lambda(lam_init)
             return 2.0 * np.sqrt(alpha * t) * lam
 
-    def temperature_profile(self, x_all: bool = False, x_loc: float = 100, t: float = -1.0, t_all: List[float] = None):
+    def temperature_profile(self, x_all: bool = False, x_in: List[float] = None, t: float = -1.0, t_all: List[float] = None):
         """
         Compute: T(x,t) = T_l - (T_l - T_m)* erf(x/(2√(αt))) / erf(X/(2√(αt)))
         for x < X(t), else T_m.
@@ -114,19 +114,25 @@ class StefanSolver(Solver):
 
         def return_single(x_loc_in, t_in):
             pos_int = self.interface_position(t=t_in)
-            num = special.erf(x_loc_in / (2.0 * np.sqrt(alpha * t_in)))
-            den = special.erf(pos_int / (2.0 * np.sqrt(alpha * t_in)))
-            return T_l - ((T_l - T_m) * (num / den))
+            if x_loc_in < pos_int:
+                num = special.erf(x_loc_in / (2.0 * np.sqrt(alpha * t_in)))
+                den = special.erf(pos_int / (2.0 * np.sqrt(alpha * t_in)))
+                return T_l - ((T_l - T_m) * (num / den))
+            else:
+                return T_m
 
         if not x_all:
             if t_all is None:
-                pos_int = self.interface_position(t=t)
-                return return_single(x_loc, t) if x_loc < pos_int else T_m
+                T_profiles = []
+                for x_loc in x_in:
+                #pos_int = self.interface_position(t=t)
+                    T_profiles.append(return_single(x_loc, t))
+                return T_profiles
             else:
                 results = []
                 for t_i in t_all:
                     pos_int = self.interface_position(t=t_i)
-                    val = return_single(x_loc, t_i) if x_loc < pos_int else T_m
+                    val = return_single(x_loc, t_i) 
                     results.append(val)
                 return results
         else:
@@ -136,7 +142,7 @@ class StefanSolver(Solver):
             if t_all is None:
                 pos_int = self.interface_position(t=t)
                 T_temp = [
-                    return_single(x_i, t) if x_i < pos_int else T_m
+                    return_single(x_i, t)
                     for x_i in x_vals
                 ]
                 T_profiles.append(np.reshape(T_temp, (1, -1)))
@@ -144,9 +150,52 @@ class StefanSolver(Solver):
                 for t_i in t_all:
                     pos_int = self.interface_position(t=t_i)
                     T_temp = [
-                        return_single(x_i, t_i) if x_i < pos_int else T_m
+                        return_single(x_i, t_i)
                         for x_i in x_vals
                     ]
                     T_profiles.append(np.reshape(T_temp, (1, -1)))
 
             return T_profiles
+        
+
+    def calculate_approx_interface_location(self):
+        def return_idxs(timestep_data):
+            idxs = np.where(timestep_data['T'] > self.model.params['T_m'])
+            
+            return idxs
+
+        interface_loc_list = []
+        for idx, val in enumerate(self.model.solution_data):
+            rounded_x = np.round(val["x_dat"], 4)
+            _, unique_indices = np.unique(rounded_x, return_index=True)
+            shortlist = []
+            for id in unique_indices:
+                if np.round(val['T'][id], 4) > self.model.params['T_m']:
+                    #print(f"ID: {id}, T: {val['T'][id]}, x: {val['x_dat'][id]}")
+                    shortlist.append(id)
+            #idxs = [shortlist[-2], shortlist[-1]]
+            interface_loc_list.append(val['x_dat'][shortlist[-1]])
+        
+        return interface_loc_list
+    
+
+    def calculate_errors(self):
+        L2_data = []
+        L_inf_data = []
+        err_abs = []
+        for idx, val in enumerate(self.model.solution_data):
+            rounded_x = np.round(val["x_dat"], 4)
+            _, unique_indices = np.unique(rounded_x, return_index=True)
+            #print(np.size(rounded_x[unique_indices]))
+            analytical_profile = self.temperature_profile(x_in= rounded_x[unique_indices], t=self.model.params['timesteps'][idx])
+            abs_err = []
+            for num_T, an_T in zip(val["T"][unique_indices], analytical_profile):
+                abs_err.append(np.abs(num_T - an_T))
+            L2_err = 0
+            for error in abs_err:
+                L2_err += (error**2)*self.model.params['el_vol']
+            L2_data.append(np.sqrt(L2_err/len(abs_err)))
+            L_inf_data.append(np.max(abs_err))
+            err_abs.append(abs_err)
+        return L_inf_data, L2_data, err_abs
+
