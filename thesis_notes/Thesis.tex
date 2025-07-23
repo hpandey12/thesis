@@ -69,9 +69,14 @@
 \usepackage{framed}
 \usepackage{dashrule}
 \usepackage{hyperref}
-\usepackage[T1]{fontenc}
+%\usepackage[T1]{fontenc}
 \usepackage{mathpazo}
 \usepackage{libertine}
+\usepackage[a-1b]{pdfx}
+\usepackage[latin9,utf8]{inputenc}
+\numberwithin{equation}{section}
+%\renewcommand{\theequation}{\thesection\arabic{equation}}
+%\renewcommand{\theequation}{\thesubsection\arabic{equation}}
 %\input{Chapters/symbols.tex}		% Glossar mit Einteilung in Kategorien
 \newtheorem{defn}{Definition}
 
@@ -226,10 +231,10 @@
 
 
 %\input{Chapters/Notes/notes.tex}
-\input{Chapters/ActualThesis/chap1.tex}
+%\input{Chapters/ActualThesis/chap1_rough.tex}
 \newpage
-%\input{Chapters/ActualThesis/mathnotes.tex}
-%\newpage
+\input{Chapters/ActualThesis/chap2.tex}
+\newpage
 \input{Chapters/ActualThesis/subprob1.tex}
 \newpage
 %\input{Chapters/Review/review}

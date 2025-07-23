@@ -27,8 +27,8 @@
 \fi
 
 % Schrift
-\usepackage[T1]{fontenc}			%europ�ischer Zeichensatu
-\usepackage[latin9]{inputenc} % Microsoft Codepage f�r Windows
+%\usepackage[T1]{fontenc}			%europ�ischer Zeichensatu
+%\usepackage[latin9]{inputenc} % Microsoft Codepage f�r Windows
 %\usepackage[utf8]{inputenc}
 \usepackage{graphicx} % Zur Einbindung von Bilddateien
 \usepackage{scrlayer-scrpage} % Notwendig um z.B. Kopfzeile zu definieren
@@ -37,13 +37,13 @@
 %----------------------------------------
 % Weitere n�tzliche Pakete
 %----------------------------------------
-\usepackage{amsmath} % Griechische Buchstaben fett gedruckt, durch Voranstellen von \boldsymbol in der Gleichung vor dem Gewuenschten Symbol
+\RequirePackage{amsmath} % Griechische Buchstaben fett gedruckt, durch Voranstellen von \boldsymbol in der Gleichung vor dem Gewuenschten Symbol
 
-\usepackage[numbers]{natbib}   % anstelle von cite, bessere Zitier-Moeglichkeiten
+\RequirePackage[numbers]{natbib}   % anstelle von cite, bessere Zitier-Moeglichkeiten
                                % numbers fuer numeric mode: [1], [2] etc.
-\usepackage{color} 		         % farbige Schrift
+\RequirePackage{color} 		         % farbige Schrift
 
-\usepackage[pdftex,colorlinks,hypertexnames=false]{hyperref}
+\RequirePackage[pdftex,colorlinks,hypertexnames=false]{hyperref}
 \hypersetup{%
 	linkcolor={blue},
 	citecolor={red},
