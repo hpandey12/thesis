@@ -65,6 +65,7 @@ Multiphase flow is modelled in Star-CCM+ using various frameworks. The two-fluid
     - \int\limits_{V} \frac{1}{\rho_{i}}\nabla (\alpha_{i}\rho_{i}\mathbf{v}_{d,i})\,\mathrm{d}V
  \end{align}
 \end{subequations}
+
 \subsection{Modelling Turbulence}
 Flows are generally turbulent. Turbulence is chracterised by irregular fluid motion dominated by 
 eddies and vortices of various scales such
@@ -78,15 +79,15 @@ The model utilises the reynolds averaging of the already averaged form of the co
  is supposed to be much larger 
  than the averaging scales assumed in the conservation equations described in the above 
  section~\cite{besnardTurbulenceMultiphaseFlow1988a}. This averaging process may be thought of as
- ensemble averaging for repeatable transient situations. ~\cite{hirschNumericalComputationInternal2007}
+ ensemble averaging for repeatable transient situations.
 The effects of turbulence through this averaging procedure introduces additional
  terms. In the reynolds averaging of the navier stokes equations, the 
  terms representing the turbulent momentum and heat transfer arise.
  Turbulence models based on RANS equations supply a general description of turbulence
- production, dissipation, and transport. The k-w models solves two additional transport 
- equations for the turbulent kinetic energy and specific dissipation rate - defined as the dissipation rate 
- per unit turbulent kinetic energy. ~\cite{hirschNumericalComputationInternal2007, dartevelleComprehensiveApproachesMultiphase2005, wilcoxTurbulenceModelingCFD2006}
-
+ production, dissipation, and transport. ~\cite{hirschNumericalComputationInternal2007, dartevelleComprehensiveApproachesMultiphase2005, wilcoxTurbulenceModelingCFD2006}
+%The k-w models solves two additional transport 
+% equations for the turbulent kinetic energy and specific dissipation rate - defined as the dissipation rate 
+% per unit turbulent kinetic energy. 
 The implementation of the model in Star-CCM+ can be further controlled to
  adjust the realisability. The specification of turbulence is done using
  the turbulence intensity and the length scale. The inherent anisotropy 
@@ -94,7 +95,7 @@ The implementation of the model in Star-CCM+ can be further controlled to
  in the modelling of reynolds stresses. The parameters in the model
  are left on their default values as they are empirically modelled.
 
-\subsection{Evaporation and Flash Evaporation}
+\subsection{Evaporation}
 The evaporation process is distinguished between occuring at saturation temperatures or not. 
  Evaporation at saturation temperatures, known as vaporisation, is a much faster 
  process in comparison to evaporation at normal~\cite{wickertSimulation}. 
@@ -129,8 +130,6 @@ After a stable bubble nucleus has been formed, the growth of the bubble becomes 
  and inertia. Inertial effects, however, become less relevant as the bubble growth rate decreases
  and the bubble radius grows. The interphase energy exchange determines further bubble growth.~\cite{sherFlashboilingAtomization2008}
 
-
-
 \subsubsection{Effects of low pressure and gravity conditions}
 The absence of significant gravitaional forces alters the dynamics of vaporisation - affecting natural convection, buoyancy
  driven phenomenon, and bubble dynamics. Under terrestrial gravity, convection currents develop under thermal
@@ -157,19 +156,41 @@ Reduced system pressure impacts the overall intensity of heat transfer. The onse
 The affected heat transfer and bubble growth phenomenon further result in lower critical heat fluxes
  and heat transfer efficiency.~\cite{zhangExperimentalTheoreticalStudy2002, PDFMethodAssessing}
 
-\subsubsection{Flash evaporation}
+\subsubsection{Vaporisation in a superheated liquid}
+Flash evaporation is the intense vaporisation triggered through depressurisation of superheated fluids.
 
+\subsection{Multiple Flow Regimes and Interface Capturing}
+Star-CCM+ in its implementation of the eulerian-multiphase framework utilises a flow regime topology based on the volume fractions
+ of the two interacting phases. In a cell volume for increasing values of the volume fraction of the second phase,
+ the first regime considers the second phase to be dispersed in the first phase
+ the large scale interface modelling separated flow, and the dispersed-continuous regime
+ respectively. To calculate the interphase interactions are composed of the 
+ weighted sum of the interaction of each flow topology regime.
+
+The interface is resolved using the High-Resolution Interface Capturing scheme. Sharp 
+ interfaces present a discontinuity
+ in the solution domain, causing discretisation errors. In large scale
+ interfaces, this can lead to spurious or parasitic currents.
+ Although often negligible, these currents can be accomodated for through 
+ the incorporation of an artificial viscosity term.   
+
+The flow at large scale interfaces is close to laminar and a boundary layer is developed.
+ In cases of high relative velocity flows, the large gradients along this boundary layer
+ can cause turbulent fluctuations requiring the necessity of damping the turbulence
+ along the interface.
+
+\subsection{Phase Interactions}
 \begin{itemize}
-    \item Vapour generation rate
+ \item drag
+ \item surface tension
+ \item mass transfer
+ \item energy transfer
 \end{itemize}
-\subsection{Interface Capturing and Multiple Flow Regimes}
-vof - hric --face density reconstruction order, enable gradient smoothing?
-\subsection{Multiphase Interactions}
-Multiphase Interations - surface tension, vof-vof phase interaction
+
 \subsection{Numerical Methods}
 \begin{itemize}
     \item gradients
-    \item solvers - implicit unsteady, segregated flow (SIMPLE), relaxatio
-    \item Relevant non-dim numbers: reynolds, froude, jakobs, nusselt, bond, what not
+    \item solvers - implicit unsteady, segregated flow (SIMPLE)
+    \item Relevant non-dim numbers? (reynolds, froude, jakobs, nusselt, bond, what not)
 \end{itemize}
 \subsection{Workflow?}
