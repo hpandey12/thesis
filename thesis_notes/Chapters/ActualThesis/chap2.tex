@@ -71,25 +71,35 @@ Flows are generally turbulent. Turbulence is chracterised by irregular fluid mot
 eddies and vortices of various scales such
  that the energy is transferred down to the smaller scales in a cascade until it 
  dissipates, reducing the kinetic energy of the flow and raising the internal
- energy of the fluid~\cite{gilmanDevelopmentGeneralPurpose2014, davidsonIntroductionTurbulenceModels}. Although turbulence can be modelled in various ways to various levels of resolutions,
+ energy of the fluid~\cite{gilmanDevelopmentGeneralPurpose2014, davidsonIntroductionTurbulenceModels}.
+ Although turbulence can be modelled in various ways to various levels of resolutions,
  turbulence in this study has been modelled using the SST k-w model. 
-The model utilises the reynolds averaging of the already averaged form of the conservation 
- equations is further divided
+The model is based upon the reynolds averaging of the already averaged form of the conservation 
+ equations by dividing further the flow variables
  into a mean and fluctuating component. The scale of this averaging 
  is supposed to be much larger 
  than the averaging scales assumed in the conservation equations described in the above 
  section~\cite{besnardTurbulenceMultiphaseFlow1988a}. This averaging process may be thought of as
- ensemble averaging for repeatable transient situations.
+ ensemble averaging for repeatable transient situations and leads to non-linear terms
+ containing the fluctuations of velocities that require additional closure.
 The effects of turbulence through this averaging procedure introduces additional
- terms. In the reynolds averaging of the navier stokes equations, the 
- terms representing the turbulent momentum and heat transfer arise.
+ terms representing the transport of momentum and heat transfer due to turbulence.
  Turbulence models based on RANS equations supply a general description of turbulence
  production, dissipation, and transport. ~\cite{hirschNumericalComputationInternal2007, dartevelleComprehensiveApproachesMultiphase2005, wilcoxTurbulenceModelingCFD2006}
-%The k-w models solves two additional transport 
-% equations for the turbulent kinetic energy and specific dissipation rate - defined as the dissipation rate 
-% per unit turbulent kinetic energy. 
-The implementation of the model in Star-CCM+ can be further controlled to
- adjust the realisability. The specification of turbulence is done using
+ In order to draw closure relations, eddy-viscosity models of turbulence assume that:
+ \begin{itemize}
+    \item the scalar flux vector is aligned with the mean scalar gradient in the flow 
+    \item the turbulent (eddy) viscosity relates the deviatoric reynolds stress tensor
+    to the mean velocity gradients
+ \end{itemize}
+ These assumptions are, more often than not, invalid, owing to the fact 
+ that the physics of turbulence is different than the physics culminating 
+ into the viscous stress law.\cite{popeTurbulentFlows2015} 
+ \COMMENT{USE TURBULENT MODEELING BY MANCEAU}
+
+ The implementation of the model in Star-CCM+ can be further controlled to
+ adjust the realisability. Realisability is the postive semi-definiteness of the 
+ reynolds stress tensor. The specification of turbulence is done using
  the turbulence intensity and the length scale. The inherent anisotropy 
  in turbulence is accounted for with quadratic and cubic constitutive options
  in the modelling of reynolds stresses. The parameters in the model
