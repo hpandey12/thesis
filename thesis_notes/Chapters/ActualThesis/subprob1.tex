@@ -114,8 +114,8 @@ The interface between two superposed fluid with differing densities in unstable
  the RT instability may occur across various spatial and temporal scales in natural and other fluid systems where it 
  is often modified by the presence of additional processes~\COMMENT{mention which processes?}. The growth of 
  perturbations at the interface is characterised by opposing 
- pressure and density gradients. The density difference is 
- represented by the non-dimensional \textit{Atwood number}, $At = (\rho_{H} - \rho_{L})/(\rho_{H} + \rho_{L}).$
+ pressure and density
+ gradients. The density difference is represented by the non-dimensional \textit{Atwood number}, $At = (\rho_{H} - \rho_{L})/(\rho_{H} + \rho_{L})$.
 The principles governing the nonlinear 
  RT instability also govern any motion of one fluid in another of different density~\citelater{Tryggvason rt instability}.
  Modelling of the RT instability requires accurate computation of the interface evolution while also 
@@ -153,7 +153,7 @@ In a system of two fluids with a perturbed interface, the heavier fluid penetrat
  Figure~\COMMENT{name figure} illustrates the parameter definitions and nomenclature of an evolving single-mode~\COMMENT{need i define single mode rt?} RT 
  instability interface.
 
-The simulation assumes turbulent and unsteady flow, utilising the SIMPLE implicit scheme. The computational domain is discretised using an orthogonal quadrilateral mesh.
+The simulation assumer turbulent and unsteady flow, utilising the SIMPLE implicit scheme. The computational domain is discretised using an orthogonal quadrilateral mesh.
  The convection and diffusion terms are discretised using the second-order upwind scheme while the least squares method is again used to interpolate the values
  of the gradients from the cell centres onto the face centres. The VOF solver utilises the first-order HRIC scheme to reconstruct the interface.
  The transient term is discretised using the first-order accurate implicit Euler-method. The modified K-Omega (SST k-omega) model is used to account for turbulence and surface
