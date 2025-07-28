@@ -108,19 +108,28 @@ One can also see that all simulation results converge to the analytical solution
 \end{itemize}
 
 \subsubsection{Rayleigh-Taylor Instability}
-The interface between two superposed fluid with differing densities in unstable
- in cases when the heavier fluid in pushed into the lighter fluid~\cite{birkhoffTAYLORINSTABILITYLAMINAR1954}.
- This instability is known as the Rayleigh-Taylor (RT) instability. Although not encountered in its ideal form, 
- the RT instability may occur across various spatial and temporal scales in natural and other fluid systems where it 
- is often modified by the presence of additional processes~\COMMENT{mention which processes?}. The growth of 
- perturbations at the interface is characterised by opposing 
- pressure and density
- gradients. The density difference is represented by the non-dimensional \textit{Atwood number}, $At = (\rho_{H} - \rho_{L})/(\rho_{H} + \rho_{L})$.
-The principles governing the nonlinear 
- RT instability also govern any motion of one fluid in another of different density~\citelater{Tryggvason rt instability}.
- Modelling of the RT instability requires accurate computation of the interface evolution while also 
- correctly implementing the phase interaction terms described in~\citelater{chapter stuf}, thus, serving as
- a classical benchmark for the evaluation of the behaviour of two phase flows~\cite{gouldingSimplifiedConservativeDiscretization2024}.
+The Rayleigh-Taylor (RT) instability describes the growth of interfacial
+ perturbations between two superposed fluids of differing densities when
+ the heavier fluid overlies the lighter one under gravity~\cite{birkhoffTAYLORINSTABILITYLAMINAR1954}.
+ This phenomenon, known as the Rayleigh-Taylor (RT) instability, is fundamental
+ to many natural and engineering systems. Although the ideal, undisturbed RT instability
+ is rarely encountered in practice, its essential features arise across a broad range
+ of spatial and temporal scales—where the basic mechanism can be influenced by viscosity,
+ surface tension, compressibility, external accelerations, or stratification\cite{SHARP19843}
+ Perturbation growth is driven by oppositely directed gradients of pressure and density at the interface.
+
+The density contrast between the two fluids is represented by the non-dimensional
+ \textit{Atwood number}, $At = (\rho_{H} - \rho_{L})/(\rho_{H} + \rho_{L})$,
+ where $\rho_{H}$ and $\rho_{L}$ denote the densities of the upper (heavy) and lower (light) fluids, 
+ respectively. The Atwood number quantifies 
+ the strength of the instability, with larger values corresponding to greater density contrasts.
+ The nonlinear development of the RT instability is central to a wide class of interfacial flows
+ where one fluid penetrates or displaces
+ another~\cite{tryggvasonNumericalSimulationsRayleighTaylor1988}. Accurately simulating RT instability serves
+ as a classical benchmark for two-phase flow solvers, requiring detailed computation of
+ interface dynamics and rigorous implementation of interphase interaction terms as discussed
+ in~\citelater{chapter stuf}, and is widely used to validate numerical methods for
+ multiphase flows~\cite{gouldingSimplifiedConservativeDiscretization2024}.
 
 We assume that the two immiscible, viscuous, and incompressible fluids occupy the regions,
 \begin{equation*}
@@ -130,8 +139,9 @@ and are separated by the interface, $\Gamma(t)$ where
 \begin{equation*}
     \Gamma(t) = \{(x,y) \in \mathbb{R} \cross \mathbb{R}: y = h(t,x),\, t \geq 0 \}
 \end{equation*}
-Using the navier stokes equations for incompressible fluids, a mixture density and viscosisty, the jump conditions at the interfaces, and the 
-initial boundary conditions, the governing equation for the Rayleigh-Taylor instability can be written as
+The flow is governed by the incompressible Navier-Stokes equations with
+variable density and viscosity fields according to the local phase distribution.
+Interface dynamics are subject to jump conditions expressed as
 \begin{align}\label{rt: eqn_system}
     \begin{split}
     \begin{cases}
@@ -147,29 +157,31 @@ initial boundary conditions, the governing equation for the Rayleigh-Taylor inst
 \end{align}   
 where $\rho$ is the density, $\mathbf{u}$ is the velocity vector, $p$ is the pressure, $\mu$ is the dynamic viscosity, and $g$ is the gravitational acceleration.
 
-In a system of two fluids with a perturbed interface, the heavier fluid penetrates the lighter fluid due to gravitation thereby pushing the lighter fluid upwards.
- The initial perturbations, generally studied using linear stability analysis, lead to an exponential growth~\citelater{andrews and dalziel} and transition into
- non-lineartiy resulting in the rise and sink of the bubbles of lighter fluid and spikes of the heavier fluid respectively~\citelater{sharp, bannerjee}. 
- Figure~\COMMENT{name figure} illustrates the parameter definitions and nomenclature of an evolving single-mode~\COMMENT{need i define single mode rt?} RT 
- instability interface.
-
-The simulation assumer turbulent and unsteady flow, utilising the SIMPLE implicit scheme. The computational domain is discretised using an orthogonal quadrilateral mesh.
- The convection and diffusion terms are discretised using the second-order upwind scheme while the least squares method is again used to interpolate the values
- of the gradients from the cell centres onto the face centres. The VOF solver utilises the first-order HRIC scheme to reconstruct the interface.
- The transient term is discretised using the first-order accurate implicit Euler-method. The modified K-Omega (SST k-omega) model is used to account for turbulence and surface
- is treated semi-implicitly.~\COMMENT{MENTION INITIAL CONDITIONS}
-The instability is simulated on a 2D rectangular domain, $[0, L_{x}] \cross [0, 4L_{x}]$, where $L_{x}$ is the reference length. 
- The initial interface, located at $y_{0}$, represents a single-mode perturbation with amplitude, $A = 0.1 L_{x}$, and 
+The numerical simulations assume turbulent, unsteady flow and are performed using 
+ the SIMPLE implicit algorithm.
+ The computational domain is a two-dimensional rectangle, $[0, L_x] \times [0, 4L_x]$,
+ uniformly discretized by orthogonal quadrilateral cells.
+ Convective and diffusive terms are discretized by the second-order upwind scheme; 
+ cell-center gradients are interpolated to face centers using the least-squares method. 
+ Interface capturing is performed with the volume-of-fluid (VOF) method using the 
+ first-order HRIC scheme. The transient term is approximated using the first-order 
+ implicit Euler method. 
+ Turbulence effects are modeled using the Shear Stress Transport (SST) $k$-$\omega$ \COMMENT{better word?}
+ closure, 
+ and the surface tension force is treated semi-implicitly. Initial conditions impose a 
+ single-mode interface perturbation, with amplitude, $A = 0.1 L_{x}$, and 
  wavelength, $\lambda = L_{x}$.
         \begin{equation*}
            \Gamma_{0} = 2 L_{x}+ A \cos(\frac{2\pi}{ L_{x} })
         \end{equation*}
        
-The lower limit of the high Atwood number regime requires the Atwood number to be atleast $0.5$~\cite{HutchinsonDISSERTATIONSUBMITTEDFACULTY}. 
-Gravitational acceleration acts in a downward direction with a magnitude of $g = 1.0$. Periodic boundary conditions are enforced in the 
-horizontal direction and slip wall conditions are applied at the top and bottom boundaries. The physical parameters are selected to make 
-the simulations dynamically similar to the ones studied in~\cite{hamzehlooDirectNumericalSimulations2021}.
-        
+Gravitational acceleration acts downward, $g = 1.0$. 
+ Periodic boundary conditions are imposed in the horizontal 
+ direction and slip walls at the top and bottom. The Atwood number is varied, 
+ with $At \geq 0.5$ denoting the "high Atwood" regime~\cite{HutchinsonDISSERTATIONSUBMITTEDFACULTY}, 
+ and physical parameters are chosen for dynamic similarity to canonical benchmark 
+ cases~\cite{hamzehlooDirectNumericalSimulations2021}.
+
 According to~\cite{MIRJALILI2019221}, a reasonable solution to the RT instability with $At \approx 0.75$ can be obtained with 
 a $128 \cross 512$ mesh. With similar mesh resolutions being used in~\cite{hamzehlooDirectNumericalSimulations2021, 
 HuangConsistentEssentiallyConservative2020} to study similar RT instabilities, in addition to a mesh convergence study being performed, 
@@ -191,12 +203,35 @@ The following cases are studied:\\
     \hline
 \end{tabularx}
 \newline
-In a system of two fluids with a perturbed interface, the heavier fluid penetrates the lighter fluid due to gravitation thereby pushing the lighter fluid upwards. The initial perturbations, generally studied using linear stability analysis, lead to an exponential growth~\citelater{andrews and dalziel} and transition into non-lineartiy resulting in the rise and sink of the bubbles of lighter fluid and spikes of the heavier fluid respectively~\citelater{sharp, bannerjee}. Figure~\ref{rt_definitions} illustrates the parameter definitions and nomenclature of an evolving single-mode~\COMMENT{need i define single mode rt?} RT instability interface. The evolution of RT instabilities for Reynolds numbers 300, 1000, and 3000 are depicted in figure~\ref{rt_reynolds}. As the solution evolves, the penetration of the spike increases and it eventually rolls up and forms two transient counter-rotating vortices due to shear forces and Kelvin-Helmholtz type instabilities~\citelater{hamzelhoo}, which go on to contribute to turbulent mixing and chaotic flow features~\citelater{Sharp}.
 
-Figure~\COMMENT{name figure} depicts the evolution of the interface at different times for varying density ratios as simulated in Star-CCM+. Upto high Reynolds numbers, the interface structure and its temporal evolution agree qualitatively with the results published in~\citelater{hamzelhoom huang, ding}.~\COMMENT{why does it look different at high Re}.
-Using the bubble and spike heights, defined as the maximum vertical distance of the spike and bubble as measured from the undisturbed initial interface, the results can be quantitatively compared to~\citelater{hamzelhoo} as shown in Figure~\ref{rt_heights}. Table~\ref{table_rt_errs} summarises the root mean square errors and the maximum errors between the simulated results and~\citelater{hamzelhoo}.
+Figure~\ref{rt_definitions} illustrates
+ the parameter definitions and nomenclature of an evolving single-mode~\COMMENT{need
+ i define single mode rt?} RT instability interface. The evolution of RT instabilities for
+ Reynolds numbers 300, 1000, and 3000 are depicted in figure~\ref{rt_reynolds}.
+ The initial perturbations, generally studied using linear stability analysis, experience
+ an exponential growth~\cite{andrewsSmallAtwoodNumber2010}. When perturbations 
+ reach finite amplitude, nonlinear effects lead to the formation of rising 
+ “bubbles” of the lighter fluid and descending “spikes” of the heavier fluid. 
+ Continued evolution is marked by vortex formation and interface roll-up driven 
+ by shear and
+ Kelvin-Helmholtz type instabilities~\cite{hamzehlooDirectNumericalSimulations2021,tryggvasonNumericalSimulationsRayleighTaylor1988}, 
+ which go on to contribute
+ to turbulent mixing and chaotic flow features~\cite{SHARP19843}.
 
-Simulations conducted for Atwood numbers very close to one also qualitatively show a similar progression and evolution of structures as the simulations in~\citelater{huang}.~\COMMENT{What happens at high atwood numbers}
+Figure~\COMMENT{name figure} depicts the evolution of the interface
+at different times for varying density ratios as simulated in Star-CCM+.
+Upto high Reynolds numbers, the interface structure and its temporal evolution
+agree qualitatively with the results published in~\cite{hamzehlooDirectNumericalSimulations2021,DingDiffuseInterfaceModel2007,HuangConsistentEssentiallyConservative2020}.
+~\COMMENT{why does it look different at high Re}.
+Using the bubble and spike heights, defined as the maximum vertical distance
+of the spike and bubble as measured from the undisturbed initial interface,
+the results can be quantitatively compared to~\cite{hamzehlooDirectNumericalSimulations2021} as shown
+in Figure~\ref{rt_heights}. Table~\ref{table_rt_errs} summarises the root mean
+square errors and the maximum errors between the simulated results and~\cite{hamzehlooDirectNumericalSimulations2021}.
+
+Simulations conducted for Atwood numbers very close to one also qualitatively
+show a similar progression and evolution of structures as the simulations
+in~\cite{HuangConsistentEssentiallyConservative2020}.~\COMMENT{What happens at high atwood numbers}
 
 ~\COMMENT{Write about mesh convergence study. WHY DO RESULTS NOT MATCH?}.
 \begin{itemize}

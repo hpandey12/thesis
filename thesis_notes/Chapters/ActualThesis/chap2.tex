@@ -67,37 +67,41 @@ Multiphase flow is modelled in Star-CCM+ using various frameworks. The two-fluid
 \end{subequations}
 
 \subsection{Modelling Turbulence}
-Flows are generally turbulent. Turbulence is chracterised by irregular fluid motion dominated by 
-eddies and vortices of various scales such
- that the energy is transferred down to the smaller scales in a cascade until it 
- dissipates, reducing the kinetic energy of the flow and raising the internal
- energy of the fluid~\cite{gilmanDevelopmentGeneralPurpose2014, davidsonIntroductionTurbulenceModels}.
- Although turbulence can be modelled in various ways to various levels of resolutions,
- turbulence in this study has been modelled using the SST k-w model. 
-The model is based upon the reynolds averaging of the already averaged form of the conservation 
- equations by dividing further the flow variables
- into a mean and fluctuating component. The scale of this averaging 
- is supposed to be much larger 
- than the averaging scales assumed in the conservation equations described in the above 
- section~\cite{besnardTurbulenceMultiphaseFlow1988a}. This averaging process may be thought of as
- ensemble averaging for repeatable transient situations and leads to non-linear terms
- containing the fluctuations of velocities that require additional closure.
-The effects of turbulence through this averaging procedure introduces additional
- terms representing the transport of momentum and heat transfer due to turbulence.
- Turbulence models based on RANS equations supply a general description of turbulence
- production, dissipation, and transport. ~\cite{hirschNumericalComputationInternal2007, dartevelleComprehensiveApproachesMultiphase2005, wilcoxTurbulenceModelingCFD2006}
+Flows are generally turbulent. Turbulence is chracterised by irregular fluid motion dominated by
+ eddies and vortices across a wide range of spatial and temporal scales. The largest eddies
+ extract kinetic energy from the mean flow, which is then, through a cascade, transferred
+ to the eddies at
+ the smallest scale where the energy is dissipated due to viscosity, raising the 
+ internal energy of the fluid~\cite{gilmanDevelopmentGeneralPurpose2014, davidsonIntroductionTurbulenceModels}.
+
+Although turbulence can be modelled in various ways to various levels of resolutions,
+ turbulence in this study has been modelled using the Shear Stress Transport (SST) k-w model.
+ The SST k-w model is a two-equation eddy-viscosity turbulence model
+ based on the Reynolds-Averaged Navier-Stokes (RANS) equations.
+ The model combines the advantages of the $k$-$\omega$ model near walls—which
+ accurately resolves boundary layer behaviour—and the $k$-$\varepsilon$ model in
+ the free stream, enhancing robustness and accuracy in separated flows~\cite{wilcoxTurbulenceModelingCFD2006}.
+ The SST approach uses a blending function to smoothly transition between these models,
+ which is especially effective in flows with strong adverse pressure gradients and separation,
+ such as multiphase cavity flows~\citelater{Menter1994}.
+
+RANS models result from decomposing flow variables into
+ mean and fluctuating components, applying Reynolds averaging,
+ which filters out turbulent fluctuations below the
+ averaging scale~\cite{besnardTurbulenceMultiphaseFlow1988a, hirschNumericalComputationInternal2007}.
+ This operation yields additional Reynolds stress terms representing
+ momentum transport by turbulence, which require closure.
  In order to draw closure relations, eddy-viscosity models of turbulence assume that:
  \begin{itemize}
-    \item the scalar flux vector is aligned with the mean scalar gradient in the flow 
-    \item the turbulent (eddy) viscosity relates the deviatoric reynolds stress tensor
-    to the mean velocity gradients
+    \item the turbulent scalar flux vector aligns with the mean scalar gradient.
+    \item the Reynolds stress tensor is proportional to the mean velocity strain rate through an eddy viscosity.
  \end{itemize}
- These assumptions are, more often than not, invalid, owing to the fact 
- that the physics of turbulence is different than the physics culminating 
- into the viscous stress law.\cite{popeTurbulentFlows2015} 
- \COMMENT{USE TURBULENT MODEELING BY MANCEAU}
+ While these assumptions simplify modelling, they tend to be, more often than not, invalid
+ as they do not fully capture turbulence physics, especiialy in anisotropic 
+ or non-equilibrium flow~\cite{popeTurbulentFlows2015}. This limitation can be significant
+ in regions with complex strain rates or strong secondary flows.
 
- The implementation of the model in Star-CCM+ can be further controlled to
+The implementation of the model in Star-CCM+ can be further controlled to
  adjust the realisability. Realisability is the postive semi-definiteness of the 
  reynolds stress tensor. The specification of turbulence is done using
  the turbulence intensity and the length scale. The inherent anisotropy 
@@ -170,33 +174,84 @@ The affected heat transfer and bubble growth phenomenon further result in lower 
 Flash evaporation is the intense vaporisation triggered through depressurisation of superheated fluids.
 
 \subsection{Multiple Flow Regimes and Interface Capturing}
-Star-CCM+ in its implementation of the eulerian-multiphase framework utilises a flow regime topology based on the volume fractions
- of the two interacting phases. In a cell volume for increasing values of the volume fraction of the second phase,
- the first regime considers the second phase to be dispersed in the first phase
- the large scale interface modelling separated flow, and the dispersed-continuous regime
- respectively. To calculate the interphase interactions are composed of the 
- weighted sum of the interaction of each flow topology regime.
+Star-CCM+ in its implementation of the eulerian-multiphase framework utilises a
+ dynamic flow regime topology based on the local volume fractions
+ of the interacting phases. Based on the increasing volume fraction of the
+ secondary phase in a computational cell,
+ the topology transitions through three principal regimes:
+ \begin{itemize}
+    \item dispersed in the primary phase
+    \item having a large scale interface with the primary phase
+    \item continuous while having the primary phase dispersed
+ \end{itemize}
+ For each cell, Star-CCM+ uses regime-specific closure models for the interfacial~\COMMENT{OR RATHER INTERPHASE MOMENTUM AND ENERGY TRANSFER}
+ forces.
+ These models are blended using weighting schemes 
+ according to the calculated proportion of each regime in the cell.~\cite{COLOMBO2019968}
+ ~\citelater{Gada et al. (2015): Large Scale Interface Model for Simulating Multiphase Flows (STAR-CCM+ Implementation)}
 
-The interface is resolved using the High-Resolution Interface Capturing scheme. Sharp 
+\COMMENT{EDIT}While there are multiple numerical methods to account for volume fraction transport, the 
+ High-Resolution Interface Capturing scheme is specifically implemented to handle 
+ sharp phase interfaces. Free-surface flows with sharp 
  interfaces present a discontinuity
- in the solution domain, causing discretisation errors. In large scale
- interfaces, this can lead to spurious or parasitic currents.
- Although often negligible, these currents can be accomodated for through 
+ in the solution domain, causing discretisation errors. This can lead to
+ spurious or parasitic currents.~\cite{MIRJALILI2019221}
+ Although often negligible, these currents can be accommodated for through 
  the incorporation of an artificial viscosity term.   
 
-The flow at large scale interfaces is close to laminar and a boundary layer is developed.
- In cases of high relative velocity flows, the large gradients along this boundary layer
- can cause turbulent fluctuations requiring the necessity of damping the turbulence
- along the interface.
+At large scale interfaces, the near-interface flow often exhibits
+ laminar characteristics with the development of boundary layers. However, in situations
+ with significant velocity gradients, turbulent fluctuations can arise in the
+ regions adjacent to the interface (especially when the interface is mobile or
+ highly distorted). Recognizing that standard RANS turbulence
+ models tend to overpredict turbulence intensity near phase boundaries,
+ STAR-CCM+ allows the user to apply turbulence damping strategies
+ (e.g., vorticity limiters) which suppress excessive eddy viscosity and
+ restore physically consistent laminar sublayers adjacent to the interface.
 
 \subsection{Phase Interactions}
+Phase interactions in free-surface flows and flash evaporation dictate
+ how mass, momentum and energy are exchanged between contiguous liquid and
+ gaseous domains. For both separated (e.g., stratified) and dispersed (e.g., bubbly) flow regimes, 
+major phase interactions include:
 \begin{itemize}
- \item drag
- \item surface tension
- \item mass transfer
- \item energy transfer
+    \item Drag force:
+     Governs momentum exchange due to the relative motion between phases;
+     typically decomposed using empirical drag laws (e.g., Schiller-Naumann for
+     bubbles/droplets).
+    \item Lift force:
+     Acts perpendicular to the relative flow, important in shear
+flows with small dispersed phases; affects lateral migration of bubbles/droplets—uses
+models like Tomiyama, Saffman, or others depending on flow characteristics.
+    \item Virtual mass force (added mass)
+     Represents resistance to acceleration caused
+by the acceleration of surrounding fluid (significant in cases with rapid
+acceleration or deceleration of bubbles).
+    \item Wall lubrication force
+     Repels dispersed phase from solid walls, preventing unrealistic
+accumulation at boundaries (important in vertical/horizontal pipe flows).
+    \item Turbulent dispersion force
+     Spreads the dispersed phase due to turbulence
+in the continuous phase, modeled typically as a diffusion term proportional
+to turbulent kinetic energy gradient.
+ The Favre-Averaged Drag (FAD) model
+ approximates turbulent dispersion as a function of liquid
+ eddy viscosity and bubble slip. This mitigates excessive bubble
+ clustering below the free surface.~\cite{liaoFlashingEvaporationDifferent2013}
+    \item Surface tension
+     Maintains interface shape, forms basis for capillary effects
+and controls droplet/bubble formation and coalescence/breakup.
+    \item Interphase mass transfer (evaporation/condensation)
+     Represents phase change, modeled as interfacial flux determined
+by local thermodynamic properties (temperature, concentration, pressure—often
+using kinetic models for flash evaporation).
+    \item Interphase energy transfer
+     Encompasses latent heat and sensible heat exchange at the interface 
+and throughout the phases (essential for accurate phase change modeling).
+    \item Nucleation (wall and bulk)
+    \item Interfacial area changes due to bubble growth, coalescence, breakup
+    \item Local pressure and temperature gradients driving simultaneous mass and energy transfer
 \end{itemize}
-
 \subsection{Numerical Methods}
 \begin{itemize}
     \item gradients
