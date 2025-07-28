@@ -122,9 +122,9 @@ def calc_errors(dns_ar, model_ar):
 import scienceplots
 dir_list = [
     r'/hpcwork/yy310050/thesis/HARD_DATA/RAYLEIGH_TAYLOR/VOF/re3000_at05_01',
-    r"/hpcwork/yy310050/thesis/HARD_DATA/RAYLEIGH_TAYLOR/VOF/re3000_at05_007",
-    r'/hpcwork/yy310050/thesis/HARD_DATA/RAYLEIGH_TAYLOR/VOF/re3000_at05_0045',
-    #r"/hpcwork/yy310050/thesis/rayleigh_taylor/VOF/final_sims/Re3000_Amp01/Re3000_At0.5_sigma1e-05_dh0.0045",
+    r"/hpcwork/yy310050/thesis/HARD_DATA/RAYLEIGH_TAYLOR/VOF/re3000_at05_r65",
+    r'/hpcwork/yy310050/thesis/HARD_DATA/RAYLEIGH_TAYLOR/VOF/re3000_at05_r95',
+    r"/hpcwork/yy310050/thesis/rayleigh_taylor/VOF/final_sims/Re3000_Amp01/Re3000_At0.5_sigma1e-05_dh0.0045",
     #r"/hpcwork/yy310050/thesis/rayleigh_taylor/2Fluid/final_sims/at05_re3000/more_intensity",
     #r"/hpcwork/yy310050/thesis/rayleigh_taylor/2Fluid/final_sims/at05_re3000/adis",
 ]
@@ -158,7 +158,7 @@ plt.rcParams['font.size'] = 12
 plt.rcParams['xtick.labelsize'] = 10
 plt.rcParams['ytick.labelsize'] = 10
 
-plt.style.use(['science', 'ieee'])
+plt.style.use(['science', 'no-latex'])
 tol_colors.set_default_colors(cset='bright')
 fig, ax = plt.subplots(figsize=(8, 8), dpi=900)
 
@@ -168,11 +168,11 @@ for h in h_data:
     plt.plot(
         h['timesteps'][h['timesteps'] < dns_df['Time'].max()], 
         h['y_bub'][h['timesteps'] < dns_df['Time'].max()], 
-        label=str(r'Bubble $\Delta$ dh: ' + h['dh']))#, marker = 'o',markerfacecolor='none')
+        label=str(r'Bubble \Delta dh: ' + h['dh']))#, marker = 'o',markerfacecolor='none')
     plt.plot(
         h['timesteps'][h['timesteps'] < dns_df['Time'].max()], 
         h['y_spike'][h['timesteps'] < dns_df['Time'].max()], 
-        label=str(r'Spike $\Delta$ dh: ' + h['dh'])))
+        label=str(r'Spike \Delta dh: ' + h['dh']))
     #, marker = 'x')
     L2_err_spike, Linf_err_spike = calc_errors(dns_df['Spike'], interpolate_central_difference(h['y_spike'], h['timesteps'], dns_df['Time']))
     L2_err_bubble, Linf_err_bubble = calc_errors(dns_df['Bubble'], interpolate_central_difference(h['y_bub'], h['timesteps'], dns_df['Time']))
@@ -190,8 +190,8 @@ plt.plot(dns_df['Time'], dns_df['Spike'], label='DNS_spike', marker = 'x', lines
 #ax.xaxis.set_major_locator(ticker.MultipleLocator(100))
 #ax.xaxis.set_minor_locator(ticker.NullLocator())
 label_font = {'fontsize': 12, 'fontfamily': 'Arial'}
-ax.set_xlabel(r"$\Delta \text{h}$ (m)" , **label_font)
-ax.set_ylabel(r"$L_{2}\,\text{error}$", **label_font)
+ax.set_xlabel(r"\Delta \text{h} (m)" , **label_font)
+ax.set_ylabel(r"L_{2}\,\text{error}", **label_font)
 
 plt.xlabel("time")
 plt.ylabel("bubble and spike distances")
@@ -216,6 +216,76 @@ for i, h in enumerate(h_data):
     print("dh: ", h['dh'])
     print("spike L_inf error: ", Linf_data[i][0])
     print("bubble L_inf error: ", Linf_data[i][1])
+#%%
+import pandas as pd
+import matplotlib.pyplot as plt
+from matplotlib.patches import Rectangle
+from pathlib import Path
+
+
+# ------------------------------------------------------------------
+# 2) Read the CSV
+# ------------------------------------------------------------------
+csv_files = [
+    Path("/hpcwork/yy310050/thesis/rayleigh_taylor/VOF/final_sims/convergence/Re300_At0.5_sigma1e-05_dh0.05/isosurface_table_1406.csv"),
+    Path("/hpcwork/yy310050/thesis/rayleigh_taylor/VOF/final_sims/convergence/Re300_At0.5_sigma1e-05_dh0.007/isosurface_table_1406.csv"),
+    Path("/hpcwork/yy310050/thesis/rayleigh_taylor/VOF/final_sims/convergence/Re300_At0.5_sigma1e-05_dh0.0045/isosurface_table_1406.csv"),
+     Path("/hpcwork/yy310050/thesis/rayleigh_taylor/VOF/final_sims/convergence/Re300_At0.5_sigma1e-05_dh0.0025/isosurface_table_1406.csv")
+]
+x_len     = 1   
+data_frames = []
+for fp in csv_files:
+    if fp.is_file():
+        df = pd.read_csv(fp)
+        data_frames.append((fp.stem, df))      # store a name + DataFrame
+    else:
+        print(f"Warning: {fp} does not exist and will be skipped.")
+
+if not data_frames:
+    raise RuntimeError("No CSV files found — nothing to plot.")
+
+
+# ------------------------------------------------------------------
+# 3) Prepare the plot
+# ------------------------------------------------------------------
+fig, ax = plt.subplots(figsize=(2.5, 10))    # keeps the 1 : 4 aspect ratio
+
+# Colours — one for each file (repeat if there are more than the colormap size)
+cmap   = plt.cm.get_cmap("tab20")
+colors = cmap(numpy.linspace(0, 1, len(data_frames)))
+
+# -----------------------------------------------------------------------------
+# 4) Scatter plot for every file
+# -----------------------------------------------------------------------------
+for (label, df), col in zip(data_frames, colors):
+    ax.scatter(df["X (m)"], df["Y (m)"], s=0.5, alpha=0.8, color=col, label=label)
+
+# ------------------------------------------------------------------
+# 4) Define and draw the bounding box
+# ------------------------------------------------------------------
+# You can choose any anchor; here we use the minimum X and Y in the data
+x0, y0 = df["X (m)"].min(), df["Y (m)"].min()
+
+# Add visible rectangle
+bbox = Rectangle((0, 2), x_len, 4 * x_len,
+                 linewidth=2, edgecolor="none", facecolor="none")
+ax.add_patch(bbox)
+
+# Limit the axes to that rectangle
+ax.set_xlim(x0, x0 + x_len)
+ax.set_ylim(0, 4)
+ax.set_aspect("equal", adjustable="box")
+
+# ------------------------------------------------------------------
+# 5) Decorations
+# ------------------------------------------------------------------
+ax.set_xlabel("X (m)")
+ax.set_ylabel("Y (m)")
+ax.set_title(f"Scatter of X-Y points inside a {x_len} m × {4*x_len} m box")
+ax.grid(True, linestyle="--", linewidth=0.5, alpha=0.6)
+
+plt.tight_layout()
+plt.show()
 
 # %% 
 ####################################################################
