@@ -95,17 +95,18 @@ The simulation assumes laminar and unsteady flow and solves for the solution var
  gradients from the cell centres onto the face centres. The transient term is discretised using the implicit Euler-method which is first-order accurate.
  First-order HRIC is used to reconstruct the interface. Since Star-CCM+ sets under- and over-relaxation factors conservatively, the values are left unchanged.
 
-The evolution of the temperature field for the simulation with cell size, $\Delta h = 5e-3$ is shown in Figure~\COMMENT{FIG}. A clear propagation of
- the interface from the left to right is observed with increasing simulation times. The temperature also gradually decreases in the liquid phase from the Dirichlet
- boundary at $x = 0$ towards the melting temperature, $T_{m}$, at the interface after which it stays constant. 
+The evolution of the temperature field for the simulation with cell size, $\Delta h = 5e-3$ is shown in Figure~\COMMENT{FIG}. The interface
+ is observed to move towards the right with increasing simulation time. The temperatue of the system can also be seen to decrease from
+ the Dirichlet
+ boundary at $x = 0$ towards the melting temperature, $T_{m}$, at the interface, after which it stays constant. 
 
-\begin{itemize}
-    \item 'This is exactly what one would expect for a velocity that is decreasing in time as is the case for the classical Stefan problem. 
-One can also see that all simulation results converge to the analytical solution for a finer mesh and a smaller time step.'
-    \item \COMMENT{ABOUT CONVERGENCE}
-    \item \COMMENT{ABOUT COMPARISON OF TEMPERATURE W ANALYTICAL SOLUTION}
-    \item \COMMENT{ABOUT COMPARISON OF PCI W ANALYTICAL SOLUTION}
-\end{itemize}
+Figure~\COMMENT{FIG} shows the location of the interface for simulations with different cell sizes against the analytical 
+ solution. The numerical values are plotted~\COMMENT{WHEN} and the absolute error in the location of the interface can
+ be seen in Figure~\COMMENT{FIG}. The temperature profiles obtained numerically can also be compared against
+ the analytical temperature profile in order to calculate the $L_{2}$ and $L_{\inf}$ errors and evaluate the convergence rate.
+ The errors in the temperature profiles 
+ for the various mesh sizes are plotted in Figure~\COMMENT{FIG}. It can be seen that the simulation results converge to the 
+ analytical solution with decreasing mesh size.
 
 \subsubsection{Rayleigh-Taylor Instability}
 The Rayleigh-Taylor (RT) instability describes the growth of interfacial
@@ -192,21 +193,22 @@ The following cases are studied:\\
     \hline
     Case & $At$ & $Re$ & $\sigma$ & $\delta_{h}$\\
     \hline
-    1 & $0.5$ & $300$ & $1e-5$ & $0.05$\\
-    2 & $0.5$ & $300$ & $1e-5$ & $0.007$\\
-    3 & $0.5$ & $300$ & $1e-5$ & $0.0045$\\
-    4 & $0.5$ & $300$ & $1e-5$ & $0.0025$\\
+    3 & $0.2$ & $300$ & $1e-5$ & $0.0045$\\
+    4 & $0.5$ & $300$ & $1e-5$ & $0.0045$\\
     5 & $0.2$ & $1000$ & $1e-5$ & $0.0045$\\
     6 & $0.5$ & $1000$ & $1e-5$ & $0.0045$\\
-    5 & $0.5$ & $3000$ & $1e-5$ & $0.0045$\\
-    6 & $0.5$ & $3000$ & $1e-5$ & $0.0045$\\
+    5 & $0.2$ & $3000$ & $1e-5$ & $0.0045$\\
+    6 & $0.5$ & $3000$ & $1e-5$ & $0.01$\\
+    7 & $0.5$ & $3000$ & $1e-5$ & $0.007$\\
+    8 & $0.5$ & $3000$ & $1e-5$ & $0.0045$\\
     \hline
 \end{tabularx}
 \newline
 
 Figure~\ref{rt_definitions} illustrates
  the parameter definitions and nomenclature of an evolving single-mode~\COMMENT{need
- i define single mode rt?} RT instability interface. The evolution of RT instabilities for
+ i define single mode rt?} RT instability interface.~\COMMENT{define parameters here}.
+ The evolution of RT instabilities with Atwood numbers, $At = 0.5$, for
  Reynolds numbers 300, 1000, and 3000 are depicted in figure~\ref{rt_reynolds}.
  The initial perturbations, generally studied using linear stability analysis, experience
  an exponential growth~\cite{andrewsSmallAtwoodNumber2010}. When perturbations 
@@ -217,40 +219,29 @@ Figure~\ref{rt_definitions} illustrates
  Kelvin-Helmholtz type instabilities~\cite{hamzehlooDirectNumericalSimulations2021,tryggvasonNumericalSimulationsRayleighTaylor1988}, 
  which go on to contribute
  to turbulent mixing and chaotic flow features~\cite{SHARP19843}.
-
-Figure~\COMMENT{name figure} depicts the evolution of the interface
-at different times for varying density ratios as simulated in Star-CCM+.
-Upto high Reynolds numbers, the interface structure and its temporal evolution
-agree qualitatively with the results published in~\cite{hamzehlooDirectNumericalSimulations2021,DingDiffuseInterfaceModel2007,HuangConsistentEssentiallyConservative2020}.
-~\COMMENT{why does it look different at high Re}.
-Using the bubble and spike heights, defined as the maximum vertical distance
+ 
+\begin{itemize}
+    \item \textbf{Grid Convergence:} In order to evaluate the quality of the mesh, the location of the interface for case of $Re = 3000$ at time, 
+        $t = 2.5s$, is used for varying mesh sizes. Figure~\COMMENT{fig} depicts the various interfaces overlayed on top of each other. 
+        Furthermore, using the bubble and spike heights, defined as the maximum vertical distance
 of the spike and bubble as measured from the undisturbed initial interface,
 the results can be quantitatively compared to~\cite{hamzehlooDirectNumericalSimulations2021} as shown
-in Figure~\ref{rt_heights}. Table~\ref{table_rt_errs} summarises the root mean
-square errors and the maximum errors between the simulated results and~\cite{hamzehlooDirectNumericalSimulations2021}.
-
-Simulations conducted for Atwood numbers very close to one also qualitatively
-show a similar progression and evolution of structures as the simulations
-in~\cite{HuangConsistentEssentiallyConservative2020}.~\COMMENT{What happens at high atwood numbers}
-
-~\COMMENT{Write about mesh convergence study. WHY DO RESULTS NOT MATCH?}.
-\begin{itemize}
-    \item \COMMENT{ABOUT SPATIAL AND TEMPORAL CONVERGENCE}
-    \item \COMMENT{ABOUT EVOLUTION OF INTERFACE W VARYING REYNOLDS AND VARYING ATWOOD: } Figure~\COMMENT{FIGFIG} and 
-    figure~\COMMENT{GIFGIF} depict the evolution of the interface at different times for varying density ratios and Reynolds numbers 
-    respectively  as simulated in Star-CCM+. Upto high Reynolds numbers, the temporal evolution and the structural features of the 
-    interface agree qualitatively with the results  published in~\citelater{hamzelhoom huang, ding}. As the solution evolves, 
-    the penetration of the spike increases and it eventually rolls up and forms two transient counter-rotating vortices due to 
-    shear forces and Kelvin-Helmholtz type instabilities~\citelater{hamzelhoo}, which go on to contribute to turbulent mixing and 
-    chaotic flow features~\citelater{Sharp}.~\COMMENT{WHY DO HIGH Re NUM SIMS DEVIATE FROM EXPECTED. MENTION SALIENT FEATURES OF THE EVOLUTION} 
-    Simulations conducted for Atwood numbers very close to one also qualitatively show a 
-    similar progression  and evolution of structures as the simulations in~\citelater{huang}.~\COMMENT{What happens at high atwood 
-    numbers}
-    \item~\COMMENT{ABOUT COMPARISON OF BUBBLE HEIGHTS W DNS DATA AND L2 AND L-INF ERRORS: }  Using the bubble and spike heights, defined as the maximum vertical distance of the spike and bubble as measured from the undisturbed initial interface,
- the results can be quantitatively compared to~\citelater{hamzelhoo} as shown in Figure~\ref{rt_heights}. Table~\ref{table_rt_errs} summarises the root 
- mean square errors and the maximum errors between the simulated results and~\citelater{hamzelhoo}.
+in Figure~\ref{rt_heights}. Locations of the spike and bubble tips are recorded at every~\COMMENT{WHEN} seconds/time-steps and
+extrapolated in order to compare to the DNS data available from~\cite{hamzehlooDirectNumericalSimulations2021}. 
+The normalised root mean square error, defined as $err = \sqrt{\sum_{t_0}^{t_{f}} (y_b - y_{dns})^{2}}$, and the maximum absolute errors 
+between the simulated results and the DNS study are summarised in table~\COMMENT{table}.
+    \item \textbf{Evolution and Effect of Reynolds Number:} Increasing the Reynolds number has a relatively small effect on the penetration lengths of the spikes and bubbles - with $Re = 300$
+ showing the least penetration depths. However, it does have a significant effect on the topology of the interface, with
+ increasingly chaotic vortices visible at the spike rollup and the ensuing turbulent mixing. Interestingly, the evolving bubble
+ for $Re = 3000$ is also perturbed. This results in turbulent structure forming in the bubble region that interfere with the spike.
+ This phenomenon is reported for $Re = 10000$ in~\cite{hamzehlooDirectNumericalSimulations2021} and is stipulated to arise due to~\COMMENT{WHY}.
+ \item \textbf{Effect of Atwood Number:} Figure~\COMMENT{fig} depicts the evolution of the RT instability with varying density ratios.
+ High Atwood numbers promote non-linearity and increased turbulent mixing, and affect the initial interface growth. However,
+ the effect and prominence of the counter-rotating vortices at the tip of the spike decreases and reduces the chaotic flow features at the 
+ tips of the secondary vortices. Very large density ratios of the order of water and air are also studied. As observed in~\cite{HuangConsistentEssentiallyConservative2020},
+ with increasing density ratios the spike tip velocity is very high resulting in negligible spike roll-up and a much simpler interface evolution.
 \end{itemize}
-
+~\COMMENT{Modelling RT instability with the two-fluid model}
 \subsubsection{Liquid Infiltration of Evaporation Chamber}
 \begin{itemize}
     \item \COMMENT{ABOUT CONVERGENCE}
