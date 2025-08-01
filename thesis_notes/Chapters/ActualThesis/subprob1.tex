@@ -1,4 +1,5 @@
 \section{Subproblem: Liquid Infiltration}
+\COMMENT{------------UNDER CONSTRUCTION--------------------}
 The first subproblem deals with water infiltrating the evaporation chamber during rocket ascent. 
 The flow system assembly comprises of the hydraulic accumulator, the evaporation chamber and the injection system subassembly
  that drives the liquid from the hydraulic accumulator into the evaporation chamber. The hydraulic accumulator and the evaporation
@@ -50,15 +51,21 @@ The objective of the first task is to model the water injection into the evapora
 
 \subsection{Validation Problems}
 \subsubsection{Stefan Problem}
-Phase changes can be regarded as the growth of the domain of one phase accompanied by the reduction of the domain of the other phase. 
-This growth or reduction in domain sizes can be triggered by thermal as well as non-thermal processes~\citelater{shumon koga} 
-and this representative mathematical dynamic model containing moving boundaries is known as the Stefan system. The associated problem of 
-analysing and finding the solutions to the aforementioned model is known as the Stefan problem.~\citelater{koga}. 
-The classical Stefan problem is a one dimensional solidification or melting problem~citelater{jonas, jonsson}. The one-dimensional 
-Stefan problem under semi-infinite geometry, uniform initial temperature, constant boundary temperature, and 
-thermophysical properties constant in each phase is probably the simplest, explicitly solvable problem of phase 
-change~\citelater{lectures, uni tenessee knoxville lectures}, serving as a good benchmark to validate the energy equation implemented in the VOF solver in Star-CCM+.
-~\COMMENT{DOES IT ALSO SERVE AS A GOOD BENCHMARK FOR SIMPLE HEAT CONDUCTION TOO??? BECOZ TWO BIRDS ONE STONE}
+Phase change processes are characterized by the movement of an 
+ interface separating two distinct phases, where one phase expands as
+ another contracts due to thermal or non-thermal mechanisms~\citelater{Koga, 2013}.
+ The mathematical model governing such moving boundary problems is known as the
+ Stefan system~\citelater{Koga, 2013}, and the analysis of such a system forms the basis 
+ of the Stefan problem.
+
+In the classical Stefan problem, a fixed-temperature boundary propagates a melting or freezing front into the domain,
+ with interface movement determined by the balance of latent and conducted heat.~\citelater{jonas, jonsson}
+ With uniform initial temperature, constant boundary temperature and 
+ thermophysical properties in each phase, the semi-infinite 1D Stefan problem is the simplest, explicitly solvable problem of phase 
+ change. As the problem admits an analytical solution and reduces to the standard
+ transient heat conduction problem when latent heat is neglected,
+ it serves as a rigorous benchmark for validating phase-change modelling
+ and the correct implementation of the energy equation.~\citelater{lectures, uni tenessee knoxville lectures,jonsson 2017}.
 
 Assuming that the region in space, $\Omega \subset \mathbb{R}^{2}$, occupied by the material is the 2D semi-infinite rectangle 
 $\Omega = \{(x,y) \in \mathbb{R} \cross \mathbb{R}:\,x \in [0, \infty),\,y \in [0, \Delta h]\}$, with the solid phase and the liquid phase 
@@ -68,19 +75,13 @@ denoted by $\partial \Omega$.
 The problem space, $\mathcal{D}$, is the spatial and temporal domain occupied by the material, $\mathcal{D} = \{[t_{0}, t_{f}] \cross \Omega\}$. 
 With the heat equation governing the temperature field in the liquid region, the Stefan condition at the interface, and the respective boundary 
 conditions, the system of equations defining the one-dimensional Stefan problem can be written as,
-\begin{align}\label{stef: eqn_system}
-    \begin{split}
-    \begin{cases}
-        \frac{\partial T}{\partial t} - \alpha \frac{\partial^{2} T}{\partial x^{2}}& = 0,\\
-        \rho h_{m} \frac{d \Gamma(x(t), t)}{d t} + \kappa \frac{\partial \Gamma(x(t), t)}{\partial x}& = 0,\\
-        T(x, 0)& = T_{l},\\
-        \nabla T(x, t) \cdot \mathbf{n}& = 0,\\
-        T(x, 0)& = T_{m}
-    \end{cases}
-\end{split}
-\end{align}   
-- the system of equations is well-posed and has a unique solution. the evolution of the temperature field along with the evolution of the 
-phase change interface is studied.
+\begin{align}
+  \frac{\partial T}{\partial t} &= \alpha\,\frac{\partial^2 T}{\partial x^2} \quad &0 < x < s(t), \\
+  T(x,0) &= T_\mathrm{init}, \\
+  T(0,t) &= T_\mathrm{b}, \\
+  -k \frac{\partial T}{\partial x}\Bigr|_{x=s(t)^-} &= \rho L \frac{ds}{dt},\\
+  T(s(t), t) &= T_\mathrm{m}.
+\end{align}
 The simulation assumes laminar and unsteady flow and solves for the solution variables implicitly using the SIMPLE scheme.
  The 2D region is discretised using a uniform orthogonal quadrilateral mesh of varying sizes in order to 
  study the spatial convergence of the solution. The physical parameters for the simulation are selected according to water ice, as in~\citelater{boledi et al}.
@@ -94,7 +95,11 @@ The simulation assumes laminar and unsteady flow and solves for the solution var
  terms are discretised using the second-order upwind scheme and the least squares method was used to interpolate the values of the 
  gradients from the cell centres onto the face centres. The transient term is discretised using the implicit Euler-method which is first-order accurate.
  First-order HRIC is used to reconstruct the interface. Since Star-CCM+ sets under- and over-relaxation factors conservatively, the values are left unchanged.
-
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.80\textwidth]{stef}
+    \caption{Evolution of the phase change interface}
+\end{figure}
 The evolution of the temperature field for the simulation with cell size, $\Delta h = 5e-3$ is shown in Figure~\COMMENT{FIG}. The interface
  is observed to move towards the right with increasing simulation time. The temperatue of the system can also be seen to decrease from
  the Dirichlet
@@ -109,9 +114,9 @@ Figure~\COMMENT{FIG} shows the location of the interface for simulations with di
  analytical solution with decreasing mesh size.
 
 \subsubsection{Rayleigh-Taylor Instability}
-The Rayleigh-Taylor (RT) instability describes the growth of interfacial
- perturbations between two superposed fluids of differing densities when
- the heavier fluid overlies the lighter one under gravity~\cite{birkhoffTAYLORINSTABILITYLAMINAR1954}.
+The Rayleigh-Taylor (RT) instability occurs when a denser fluid is
+ accelerated into a lighter one, leading to interfacial perturbations and
+ complex vortex formation~\cite{birkhoffTAYLORINSTABILITYLAMINAR1954}.
  This phenomenon, known as the Rayleigh-Taylor (RT) instability, is fundamental
  to many natural and engineering systems. Although the ideal, undisturbed RT instability
  is rarely encountered in practice, its essential features arise across a broad range
@@ -210,6 +215,7 @@ Figure~\ref{rt_definitions} illustrates
  i define single mode rt?} RT instability interface.~\COMMENT{define parameters here}.
  The evolution of RT instabilities with Atwood numbers, $At = 0.5$, for
  Reynolds numbers 300, 1000, and 3000 are depicted in figure~\ref{rt_reynolds}.
+
  The initial perturbations, generally studied using linear stability analysis, experience
  an exponential growth~\cite{andrewsSmallAtwoodNumber2010}. When perturbations 
  reach finite amplitude, nonlinear effects lead to the formation of rising 
