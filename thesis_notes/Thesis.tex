@@ -62,6 +62,7 @@
 \usepackage{tikzscale}
 \usepackage{todonotes}
 \usepackage{siunitx}
+\usepackage{wrapfig}
 %red, green, blue, yellow, cyan, magenta, black, white
 \usepackage{pifont}
 \usepackage{tocvsec2}
@@ -69,9 +70,9 @@
 \usepackage{framed}
 \usepackage{dashrule}
 \usepackage{hyperref}
-%\usepackage[T1]{fontenc}
+\usepackage[T1]{fontenc}
 \usepackage{mathpazo}
-\usepackage{libertine}
+\usepackage[sfdefault]{biolinum}
 \usepackage[a-1b]{pdfx}
 \usepackage[latin9,utf8]{inputenc}
 \numberwithin{equation}{section}
@@ -128,6 +129,8 @@
 \newcommand*\circled[1]{\tikz[baseline=(char.base)]{%
             \node[shape=circle,fill=blue!20,draw,inner sep=2pt] (char) {#1};}}
 
+\newcommand{\tens}[1]{\mathbf{\underline{\underline{#1}}}}
+\newcommand{\vetor}[1]{\mathbf{\underline{#1}}}
 
 %\usepackage[pdftex,colorlinks,hypertexnames=false]{hyperref}
 %\hypersetup{%
@@ -203,7 +206,7 @@
 
 % Ab hier arabische Nummerierung
 \pagenumbering{arabic}
-\settocdepth{subsection}
+\settocdepth{subsubsection}
 \noindent
 % Inhalt kann auch in Dateien ausgelagert werden, die
 % folgenderma�en eingebunden werden
@@ -232,10 +235,12 @@
 
 %\input{Chapters/Notes/notes.tex}
 %\input{Chapters/ActualThesis/chap1_rough.tex}
-\newpage
+%\newpage
 \input{Chapters/ActualThesis/chap2.tex}
 \newpage
 \input{Chapters/ActualThesis/subprob1.tex}
+\newpage
+\input{Chapters/ActualThesis/subprob2.tex}
 \newpage
 %\input{Chapters/Review/review}
 %\newpage

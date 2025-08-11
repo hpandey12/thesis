@@ -227,10 +227,10 @@ from pathlib import Path
 # 2) Read the CSV
 # ------------------------------------------------------------------
 csv_files = [
-    Path("/hpcwork/yy310050/thesis/rayleigh_taylor/VOF/final_sims/convergence/Re300_At0.5_sigma1e-05_dh0.05/isosurface_table_1406.csv"),
-    Path("/hpcwork/yy310050/thesis/rayleigh_taylor/VOF/final_sims/convergence/Re300_At0.5_sigma1e-05_dh0.007/isosurface_table_1406.csv"),
-    Path("/hpcwork/yy310050/thesis/rayleigh_taylor/VOF/final_sims/convergence/Re300_At0.5_sigma1e-05_dh0.0045/isosurface_table_1406.csv"),
-     Path("/hpcwork/yy310050/thesis/rayleigh_taylor/VOF/final_sims/convergence/Re300_At0.5_sigma1e-05_dh0.0025/isosurface_table_1406.csv")
+    Path(r"C:\Users\harsh\Desktop\pix\convergence\Re300_At0.5_sigma1e-05_dh0.05\isosurface_table_1406.csv"),
+    Path(r"C:\Users\harsh\Desktop\pix\convergence\Re300_At0.5_sigma1e-05_dh0.007\isosurface_table_1406.csv"),
+    Path(r"C:\Users\harsh\Desktop\pix\convergence\Re300_At0.5_sigma1e-05_dh0.0045\isosurface_table_1406.csv"),
+     Path(r"C:\Users\harsh\Desktop\pix\convergence\Re300_At0.5_sigma1e-05_dh0.0025\isosurface_table_1406.csv"),
 ]
 x_len     = 1   
 data_frames = []
@@ -248,7 +248,7 @@ if not data_frames:
 # ------------------------------------------------------------------
 # 3) Prepare the plot
 # ------------------------------------------------------------------
-fig, ax = plt.subplots(figsize=(2.5, 10))    # keeps the 1 : 4 aspect ratio
+fig, ax = plt.subplots(figsize=(1.5, 5.8))    # keeps the 1 : 4 aspect ratio
 
 # Colours — one for each file (repeat if there are more than the colormap size)
 cmap   = plt.cm.get_cmap("tab20")
@@ -281,7 +281,6 @@ ax.set_aspect("equal", adjustable="box")
 # ------------------------------------------------------------------
 ax.set_xlabel("X (m)")
 ax.set_ylabel("Y (m)")
-ax.set_title(f"Scatter of X-Y points inside a {x_len} m × {4*x_len} m box")
 ax.grid(True, linestyle="--", linewidth=0.5, alpha=0.6)
 
 plt.tight_layout()

@@ -1,71 +1,211 @@
 \section{Numerical Methods}
+This chapter contains an overview of the governing equations used in Star-CCM+ for the modelling of multiphase flows with a focus on
+eulerian multiphase (EMP) flow and the volume of fluid (VOF) method. Turbulence and the Shear Stress Transport (SST) k-$\omega$ model is
+briefly discussed. The physical processes of evaporation and vaporisation are described.
+The ability to model multiple flow regimes, capture interfaces, and the phase interaction closures used in Star-CCM+ are discussed.
+The chapter concludes with a description of the numerical methods used in Star-CCM+ along with the apparent limitations~\COMMENT{better word}
+of the commercial software in being able to accurately model the problems under consideration.
+
 \subsection{Governing Equations}
-Multiphase flow is modelled in Star-CCM+ using various frameworks. The two-fluid - eulerian multiphase - framework solves a set of
- mass, momentum, and energy conservation equations for both the fluids to model two-phase flow. The local instantaneous conservation
- equations are euler averaged resulting in interfacial terms that define the influences of the phases upon each other. 
-\begin{subequations}
- \begin{align}
-    %%%%%%CONTINUITY
-    \frac{\partial}{\partial t}\int\limits_{V} \alpha_{i} \rho_{i}\,\mathrm{d}V +
-     \int\limits_{\partial V} \alpha_{i} \rho_{i} \mathbf{v}_{i} \cdot \mathrm{d}\mathbf{a} 
-    &= \int\limits_{V} \sum_{j \neq i} (m_{ij} - m_{ji})\,\mathrm{d}V + \int\limits_{V} \mathrm{S}^{\alpha}_{i}\,\mathrm{d}V\\
-    %%%%%%%MOMENTUM
-    %{} & {} \nonumber\\ 
-    \frac{\partial}{\partial t}\int\limits_{V} \alpha_{i} \rho_{i} \mathbf{v}_{i}\,\mathrm{d}V +
-     \int\limits_{\partial V} \alpha_{i} \rho_{i} \mathbf{v}_{i} \otimes \mathbf{v}_{i} \cdot \mathrm{d}\mathbf{a}
-    &= -\int\limits_{V} \alpha_{i} \nabla \mathrm{p}\,\mathrm{d}V + \int\limits_{V} \alpha_{i} \rho_{i} \mathbf{g}\,\mathrm{d}V \nonumber\\
-    &\qquad {} + \int\limits_{\partial V}\left[\alpha_{i} \left(\mathbf{T}_{i} + \mathbf{T}_{i}^{T}\right)\right]\cdot \mathrm{d}\mathbf{a}
-    + \int\limits_{V} \mathbf{M}_{i}\,\mathrm{d}V
-    + \int\limits_{V}\left(\mathbf{F_{int}}\right)_{i}\,\mathrm{d}V \nonumber\\
-    &\qquad\quad {} + \int\limits_{V}\mathbf{S}^{\alpha}_{i}\,\mathrm{d}V
-    + \int\limits_{V} \sum_{i = 1}^{n} (m_{ij}\mathbf{v}_{j} - m_{ji}\mathbf{v}_{i})\,\mathrm{d}V\\
-    %%%%%%%%ENERGY
-    %{} & {} \nonumber\\ 
-    \frac{\partial}{\partial t}\int\limits_{V} \alpha_{i} \rho_{i} \mathrm{E}_{i}\,\mathrm{d}V + 
-    \int\limits_{\partial V} \alpha_{i} \rho_{i} \mathrm{H}_{i} \mathbf{v}_{i} \cdot \mathrm{d}\mathbf{a} &= 
-    \int\limits_{\partial V} \alpha_{i} (k_{\mathrm{eff}})_{i} \nabla T_{i} \cdot \mathrm{d}\mathbf{a} +
-    \int\limits_{\partial V} \mathbf{T}_{i} \mathbf{v}_{i} \cdot \mathrm{d}\mathbf{a} + 
-    \int\limits_{V} \mathbf{f}_{i} \cdot \mathbf{v}_{i}\,\mathrm{d}V +\int\limits_{V}\mathrm{S}_{u,i}\,\mathrm{d}V \nonumber\\
-    &\qquad {} + \int\limits_{V} \sum_{ij} Q_{i}^{(ij)}\,\mathrm{d}V +
-     \int\limits_{V} \sum_{j \neq i} (m_{ij} - m_{ji})h_{i}(T_{ij})\,\mathrm{d}V
- \end{align}
+
+Multiphase flow is modelled in Star-CCM+ using various frameworks. The two-fluid - eulerian multiphase - framework solves a set of six equations
+to model two-phase flow. A set of transport equations for mass, momentum, and energy are solved for all the phases, which are assumed to
+be interpenetrating continua that share a common pressure field. The local instantaneous conservation equations are assumed to be euler averaged and
+contain closures based on interfacial terms that define the influences of the phases upon each other.
+
+Although used primarily for modelling dispersed flows, the EMP framework is capable
+of resolving both dispersed and separated flow regimes.
+
+The implemented volume of fluid method in Star-CCM+ assumes sufficient mesh resolution
+in order to resolve the interface and model separated flows. The interface capturing method solves
+the volume fraction transport equation using the High-Resolution Interface Capturing (HRIC) scheme
+to maintain a sharp interface between the phases.
+
+Based on the volume fraction of the phase $i$, $\alpha_{i} = V_{i}/V$, where in each cell $\sum_{i} \alpha_{i} = 1$.
+The material properties in each cell and other flow variables are assumed to be a mixture of the properties of the phases as follows:
+
+\begin{subequations}\label{eq_vof_defs}
+\begin{align}
+\text{density, } \rho &= \sum_{i} \alpha_{i} \rho_{i},\\
+\text{viscosity, }\mu &= \sum_{i} \alpha_{i} \mu_{i},\\
+\text{velocity, }\vetor{v} &= \frac{1}{\sum_{i} \alpha_{i} \rho_{i}} \sum_{i} \alpha_{i} \vetor{v}_{i} \rho_{i},\\
+\text{specific heat, }C_{p} &= \sum_{i} \alpha_{i} \frac{C_{p,i}\rho_{i}}{\sum_{i} \alpha_{i} \rho_{i}},\\
+\text{thermal conductivity, }k &= \sum_{i} \alpha_{i} k_{i},\\
+\text{enthalpy, }\mathrm{H} &= \frac{1}{\sum_{i} \alpha_{i} \rho_{i}} \sum_{i} \alpha_{i} \rho_{i} \mathrm{H}_{i} + \frac{|\vetor{v}|^{2}}{2},\\
+\end{align}
 \end{subequations}
 
- The eulerian multiphase framework is capable
- of resolving dispersed and separated flow whereas the volume of fluid implementation assumes sufficient mesh resolution to resolve the
- interface and models separated flows. Alongside the three conservation equations, the model solves an equation for volume
- fraction transport.
- \begin{subequations}
- \begin{align}
-    %%%%%%CONTINUITY
-    \frac{\partial}{\partial t}\int\limits_{V} \rho\,\mathrm{d}V +
-     \int\limits_{\partial V} \rho \mathbf{v}_{i} \cdot \mathrm{d}\mathbf{a} 
-    &= \int\limits_{V} \sum_{i}\mathrm{S}^{\alpha}_{i} \rho_{i}\,\mathrm{d}V\\
-    %%%%%%%MOMENTUM
-    %{} & {} \nonumber\\ 
-    \frac{\partial}{\partial t}\int\limits_{\partial V} \rho \mathbf{v}\,\mathrm{d}V +
-     \int\limits_{\partial V} \rho\mathbf{v} \otimes \mathbf{v} \cdot \mathrm{d}\mathbf{a}
-    &= -\int\limits_{V} \nabla \mathrm{p}\,\mathrm{d}V + \int\limits_{V} \rho \mathbf{g}\,\mathrm{d}V 
-    + \int\limits_{\partial V}\left[\left(\mathbf{T} + \mathbf{T}^{T}\right)\right]\cdot \mathrm{d}\mathbf{a}\nonumber\\
-    &\qquad {} + \int\limits_{V} \mathbf{f_{b}}\,\mathrm{d}V
-    - \sum_{i}\int\limits_{\partial V} \alpha_{i} \rho_{i} \mathbf{v}_{i} \otimes \mathbf{v}_{i} \cdot \mathrm{d}\mathbf{a}
-    + \int\limits_{V}\mathbf{S}^{\alpha}_{i}\,\mathrm{d}V\\
-    %%%%%%%ENERGY
-    %{} & {} \nonumber\\ 
-    \frac{\partial}{\partial t}\int\limits_{V}\rho \mathrm{E}\,\mathrm{d}V + 
-    \int\limits_{\partial V} \left[\rho \mathrm{H} \mathbf{v} + \sum_{i}\alpha_{i} \rho_{i} \mathrm{H}_{i} \mathbf{v}_{d,i}\right] \cdot \mathrm{d}\mathbf{a}
-    &= - \int\limits_{\partial V} \mathbf{\dot{q\prime\prime}} \cdot \mathrm{d}\mathbf{a} + \int\limits_{\partial V} \mathbf{T}\cdot\mathbf{v}\,\mathrm{d}\mathbf{a}
-    + \int\limits_{V}\mathbf{f_{b}}\cdot\mathbf{v}\,\mathrm{d}{V}
-    + \int\limits_{V} \mathrm{S}_{\mathrm{E}}\,\mathrm{d}V\\
-    %%%%%%VOLFRAC
-    %{} & {} \nonumber\\
-    \frac{\partial}{\partial t}\int\limits_{V} \alpha_{i} \,\mathrm{d}V +
-     \int\limits_{\partial V} \alpha_{i} \mathbf{v} \cdot \mathrm{d}\mathbf{a} 
-    &= \int\limits_{V}\left(\mathrm{S}^{\alpha}_{i} - \frac{\alpha_{i}}{\rho_{i}} \frac{D \rho_{i}}{D t}\right)\,\mathrm{d}V
-    - \int\limits_{V} \frac{1}{\rho_{i}}\nabla (\alpha_{i}\rho_{i}\mathbf{v}_{d,i})\,\mathrm{d}V
- \end{align}
-\end{subequations}
+\noindent where $\rho_{i}$ is the density, $\mu_{i}$ is the dynamic viscosity,
+$\vetor{v}_{i}$ is the velocity, $C_{p,i}$ is the specific heat, $k$ is the thermal conductivity, and $\mathrm{H}_{i}$ is the enthalpy of the phase $i$.
 
+The diffusion velocity of phase $i$, $\vetor{v}_{d,i}$, is defined as the difference between the velocity of the phase and the mixture
+such that \[\vetor{v}_{d,i} = \vetor{v}_{i} - \vetor{v}.\]
+
+A set of volume fraction transport and mass, momentum, and energy conservation equations are solved for each phase.
+In cases of two-phase flow, Star-CCM+ solves the volume fraction transport equation only for the first phase.
+
+The governing equations used in the implementation of both the EMP and VOF frameworks in
+Star-CCM+ are summarised below.
+
+\subsubsection{Eulerian Multiphase Flow}
+
+The \textbf{mass conservation} equation solved for the phase $i$ is
+
+\begin{equation}\label{eq_emp_cont}
+\frac{\partial}{\partial t}\int\limits_{V} \alpha_{i} \rho_{i}\,\mathrm{d}V +
+\int\limits_{\partial V} \alpha_{i} \rho_{i} \vetor{v}_{i} \cdot \mathrm{d}\vetor{a}
+= \int\limits_{V} \sum_{j \neq i} (m_{ij} - m_{ji})\,\mathrm{d}V + \int\limits_{V} \mathrm{S}^{\alpha}_{i}\,\mathrm{d}V
+\end{equation}
+
+\noindent where for the phase $i$
+
+\begin{description}[labelindent=20pt,labelsep=10pt]
+\item[$\vetor{a}$] is the surface area vector,
+\item[$\alpha_{i}$] is the volume fraction that fulfills the requirement $\sum_{i}^{n} \alpha_{i} = 1$,
+\item[$\rho_{i}$] is the density,
+\item[$\vetor{v}_{i}$] is the velocity,
+\item[$m_{ij}, m_{ji}$] is the interphase mass transfer per unit volume from phase $i$ to $j$ and $j$ to $i$ respectively,
+\item[$\mathrm{S}^{\alpha}_{i}$] is the user defined mass source term.
+\end{description}
+
+
+The \textbf{momentum conservation} equation solved for the phase $i$ is
+\begin{equation}\label{eq_emp_mom}
+\begin{split}
+\frac{\partial}{\partial t}\int\limits_{V} \alpha_{i} \rho_{i} \vetor{v}_{i}\,\mathrm{d}V +
+\int\limits_{\partial V} \alpha_{i} \rho_{i} \vetor{v}_{i} \otimes \vetor{v}_{i} \cdot \mathrm{d}\vetor{a}
+&= -\int\limits_{V} \alpha_{i} \nabla p\,\mathrm{d}V + \int\limits_{V} \alpha_{i} \rho_{i} \vetor{g}\,\mathrm{d}V
++ \int\limits_{\partial V}\left[\alpha_{i} \left(\tens{T}_{i} + \tens{T}^{t}_{i}\right)\right]\cdot \mathrm{d}\vetor{a}
++ \int\limits_{V} \vetor{M}_{i}\,\mathrm{d}V \\
+&\quad + \int\limits_{V}\left(\vetor{F}_{\text{int}}\right)_{i}\,\mathrm{d}V
++ \int\limits_{V}\vetor{S}^{\alpha}_{i}\,\mathrm{d}V 
++ \int\limits_{V} \sum_{j \neq i} (m_{ij}\vetor{v}_{j} - m_{ji}\vetor{v}_{i})\,\mathrm{d}V
+\end{split}
+\end{equation}
+
+\noindent where for the phase $i$
+\begin{description}[labelindent=20pt,labelsep=10pt]
+\item[$p$] is the pressure,
+\item[$\vetor{g}$] is the gravitational force vector,
+\item[$\tens{T}_{i}, \tens{T}^{t}_{i}$] are the molecular and turbulent stresses respectively,
+\item[$\vetor{M}_{i}$] is the interphase momentum transfer term per unit volume that satisfies $\sum_{i = 1}^{n}\vetor{M}_{i} = 0$,
+\item[$\left(\vetor{F}_{\text{int}}\right)_{i}$] is the internal force vector that consists of either the
+solid pressure force between particles or user defined potential force,
+\item[$\vetor{S}^{\alpha}_{i}$] is the user defined momentum source term.
+\end{description}
+
+
+The \textbf{energy conservation} equation solved for the phase $i$ is
+\begin{equation}\label{eq_emp_energy}
+\begin{split}
+\frac{\partial}{\partial t}\int\limits_{V} \alpha_{i} \rho_{i} \mathrm{E}_{i}\,\mathrm{d}V +
+\int\limits_{\partial V} \alpha_{i} \rho_{i} \mathrm{H}_{i} \vetor{v}_{i} \cdot \mathrm{d}\vetor{a} &=
+\int\limits_{\partial V} \alpha_{i} (k_{\mathrm{eff}})_{i} \nabla T_{i} \cdot \mathrm{d}\vetor{a} + \int\limits_{\partial V} \tens{T}_{i} \vetor{v}_{i} \cdot \mathrm{d}\vetor{a}
++ \int\limits_{V} \vetor{f}_{i} \cdot \vetor{v}_{i}\,\mathrm{d}V +\int\limits_{V}\mathrm{S}_{u,i}\,\mathrm{d}V \\
+&\quad + \int\limits_{V} \sum_{j \neq i} Q_{ij}\,\mathrm{d}V +
+\int\limits_{V} \sum_{ij} Q_{i}^{(ij)}\,\mathrm{d}V 
++ \int\limits_{V} \sum_{j \neq i} (m_{ij} - m_{ji})h_{i}(T_{ij})\,\mathrm{d}V
+\end{split}
+\end{equation}
+
+\noindent where for the phase $i$,
+\begin{description}[labelindent=20pt,labelsep=10pt]
+\item[$\mathrm{E}_{i}$] is the total energy,
+\item[$\mathrm{H}_{i}$] is the total enthalpy,
+\item[$\tens{T}_{i}$] is the viscous stress tensor,
+\item[$T_{i}$] is the temperature,
+\item[$\vetor{f}_{i}$] is the body force vector,
+\item[$(k_{\mathrm{eff}})_{i}$] is the effective thermal conductivity,
+\item[$\mathrm{S}_{u,i}$] is the user defined energy source term,
+\item[$Q_{ij}$] is the heat transfer from phase $i$ to phase $j$ due to temperature difference between the phases,
+\item[$Q_{i}^{(ij)}$] is the heat transfer between the phase $i$ and the interface which accounts for phenomenon
+such as evaporation and boiling,
+\item[$h_{i}(T_{ij})$] is the enthalpy of the phase $i$ evaluated at the temperature $T_{ij}$ of the interface.
+\end{description}
+
+The effective thermal conductivity of the phase $i$ is defined using the thermal conductivity, $k_{i}$,
+the turbulent viscosity, $\mu_{t,i}$, the specific heat, $C_{p,i}$, and the turbulent thermal diffusion Prandtl number,
+$\sigma_{t,i}$ as \[(k_{\mathrm{eff}})_{i} = k_{i} + \frac{\mu_{t,i} C_{p,i}}{\sigma_{t,i}}\].
+
+The total enthalpy of the phase $i$, $\mathrm{H}_{i}$, is defined using the specific enthalpy $h_{i}$
+and the kinetic energy as \[\mathrm{H}_{i} = h_{i} + \frac{1}{2}\vetor{v}_{i}\cdot\vetor{v}_{i},\]
+
+where the specific enthalpy is further defined using the specific heat of the phase and the reference temperatures
+and heat of formation such that
+
+\[h_{i} = h_{i}^{\text{REF}} + \int\limits_{T_{i}^{\text{REF}}}^{T_{i}} C_{p,i} (T')\,\mathrm{d}T'.\]
+
+The total energy of the phase $i$ is then related to the total enthalpy as $\mathrm{E}_{i} = \mathrm{H}_{i} - p/\rho_{i}$.
+
+The interphase energy terms are related as follows:
+
+\begin{itemize}
+\item for cases where heat is exchanged only through thermal diffusion, the interphase heat transfer rates satisfy $Q_{ij} = -Q_{ji}$
+\item for cases where heat and mass are transferred only through phase change, the interphase heat and mass transfer rates satisfy
+$Q_{i}^{(ij)} + Q_{j}^{(ij)} + \left(m_{ij} - m_{ji}\right)\left(h_{j}(T_{ij}) - h_{i}(T_{ij})\right) = 0$.
+\end{itemize}
+\subsubsection{Volume of Fluid Method}
+The distribution of the phase $i$ is driven by the volume fraction transport.
+\begin{equation}\label{eq_vof_transport}
+\frac{\partial}{\partial t}\int\limits_{V} \alpha_{i}\,\mathrm{d}V +
+\int\limits_{\partial V} \alpha_{i} \vetor{v}_{i} \cdot \mathrm{d}\vetor{a}
+= \int\limits_{V}\left(\mathrm{S}^{\alpha}_{i} - \frac{\alpha_{i}}{\rho_{i}} \frac{D \rho_{i}}{D t}\right)\,\mathrm{d}V
+- \int\limits_{V} \frac{1}{\rho_{i}}\nabla (\alpha_{i}\rho_{i}\vetor{v}_{d,i})\,\mathrm{d}V
+\end{equation}
+\noindent where $\vetor{a}$ is the surface area vector, $\vetor{v}$ is the mixture velocity, $\vetor{v}_{d,i}$ is the slip velocity, and
+$\mathrm{S}^{\alpha}_{i}$ is the user defined phase source term for the phase $i$.
+
+
+The \textbf{mass conservation} equation solved is
+\begin{equation}\label{eq_vof_mass}
+\frac{\partial}{\partial t}\int\limits_{V} \rho\,\mathrm{d}V +
+\int\limits_{\partial V} \rho \vetor{v} \cdot \mathrm{d}\vetor{a}
+= \int\limits_{V} \sum_{i}\mathrm{S}^{\alpha}_{i} \rho_{i}\,\mathrm{d}V
+\end{equation}
+
+
+The \textbf{momentum conservation} equation solved is
+\begin{equation}\label{eq_vof_mom}
+\begin{split}
+\frac{\partial}{\partial t}\int\limits_{V} \rho \vetor{v}\,\mathrm{d}V +
+\int\limits_{\partial V} \rho\vetor{v} \otimes \vetor{v} \cdot \mathrm{d}\vetor{a}
+&= -\int\limits_{V} \nabla p\,\mathrm{d}V + \int\limits_{V} \rho \vetor{g}\,\mathrm{d}V
++ \int\limits_{\partial V}\left[\left(\tens{T} + \tens{T}^{T}\right)\right]\cdot \mathrm{d}\vetor{a} 
+ + \int\limits_{V} \vetor{f}_{b}\,\mathrm{d}V\\
+& - \sum_{i}\int\limits_{\partial V} \alpha_{i} \rho_{i} \vetor{v}_{d,i} \otimes \vetor{v}_{d,i} \cdot \mathrm{d}\vetor{a}
+ + \int\limits_{V}\vetor{S}^{\alpha}_{i}\,\mathrm{d}V
+\end{split}
+\end{equation}
+
+\noindent where
+\begin{description}[labelindent=20pt,labelsep=10pt]
+\item[$p$] is the pressure,
+\item[$\vetor{g}$] is the gravitational force vector,
+\item[$\tens{T}$] is the viscous stress tensor,
+\item[$\vetor{f}_{b}$] is the body force vector,
+\item[$\vetor{S}^{\alpha}_{i}$] is the user defined phase momentum source term.
+\end{description}
+
+
+The \textbf{energy conservation} equation solved is
+\begin{equation}\label{eq_vof_energy}
+\begin{split}
+\frac{\partial}{\partial t}\int\limits_{V}\rho \mathrm{E}\,\mathrm{d}V +
+\int\limits_{\partial V} \left[\rho \mathrm{H} \vetor{v} + \sum_{i}\alpha_{i} \rho_{i} \mathrm{H}_{i} \vetor{v}_{d,i}\right] \cdot \mathrm{d}\vetor{a}
+&= - \int\limits_{\partial V} \vetor{\dot{q}''}  \cdot \mathrm{d}\vetor{a} + \int\limits_{\partial V} \tens{T}\cdot\vetor{v}\,\mathrm{d}\vetor{a} \\
+&\quad + \int\limits_{V}\vetor{f}_{b}\cdot\vetor{v}\,\mathrm{d}V
++ \int\limits_{V} \mathrm{S}_{\mathrm{E}}\,\mathrm{d}V
+\end{split}
+\end{equation}
+
+\noindent where
+\begin{description}[labelindent=20pt,labelsep=10pt]
+\item[$\mathrm{E}$] is the total energy,
+\item[$\mathrm{H}$] is the total enthalpy,
+\item[$\vetor{\dot{q}''}$] is the heat flux vector,
+\item[$\tens{T}$] is the viscous stress tensor,
+\item[$\mathrm{S}_{\mathrm{E}}$] is the user defined energy source term.
+\end{description}
 \subsection{Modelling Turbulence}
 Flows are generally turbulent. Turbulence is chracterised by irregular fluid motion dominated by
  eddies and vortices across a wide range of spatial and temporal scales. The largest eddies
@@ -86,7 +226,7 @@ Although turbulence can be modelled in various ways to various levels of resolut
  such as multiphase cavity flows~\citelater{Menter1994}.
 
 RANS models result from decomposing flow variables into
- mean and fluctuating components, applying Reynolds averaging,
+ mean and fluctuating components,\[\phi = \bar{\phi} + \phi'\], applying Reynolds averaging,
  which filters out turbulent fluctuations below the
  averaging scale~\cite{besnardTurbulenceMultiphaseFlow1988a, hirschNumericalComputationInternal2007}.
  This operation yields additional Reynolds stress terms representing
