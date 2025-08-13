@@ -7,7 +7,7 @@ The chapter concludes with a description of the numerical methods used in Star-C
 of the commercial software in being able to accurately model the problems under consideration.
 
 \subsection{Governing Equations}
-
+\COMMENT{define region as in what is V and what is delV and stuff}
 Multiphase flow is modelled in Star-CCM+ using various frameworks. The two-fluid - eulerian multiphase - framework solves a set of six equations
 to model two-phase flow. A set of transport equations for mass, momentum, and energy are solved for all the phases, which are assumed to
 be interpenetrating continua that share a common pressure field. The local instantaneous conservation equations are assumed to be euler averaged and
@@ -21,17 +21,16 @@ in order to resolve the interface and model separated flows. The interface captu
 the volume fraction transport equation using the High-Resolution Interface Capturing (HRIC) scheme
 to maintain a sharp interface between the phases.
 
-Based on the volume fraction of the phase $i$, $\alpha_{i} = V_{i}/V$, where in each cell $\sum_{i} \alpha_{i} = 1$.
+Based on the volume fraction of the phase $i$, $\alpha_{i} = V_{i}/V$, where in each cell $\textstyle\sum\nolimits_{i} \alpha_{i} = 1$.
 The material properties in each cell and other flow variables are assumed to be a mixture of the properties of the phases as follows:
-
 \begin{subequations}\label{eq_vof_defs}
 \begin{align}
-\text{density, } \rho &= \sum_{i} \alpha_{i} \rho_{i},\\
-\text{viscosity, }\mu &= \sum_{i} \alpha_{i} \mu_{i},\\
-\text{velocity, }\vetor{v} &= \frac{1}{\sum_{i} \alpha_{i} \rho_{i}} \sum_{i} \alpha_{i} \vetor{v}_{i} \rho_{i},\\
-\text{specific heat, }C_{p} &= \sum_{i} \alpha_{i} \frac{C_{p,i}\rho_{i}}{\sum_{i} \alpha_{i} \rho_{i}},\\
-\text{thermal conductivity, }k &= \sum_{i} \alpha_{i} k_{i},\\
-\text{enthalpy, }\mathrm{H} &= \frac{1}{\sum_{i} \alpha_{i} \rho_{i}} \sum_{i} \alpha_{i} \rho_{i} \mathrm{H}_{i} + \frac{|\vetor{v}|^{2}}{2},\\
+\text{density, } \rho &= \textstyle\sum\nolimits_{i} \alpha_{i} \rho_{i},\\
+\text{viscosity, } \mu &= \textstyle\sum\nolimits_{i} \alpha_{i} \mu_{i},\\
+\text{velocity, } \vetor{v} &= \textstyle\sum\nolimits_{i} \alpha_{i} \rho_{i} \vetor{v}_{i}/ \rho,\\
+\text{specific heat, } C_{p} &= \textstyle\sum\nolimits_{i} \alpha_{i} C_{p,i} \rho_{i}/\rho,\\
+\text{thermal conductivity, } k &= \textstyle\sum\nolimits_{i} \alpha_{i} k_{i},\\
+\text{enthalpy, } \mathrm{H} &= \textstyle\sum\nolimits_{i} \alpha_{i} \rho_{i} \mathrm{H}_{i}/\rho + |\vetor{v}|^{2}/2.
 \end{align}
 \end{subequations}
 
@@ -56,17 +55,16 @@ The \textbf{mass conservation} equation solved for the phase $i$ is
 \int\limits_{\partial V} \alpha_{i} \rho_{i} \vetor{v}_{i} \cdot \mathrm{d}\vetor{a}
 = \int\limits_{V} \sum_{j \neq i} (m_{ij} - m_{ji})\,\mathrm{d}V + \int\limits_{V} \mathrm{S}^{\alpha}_{i}\,\mathrm{d}V
 \end{equation}
-
-\noindent where for the phase $i$
-
-\begin{description}[labelindent=20pt,labelsep=10pt]
-\item[$\vetor{a}$] is the surface area vector,
-\item[$\alpha_{i}$] is the volume fraction that fulfills the requirement $\sum_{i}^{n} \alpha_{i} = 1$,
-\item[$\rho_{i}$] is the density,
-\item[$\vetor{v}_{i}$] is the velocity,
-\item[$m_{ij}, m_{ji}$] is the interphase mass transfer per unit volume from phase $i$ to $j$ and $j$ to $i$ respectively,
-\item[$\mathrm{S}^{\alpha}_{i}$] is the user defined mass source term.
-\end{description}
+\COMMENT{CHECK}%\hspace*{5pt} 
+where for the phase $i$
+\begin{itemize}[topsep=0pt, labelindent=40pt,labelsep=5pt, parsep = 2pt, listparindent=2em]
+\item $\vetor{a}$ is the surface area vector,
+\item $\alpha_{i}$ is the volume fraction that fulfills the requirement $\textstyle\sum\nolimits_{i}^{n} \alpha_{i} = 1$,
+\item $\rho_{i}$ is the density,
+\item $\vetor{v}_{i}$ is the velocity,
+\item $m_{ij}, m_{ji}$ is the interphase mass transfer per unit volume from phase $i$ to $j$ and $j$ to $i$ respectively,
+\item $\mathrm{S}^{\alpha}_{i}$ is the user defined mass source term.
+\end{itemize}
 
 
 The \textbf{momentum conservation} equation solved for the phase $i$ is
@@ -83,16 +81,16 @@ The \textbf{momentum conservation} equation solved for the phase $i$ is
 \end{split}
 \end{equation}
 
-\noindent where for the phase $i$
-\begin{description}[labelindent=20pt,labelsep=10pt]
-\item[$p$] is the pressure,
-\item[$\vetor{g}$] is the gravitational force vector,
-\item[$\tens{T}_{i}, \tens{T}^{t}_{i}$] are the molecular and turbulent stresses respectively,
-\item[$\vetor{M}_{i}$] is the interphase momentum transfer term per unit volume that satisfies $\sum_{i = 1}^{n}\vetor{M}_{i} = 0$,
-\item[$\left(\vetor{F}_{\text{int}}\right)_{i}$] is the internal force vector that consists of either the
+where for the phase $i$
+\begin{itemize}[topsep=0pt, labelindent=40pt,labelsep=5pt, parsep = 2pt, listparindent=2em]
+\item $p$ is the pressure,
+\item $\vetor{g}$ is the gravitational force vector,
+\item $\tens{T}_{i}, \tens{T}^{t}_{i}$ are the molecular and turbulent stresses respectively,
+\item $\vetor{M}_{i}$ is the interphase momentum transfer term per unit volume that satisfies $\textstyle\sum\nolimits_{i = 1}^{n}\vetor{M}_{i} = 0$,
+\item $\left(\vetor{F}_{\text{int}}\right)_{i}$ is the internal force vector that consists of either the
 solid pressure force between particles or user defined potential force,
-\item[$\vetor{S}^{\alpha}_{i}$] is the user defined momentum source term.
-\end{description}
+\item $\vetor{S}^{\alpha}_{i}$ is the user defined momentum source term.
+\end{itemize}
 
 
 The \textbf{energy conservation} equation solved for the phase $i$ is
@@ -102,26 +100,26 @@ The \textbf{energy conservation} equation solved for the phase $i$ is
 \int\limits_{\partial V} \alpha_{i} \rho_{i} \mathrm{H}_{i} \vetor{v}_{i} \cdot \mathrm{d}\vetor{a} &=
 \int\limits_{\partial V} \alpha_{i} (k_{\mathrm{eff}})_{i} \nabla T_{i} \cdot \mathrm{d}\vetor{a} + \int\limits_{\partial V} \tens{T}_{i} \vetor{v}_{i} \cdot \mathrm{d}\vetor{a}
 + \int\limits_{V} \vetor{f}_{i} \cdot \vetor{v}_{i}\,\mathrm{d}V +\int\limits_{V}\mathrm{S}_{u,i}\,\mathrm{d}V \\
-&\quad + \int\limits_{V} \sum_{j \neq i} Q_{ij}\,\mathrm{d}V +
+&{} + \int\limits_{V} \sum_{j \neq i} Q_{ij}\,\mathrm{d}V +
 \int\limits_{V} \sum_{ij} Q_{i}^{(ij)}\,\mathrm{d}V 
 + \int\limits_{V} \sum_{j \neq i} (m_{ij} - m_{ji})h_{i}(T_{ij})\,\mathrm{d}V
 \end{split}
 \end{equation}
 
 \noindent where for the phase $i$,
-\begin{description}[labelindent=20pt,labelsep=10pt]
-\item[$\mathrm{E}_{i}$] is the total energy,
-\item[$\mathrm{H}_{i}$] is the total enthalpy,
-\item[$\tens{T}_{i}$] is the viscous stress tensor,
-\item[$T_{i}$] is the temperature,
-\item[$\vetor{f}_{i}$] is the body force vector,
-\item[$(k_{\mathrm{eff}})_{i}$] is the effective thermal conductivity,
-\item[$\mathrm{S}_{u,i}$] is the user defined energy source term,
-\item[$Q_{ij}$] is the heat transfer from phase $i$ to phase $j$ due to temperature difference between the phases,
-\item[$Q_{i}^{(ij)}$] is the heat transfer between the phase $i$ and the interface which accounts for phenomenon
+\begin{itemize}[topsep=0pt, labelindent=40pt,labelsep=5pt, parsep = 2pt, listparindent=2em]
+\item $\mathrm{E}_{i}$ is the total energy,
+\item $\mathrm{H}_{i}$ is the total enthalpy,
+\item $\tens{T}_{i}$ is the viscous stress tensor,
+\item $T_{i}$ is the temperature,
+\item $\vetor{f}_{i}$ is the body force vector,
+\item $(k_{\mathrm{eff}})_{i}$ is the effective thermal conductivity,
+\item $\mathrm{S}_{u,i}$ is the user defined energy source term,
+\item $Q_{ij}$ is the heat transfer from phase $i$ to phase $j$ due to temperature difference between the phases,
+\item $Q_{i}^{(ij)}$ is the heat transfer between the phase $i$ and the interface which accounts for phenomenon
 such as evaporation and boiling,
-\item[$h_{i}(T_{ij})$] is the enthalpy of the phase $i$ evaluated at the temperature $T_{ij}$ of the interface.
-\end{description}
+\item $h_{i}(T_{ij})$ is the enthalpy of the phase $i$ evaluated at the temperature $T_{ij}$ of the interface.
+\end{itemize}
 
 The effective thermal conductivity of the phase $i$ is defined using the thermal conductivity, $k_{i}$,
 the turbulent viscosity, $\mu_{t,i}$, the specific heat, $C_{p,i}$, and the turbulent thermal diffusion Prandtl number,
@@ -178,13 +176,13 @@ The \textbf{momentum conservation} equation solved is
 \end{equation}
 
 \noindent where
-\begin{description}[labelindent=20pt,labelsep=10pt]
-\item[$p$] is the pressure,
-\item[$\vetor{g}$] is the gravitational force vector,
-\item[$\tens{T}$] is the viscous stress tensor,
-\item[$\vetor{f}_{b}$] is the body force vector,
-\item[$\vetor{S}^{\alpha}_{i}$] is the user defined phase momentum source term.
-\end{description}
+\begin{itemize}[topsep=0pt, labelindent=40pt,labelsep=5pt, parsep = 2pt, listparindent=2em]
+\item $p$ is the pressure,
+\item $\vetor{g}$ is the gravitational force vector,
+\item $\tens{T}$ is the viscous stress tensor,
+\item $\vetor{f}_{b}$ is the body force vector,
+\item $\vetor{S}^{\alpha}_{i}$ is the user defined phase momentum source term.
+\end{itemize}
 
 
 The \textbf{energy conservation} equation solved is
@@ -199,13 +197,13 @@ The \textbf{energy conservation} equation solved is
 \end{equation}
 
 \noindent where
-\begin{description}[labelindent=20pt,labelsep=10pt]
-\item[$\mathrm{E}$] is the total energy,
-\item[$\mathrm{H}$] is the total enthalpy,
-\item[$\vetor{\dot{q}''}$] is the heat flux vector,
-\item[$\tens{T}$] is the viscous stress tensor,
-\item[$\mathrm{S}_{\mathrm{E}}$] is the user defined energy source term.
-\end{description}
+\begin{itemize}[topsep=0pt, labelindent=40pt,labelsep=5pt, parsep = 2pt, listparindent=2em]
+\item $\mathrm{E}$ is the total energy,
+\item $\mathrm{H}$ is the total enthalpy,
+\item $\vetor{\dot{q}''}$ is the heat flux vector,
+\item $\tens{T}$ is the viscous stress tensor,
+\item $\mathrm{S}_{\mathrm{E}}$ is the user defined energy source term.
+\end{itemize}
 \subsection{Modelling Turbulence}
 Flows are generally turbulent. Turbulence is chracterised by irregular fluid motion dominated by
  eddies and vortices across a wide range of spatial and temporal scales. The largest eddies
@@ -226,7 +224,7 @@ Although turbulence can be modelled in various ways to various levels of resolut
  such as multiphase cavity flows~\citelater{Menter1994}.
 
 RANS models result from decomposing flow variables into
- mean and fluctuating components,\[\phi = \bar{\phi} + \phi'\], applying Reynolds averaging,
+ mean and fluctuating components,$\phi = \bar{\phi} + \phi'$, applying Reynolds averaging,
  which filters out turbulent fluctuations below the
  averaging scale~\cite{besnardTurbulenceMultiphaseFlow1988a, hirschNumericalComputationInternal2007}.
  This operation yields additional Reynolds stress terms representing
