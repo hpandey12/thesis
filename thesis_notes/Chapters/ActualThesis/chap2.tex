@@ -7,6 +7,7 @@ The chapter concludes with a description of the numerical methods used in Star-C
 of the commercial software in being able to accurately model the problems under consideration.
 
 \subsection{Governing Equations}
+\COMMENT{this section is somewhat rough}\hfill\\
 Multiphase flow is modelled in Star-CCM+ using various frameworks. The two-fluid - eulerian multiphase - framework solves a set of six equations
 to model two-phase flow. A set of transport equations for mass, momentum, and energy are solved for all the phases, which are assumed to
 be interpenetrating continua that share a common pressure field. The local instantaneous conservation equations are assumed to be euler averaged and
@@ -42,7 +43,6 @@ such that \[\vetor{v}_{d,i} = \vetor{v}_{i} - \vetor{v}.\]
 A set of volume fraction transport and mass, momentum, and energy conservation equations are solved for each phase.
 In cases of two-phase flow, Star-CCM+ solves the volume fraction transport equation only for the first phase.
 
-~\COMMENT{REORGANISE THIS! MENTION FVM AND EXPLAIN V AND PARTIAL V AND SURFACE AREA VECTOR}
 \subsubsection{Eulerian Multiphase Flow}
 The euler averaged mass conservation equation used in the eulerian 
  multiphase formulation is shown in~\ref{eq:emp-mass-conserv}. 
@@ -357,6 +357,71 @@ The implementation of th model in Star-CCM+ can be further controlled to
  in the modelling of reynolds stresses. The parameters in the model
  are left on their default values as they are empirically modelled.
 
+\subsection{Evaporation}
+The evaporation process is distinguished between occuring at saturation temperatures or not. 
+ Evaporation at saturation temperatures, known as vaporisation, is a much faster 
+ process in comparison to evaporation at normal~\cite{wickertSimulation}. 
+ In case of vaporisation along a heated wall, most CFD models of
+ vaporisation treat the energy transfer by partitioning
+ the heat flux at the wall into the latent heat of the bubble vaporisation process and the 
+ sensible heat transferred to the liquid through conduction, convection, and quencing processes.
+ This is determined by the area fractions covered by the liquid and vapour. Correlations between the
+ heat flux and wall superheat~\COMMENT{what is superheat} have been made using empirical
+ results or based on modelling of sub-processes.
+
+The sub-processes that are primarily taken into account in such determinations are:
+\begin{itemize}
+    \item number density of nucleation sites
+    \item diameter of bubble at time of detachment from the surface
+    \item frequency of bubble detachment
+\end{itemize}
+Nucleation affects the number and distribution of bubbles in the fluid. Walls, particularly so in case they're heated, are more suspectible to be nucleation sites for bubble growth
+ as the activation energy for bubble growth is much lower. This nucleation can be modelled through the domain as homogenous or heterogenous - where nucleation sites are modelled using a 
+ presumed PDF function or be determined by empirical correlations.~\cite{liaoComputationalModellingFlash2017}
+
+After a stable bubble nucleus has been formed, the growth of the bubble becomes pertinent in the evaluation
+ of the diameter at departure and the interphase energy and mass transfer. In the case of an ideal
+ spherical bubble undergoing expansion in a uniformly superheated liquid, the rate of growth
+ is determined by the surface tension, liquid inertia, and the differnce in pressures inside
+ and outside the bubble. Surface tension dominates and restricts the initial bubble growth.
+ This initial rapid expansion of the bubble results in the formation of a thin liquid layer separating
+ the vapour from the wall surface. This microlayer can be a significant contributor to the 
+ bubble growth and heat transfer process.
+ As the radius increases and the liquid layer around the bubble cools due to evaporation,
+ a decrease in vapour pressure in seen. The dynamics are controlled by thermal diffusion
+ and inertia. Inertial effects, however, become less relevant as the bubble growth rate decreases
+ and the bubble radius grows. The interphase energy exchange determines further bubble growth.~\cite{sherFlashboilingAtomization2008}
+
+\subsubsection{Effects of low pressure and gravity conditions}
+The absence of significant gravitaional forces alters the dynamics of vaporisation - affecting natural convection, buoyancy
+ driven phenomenon, and bubble dynamics. Under terrestrial gravity, convection currents develop under thermal
+ gradients, thus bringing cooler liquid to the heated surface as the vapour bubble rises due
+ to buyoancy. This density driven natural convection is affected in low gravity conditions, maintaining
+ the thermal gradient. Bulk fluid movement is affected and heat and mass transfer processes shift
+ from being convection dominated to being diffusion dominated.~\cite{cochranEffectsFluidProperties, leeExperimentalComputationalInvestigation2022}
+
+Under low gravity conditions, vapour bubbles tend to remain near the heat source, growing
+ signifcantly larger and coalescing with smaller bubbles. Prolonged bubble presence on the
+ surface results in drying out of the surface and unsteady rise in surface temperatures.\cite{qiuSingleBubbleDynamicsPool2002}~\COMMENT{Mention some numbers}
+ In conditions where the dominance of surface tension forces becomes more pronounced,
+ the surfae tension gradients can induce fluid circulation. This is known as Marangoni
+ convection and is observed to affect bubble growth and heat transfer.~\cite{xuNumericalStudyMarangoni2014}
+
+Reduced system pressure impacts the overall intensity of heat transfer. The onset of nucleate boiling also
+ requires higher superheat values in low pressure conditions.
+ Decrease in pressure leads to a lower number of active nucleation sites and increases
+ microlayer thickness found at the bubble-wall interface. The local heat flux density from
+ microlayer evaporation is impacted and the microlayer evaporation area and depletion time is
+ increased. The system is also susceptible to the formation of a continuous vapour film at the 
+ surface due to coalescing bubbles unable to escape the surface, reducing the overall heat transfer.~\cite{serdyukovInfluencePressureLocal2023}
+ 
+The affected heat transfer and bubble growth phenomenon further result in lower critical heat fluxes
+ and heat transfer efficiency.~\cite{zhangExperimentalTheoreticalStudy2002, PDFMethodAssessing}
+
+\subsubsection{Vaporisation in a superheated liquid}
+\COMMENT{------------UNDER CONSTRUCTION--------------------}\hfill\\
+Flash evaporation is the intense vaporisation triggered through depressurisation of superheated fluids.
+
 \subsection{Flow Regimes and Closures}
 Additional constitutive relations are required to 'close' the set of equations being solved
  that compensate for the various scales blended out due to the averaging procedures.
@@ -551,7 +616,7 @@ Surface tension, although an interfacial force, is implemented using the
     \vetor{f}_{\sigma, i} = \alpha_{i} \sigma \kappa \nabla \alpha_{i}.
  \end{equation}
 
-\subsection{Phase Interactions}
+\subsection{Closures: Under Construction}
 \begin{itemize}
     \item Interphase mass transfer (evaporation/condensation)
      Represents phase change, modeled as interfacial flux determined
@@ -565,78 +630,24 @@ and throughout the phases (essential for accurate phase change modeling).
     \item Local pressure and temperature gradients driving simultaneous mass and energy transfer
 \end{itemize}
 
-\subsection{Evaporation}
-The evaporation process is distinguished between occuring at saturation temperatures or not. 
- Evaporation at saturation temperatures, known as vaporisation, is a much faster 
- process in comparison to evaporation at normal~\cite{wickertSimulation}. 
- In case of vaporisation along a heated wall, most CFD models of
- vaporisation treat the energy transfer by partitioning
- the heat flux at the wall into the latent heat of the bubble vaporisation process and the 
- sensible heat transferred to the liquid through conduction, convection, and quencing processes.
- This is determined by the area fractions covered by the liquid and vapour. Correlations between the
- heat flux and wall superheat~\COMMENT{what is superheat} have been made using empirical
- results or based on modelling of sub-processes.
-
-The sub-processes that are primarily taken into account in such determinations are:
-\begin{itemize}
-    \item number density of nucleation sites
-    \item diameter of bubble at time of detachment from the surface
-    \item frequency of bubble detachment
-\end{itemize}
-Nucleation affects the number and distribution of bubbles in the fluid. Walls, particularly so in case they're heated, are more suspectible to be nucleation sites for bubble growth
- as the activation energy for bubble growth is much lower. This nucleation can be modelled through the domain as homogenous or heterogenous - where nucleation sites are modelled using a 
- presumed PDF function or be determined by empirical correlations.~\cite{liaoComputationalModellingFlash2017}
-
-After a stable bubble nucleus has been formed, the growth of the bubble becomes pertinent in the evaluation
- of the diameter at departure and the interphase energy and mass transfer. In the case of an ideal
- spherical bubble undergoing expansion in a uniformly superheated liquid, the rate of growth
- is determined by the surface tension, liquid inertia, and the differnce in pressures inside
- and outside the bubble. Surface tension dominates and restricts the initial bubble growth.
- This initial rapid expansion of the bubble results in the formation of a thin liquid layer separating
- the vapour from the wall surface. This microlayer can be a significant contributor to the 
- bubble growth and heat transfer process.
- As the radius increases and the liquid layer around the bubble cools due to evaporation,
- a decrease in vapour pressure in seen. The dynamics are controlled by thermal diffusion
- and inertia. Inertial effects, however, become less relevant as the bubble growth rate decreases
- and the bubble radius grows. The interphase energy exchange determines further bubble growth.~\cite{sherFlashboilingAtomization2008}
-
-\subsubsection{Effects of low pressure and gravity conditions}
-The absence of significant gravitaional forces alters the dynamics of vaporisation - affecting natural convection, buoyancy
- driven phenomenon, and bubble dynamics. Under terrestrial gravity, convection currents develop under thermal
- gradients, thus bringing cooler liquid to the heated surface as the vapour bubble rises due
- to buyoancy. This density driven natural convection is affected in low gravity conditions, maintaining
- the thermal gradient. Bulk fluid movement is affected and heat and mass transfer processes shift
- from being convection dominated to being diffusion dominated.~\cite{cochranEffectsFluidProperties, leeExperimentalComputationalInvestigation2022}
-
-Under low gravity conditions, vapour bubbles tend to remain near the heat source, growing
- signifcantly larger and coalescing with smaller bubbles. Prolonged bubble presence on the
- surface results in drying out of the surface and unsteady rise in surface temperatures.\cite{qiuSingleBubbleDynamicsPool2002}~\COMMENT{Mention some numbers}
- In conditions where the dominance of surface tension forces becomes more pronounced,
- the surfae tension gradients can induce fluid circulation. This is known as Marangoni
- convection and is observed to affect bubble growth and heat transfer.~\cite{xuNumericalStudyMarangoni2014}
-
-Reduced system pressure impacts the overall intensity of heat transfer. The onset of nucleate boiling also
- requires higher superheat values in low pressure conditions.
- Decrease in pressure leads to a lower number of active nucleation sites and increases
- microlayer thickness found at the bubble-wall interface. The local heat flux density from
- microlayer evaporation is impacted and the microlayer evaporation area and depletion time is
- increased. The system is also susceptible to the formation of a continuous vapour film at the 
- surface due to coalescing bubbles unable to escape the surface, reducing the overall heat transfer.~\cite{serdyukovInfluencePressureLocal2023}
- 
-The affected heat transfer and bubble growth phenomenon further result in lower critical heat fluxes
- and heat transfer efficiency.~\cite{zhangExperimentalTheoreticalStudy2002, PDFMethodAssessing}
-
-\subsubsection{Vaporisation in a superheated liquid}
-\COMMENT{------------UNDER CONSTRUCTION--------------------}
-Flash evaporation is the intense vaporisation triggered through depressurisation of superheated fluids.
-
-
 \subsection{Numerical Methods}
-\COMMENT{------------UNDER CONSTRUCTION--------------------}
-\begin{itemize}
-    \item gradients
-    \item solvers - implicit unsteady, segregated flow (SIMPLE)
-    \item Relevant non-dim numbers? (reynolds, froude, jakobs, nusselt, bond, what not)
-\end{itemize}
+\COMMENT{------------SOMEWHAT UNDER CONSTRUCTION--------------------}\hfill\\
+Star-CCM+ is a commerical CFD software currently maintained and developed 
+ by Siemens Digital Industries Software. The software uses the Finite Volume Method to
+ discretise the integral form of the governing differential equations over a number 
+ of control volumes in the domain. The software has an automatic meshing system but allows
+ the implementation of custom meshing using surface wrappers. The relevant variables are
+ calculated at the center of each control volume and interpolated to the control volume surfaces.
+ Convective and diffusive fluxes are interpolated using the second-order upwind differentiation
+ scheme which uses the linear interpolation between two upwind centroids to approximate
+ the fluxes at the surfaces of the control volume. Gradients are interpolated using 
+ the least squares method with Venkatakrishnan gradient limiters.
+ While the VOF formulation uses HRIC, 
+ the EMP framework convects volume using either the first- or second-order upwind differentiation.
+ In case the Large Scale Interface Detection model is active, 
+ HRIC or a scheme that blends HRIC with the first- or second-order 
+ upwind scheme can be implemented can also be chosen for volume fraction convection.
+ The semi-implicit method for pressure-linked equations (SIMPLE) algorithm is used 
+ as the default segregated pressure-velocity coupling scheme. 
 \subsection{Workflow?}
 \COMMENT{------------UNDER CONSTRUCTION--------------------}

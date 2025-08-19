@@ -127,14 +127,6 @@ Melting temperature, $T_m$ & $273$\,K \\
 Multiphase model & VOF with HRIC convection \\
 Flow model & Laminar \\
 Spatial discretization & 2nd order (energy), 1st order (HRIC) \\
-
-\addlinespace
-\multicolumn{2}{@{}l@{}}{\textbf{Boundary Conditions}} \\
-\cmidrule(lr){1-2}
-Left wall (minX) & Fixed temperature $300.0$\,K \\
-Right wall (maxX) & Adiabatic \\
-Top/Bottom walls & Adiabatic \\
-All walls & No-slip \\
 \bottomrule
 \end{tabular}
 \caption{CFD simulation parameters for Stefan melting-solidification problem}
@@ -273,7 +265,7 @@ According to~\cite{MIRJALILI2019221}, a reasonable solution to the RT instabilit
  with a $128 \times 512$ mesh. With similar mesh resolutions being used 
  in~\cite{hamzehlooDirectNumericalSimulations2021, HuangConsistentEssentiallyConservative2020} to study similar RT 
  instabilities, the domain is discretised using a uniform orthogonal quadrilateral mesh with 
- size $\Delta_{h} = 4.5 \times 10^{-3}$\,m. Additional mesh sizes are evaluated in order to study 
+ size $\Delta h = 4.5 \times 10^{-3}$\,m. Additional mesh sizes are evaluated in order to study 
  mesh convergence. Time is non-dimensionalised using the Atwood number and the timestep for the 
  simulations, similar to~\cite{DingDiffuseInterfaceModel2007,hamzehlooDirectNumericalSimulations2021}, 
  is selected as $\Delta t = 2.5 \times 10^{-4}/\sqrt{At}$\,s.
@@ -306,12 +298,6 @@ Multiphase model & VOF with HRIC convection \\
 Flow model & Turbulent, SST $k$--$\omega$ \\
 Spatial discretization & 2nd order (flow), 1st order (HRIC) \\
 Gradient reconstruction & Least-squares \\
-
-\addlinespace
-\multicolumn{2}{@{}l@{}}{\textbf{Boundary Conditions}} \\
-\cmidrule(lr){1-2}
-Top/Bottom walls & Wall with slip, contact angle \\
-Left/Right boundaries & Symmetry plane \\
 \bottomrule
 \end{tabular}
 \caption{CFD simulation parameters for Rayleigh-Taylor instability study}
