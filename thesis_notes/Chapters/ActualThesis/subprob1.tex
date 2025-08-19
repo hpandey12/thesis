@@ -7,9 +7,11 @@
 %For dry air, at a pressure and temperature of $0.03MPa$ and $328$ respectively, molecular mass $m = 4.815e-26\,\text{kg}$, and estimating the kinematic
 %viscosity using  Sutherland's formula, the mean free path, $\lambda \approx 2.0732e-06 m$.
 \section{Subproblem: Liquid Infiltration}
-
-\COMMENT{------------UNDER CONSTRUCTION--------------------}
-
+This chapter covers the simulation setup of liquid infiltration of the evaporation chamber. The physics models used in the
+ simulation of the problem are validated against the 1D Stefan problem and the 2D Rayleigh-Taylor instability. The 
+ construction and result of these simulations is shortly discussed. The chapter concludes with the description 
+ of the computational methodology, results, and comments on the 2D simulation of the infiltration problem. 
+\subsection{Problem Description and Objective}
 The first subproblem addresses water infiltrating the evaporation chamber during rocket ascent.
 
 The flow system assembly comprises the hydraulic accumulator, the evaporation chamber, and the injection 
@@ -31,8 +33,6 @@ The pre-charge pressure in the accumulator and the initial pressure in the evapo
 No flow measurements are made in the injection assembly. Pressure and temperature are measured in the evaporation chamber along 
  the nozzle at the midspan, the throat, and the exit.
 
-\subsection{Objective}
-
 The objective of the first task is to model the water injection into the evaporation chamber and extract quantities of 
  interest to better estimate the initial conditions for the second task. The validity of the multiphase physics 
  models provided by Star-CCM+ and the equations implemented therein is also evaluated against the one-dimensional 
@@ -43,8 +43,8 @@ The objective of the first task is to model the water injection into the evapora
 \subsubsection{Stefan Problem}
 Phase change processes are characterized by the movement of an interface separating two
  distinct phases, where one phase expands as another contracts due to thermal or non-thermal 
- mechanisms~\citelater{Koga, 2013}. The mathematical model governing such moving boundary 
- problems is known as the Stefan system~\citelater{Koga, 2013}, and the analysis of such a 
+ mechanisms~\cite{Koga2020}. The mathematical model governing such moving boundary 
+ problems is known as the Stefan system~\cite{Koga2020}, and the analysis of such a 
  system forms the basis of the Stefan problem.
 
 In the classical Stefan problem, a fixed-temperature boundary propagates a melting or freezing
@@ -280,7 +280,7 @@ According to~\cite{MIRJALILI2019221}, a reasonable solution to the RT instabilit
 
 The physical parameters and the simulation setup, along with the various cases studied are summarised in 
  Tables~\ref{tab:rt-simulation-params} and~\ref{tab:rt-parameter-matrix}.
-\begin{table}[H]
+\begin{table}[htbp]
 \centering
 \ra{1.3}
 \begin{tabular}{@{}lp{7.5cm}@{}}
@@ -318,7 +318,7 @@ Left/Right boundaries & Symmetry plane \\
 \label{tab:rt-simulation-params}
 \end{table}
 
-\begin{table}[H]
+\begin{table}[htbp]
 \small
 \centering
 \ra{1.0}
