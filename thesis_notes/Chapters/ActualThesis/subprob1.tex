@@ -6,41 +6,16 @@
 %\end{equation}
 %For dry air, at a pressure and temperature of $0.03MPa$ and $328$ respectively, molecular mass $m = 4.815e-26\,\text{kg}$, and estimating the kinematic
 %viscosity using  Sutherland's formula, the mean free path, $\lambda \approx 2.0732e-06 m$.
-\section{Subproblem: Liquid Infiltration}
-This chapter covers the simulation setup of liquid infiltration of the evaporation chamber. The physics models used in the
- simulation of the problem are validated against the 1D Stefan problem and the 2D Rayleigh-Taylor instability. The 
- construction and result of these simulations is shortly discussed. The chapter concludes with the description 
+\section{Computational Methodology and Results}
+This chapter covers the simulation setup of liquid infiltration of the evaporation chamber. The objective is to simulate the 
+ water injection and extract quantities of interest to better estimate the initial conditions for the second task.
+ The physics models used in the
+ simulation of the problem are validated against the 1D Stefan problem and the 2D Rayleigh-Taylor instability. The problems 
+ are introduced and the computational methodology and result of these simulations is shortly discussed. The chapter concludes with the description 
  of the computational methodology, results, and comments on the 2D simulation of the infiltration problem. 
-\subsection{Problem Description and Objective}
-The first subproblem addresses water infiltrating the evaporation chamber during rocket ascent.
 
-The flow system assembly comprises the hydraulic accumulator, the evaporation chamber, and the injection 
- system subassembly that drives the liquid from the hydraulic accumulator into the evaporation chamber. 
- The hydraulic accumulator and the evaporation chamber can be heated until lift-off. Current design considerations 
- assume the temperature of the evaporation chamber and water in the accumulator to be $368.15$\,K and $353.15$\,K respectively. 
- The ambient temperature at lift-off is assumed to be $280$\,K based on the remarks and considerations made in~\citelater{OLD-SED}.
 
-Although insulation from the environment outside the rocket is assumed and the hydraulic accumulator will be sufficiently 
- insulated, the evaporation chamber may cool down slightly during ascent until the start of the experiment at time $t = 140$\,s 
- after lift-off. As of yet, no considerations have been made regarding the insulation of the evaporation chamber.
-
-The pre-charge pressure in the accumulator and the initial pressure in the evaporation chamber are assumed to be $3.5$\,bar and $1$\,bar 
- respectively. Water injection begins after the data storage signal is sent by the electronics module and stops shortly 
- before the apogee is reached, when the absolute pressure in the evaporation chamber rises to $1.7$\,bar. Due to water 
- remaining at the time of cutoff in the injection subassembly and also the accumulator, the total amount of water discharged to 
- the chamber is assumed to be $150$\,mL.
-
-No flow measurements are made in the injection assembly. Pressure and temperature are measured in the evaporation chamber along 
- the nozzle at the midspan, the throat, and the exit.
-
-The objective of the first task is to model the water injection into the evaporation chamber and extract quantities of 
- interest to better estimate the initial conditions for the second task. The validity of the multiphase physics 
- models provided by Star-CCM+ and the equations implemented therein is also evaluated against the one-dimensional 
- Stefan problem and the two-dimensional Rayleigh-Taylor instability.
-
-\subsection{Validation Problems}
-
-\subsubsection{Stefan Problem}
+\subsection{Stefan Problem}
 Phase change processes are characterized by the movement of an interface separating two
  distinct phases, where one phase expands as another contracts due to thermal or non-thermal 
  mechanisms~\cite{Koga2020}. The mathematical model governing such moving boundary 
@@ -182,12 +157,14 @@ Figure~\ref{fig:stefan_convergence} shows the location of the interface for simu
 
 The errors in the temperature profiles for the various mesh sizes are plotted in Figure~\ref{fig:stefan_temp_convergence}. It 
 can be seen that the simulation results converge to the analytical solution with decreasing mesh size.
-\subsubsection{Rayleigh-Taylor Instability}
+
+
+\subsection{Rayleigh-Taylor Instability}
 The Rayleigh-Taylor (RT) instability occurs when a denser fluid is accelerated into a lighter one, leading to
  interfacial perturbations and complex vortex formation~\cite{birkhoffTAYLORINSTABILITYLAMINAR1954}. This 
  phenomenon, known as the Rayleigh-Taylor (RT) instability, is fundamental to many natural and engineering systems. 
  Although the ideal, undisturbed RT instability is rarely encountered in practice, its essential features arise across 
- a broad range of spatial and temporal scales—where the basic mechanism can be influenced by viscosity, surface tension, 
+ a broad range of spatial and temporal scales - where the basic mechanism can be influenced by viscosity, surface tension, 
  compressibility, external accelerations, or stratification\cite{SHARP19843}
 
 Perturbation growth is driven by oppositely directed gradients of pressure and density at the interface. The density 
@@ -328,30 +305,32 @@ Mesh size $\Delta h$ [m] & 0.0045 & 0.0045 & 0.0045 &
 \caption{Fluid properties and mesh resolutions for all simulation cases}
 \label{tab:rt-parameter-matrix}
 \end{table}
-
+\setlength{\textfloatsep}{4pt plus 2.0pt minus 2.0pt}
 \begin{figure}[htbp]
+    \vspace*{-1pt}
 \centering
 \begin{subfigure}[b]{\textwidth}
 \centering
-\includegraphics[scale = 0.64]{rt_re300}
+\includegraphics[scale = 0.67]{rt_re300}
 \label{fig:rt_re300}
 \end{subfigure}
 \vspace*{-0.25pt}
 \begin{subfigure}[b]{\textwidth}
 \centering
-\includegraphics[scale = 0.64]{rt_re1000}
+\includegraphics[scale = 0.67]{rt_re1000}
 \label{fig:rt_re1000}
 \end{subfigure}
 \vspace*{-0.25pt}
 \begin{subfigure}[b]{\textwidth}
 \centering
-\includegraphics[scale = 0.64]{rt_re3000}
+\includegraphics[scale = 0.67]{rt_re3000}
 \label{fig:rt_re3000}
 \end{subfigure}
+\vspace*{-15pt}
 \caption{Evolution of Rayleigh-Taylor instability for Atwood number At = 0.5 at different Reynolds numbers.}
 \label{fig:rt_evolution_vertical}
 \end{figure}
-
+\setlength{\textfloatsep}{20pt plus 2.0pt minus 2.0pt}
 Figure~\ref{fig:rt_evolution_vertical} depicts the evolution of the RT instability for Reynolds numbers 300, 1000, and 3000.
  The initial evolution of the interface is through exponential growth of the infinitesimal disturbance of the interface~\cite{andrewsSmallAtwoodNumber2010}.
  The growth follows linear stability theory which transitions into increasing non-linear behaviour as the amplitude grows to orders of $0.1\lambda$~\cite{SHARP19843}.
@@ -463,36 +442,76 @@ Although, Star-CCM+, qualitatively, accurately simulates the RT instability, the
  Although Kelvin-Helmholz instabilities develop along the interface at higher Reynolds number, this secondary 
  perturbation is first observed for $Re = 10000$ in~\cite{hamzehlooDirectNumericalSimulations2021}.
 
- This can be ascribed to either the lower order scheme used in the Star-CCM+ simulations or the choice of 
+This can be ascribed to either the lower order scheme used in the Star-CCM+ simulations or the choice of 
  turbulence modelling using eddy viscosity models instead of completely resolving turbulence. For Atwood number 
  that are not close to zero, the Boussinesq approximation is also invalid which is an integral assumption in 
  RANS turbulence models. Star-CCM+, in order to accommodate the spurious currents that may be 
  introduced through the use of eddy viscosity models, provides models that aid in the damping of momentum and/or 
  turbulence at the interface, however, the addition of these models leads to significant deviations from the DNS results.
 
-
 \subsection{Liquid Infiltration of Evaporation Chamber}
-
 The evaporation chamber and the nozzle are modelled together as a 2D domain as shown in 
- Figure~\ref{fig:chamber_mesh}. Line probes present along the mid-section of the evaporation 
- chamber and at various points along the nozzle measure the flow quantities as would be measured 
- in the actual experiment. Star-CCM+, during the creation of a 2D domain, prescribes an automatic, 
- unchangeable depth of $1 m$ to the model. It is assumed that approximately $150 mL$ water is 
- discharged into the evaporation chamber during the experiment. In order to maintain dynamic similarity, 
- the mass flow rate is compared between the 3D experiment and the 2D model.
+ Figure~\COMMENT{FIG}. Star-CCM+, during the creation of a 2D domain, prescribes an automatic, 
+ unchangeable depth of $1$\,m to the model. In order to maintain dynamic similarity, 
+ the mass flow rate is compared between the 3D experiment and the 2D model. To this end, 
+ the inlet velocity is kept similar in the two experiments. It is assumed that approximately $150$\,mL water is 
+ discharged into the evaporation chamber during the experiment.
+ 
+The diameter of the inlet, $d_{in} = 0.017m$, 
+ is taken to be the reference length. Assuming a discharge time $t_{dis} = 10$\,s and a constant flow rate,
+ the inflow velocity of water in
+ the experiment can be calculated as
+ \begin{equation}
+    \dot{Q} = Q/t_{dis} = 0.00015/10 = v \left(\pi d_{in}^{2}/4\right)
+ \end{equation}
+The flow rate is assumed to be constant for the discharge time. The inlet velocity is thus dependent on the
+ discharge time as $v = 0.00015/\left(d_{in}\,t_{dis}\right)$. The gravitational acceleration is assumed to 
+ be $\vetor{g} = 0.4$\,m$\cdot$s$^{-2}$ along the negative $y$-axis.
 
-\begin{figure}[htb]
-\centering
-\includegraphics[width=0.25\textwidth]{sub1_mesh}
-\caption{Computational mesh for the evaporation chamber and nozzle assembly}
-\label{fig:chamber_mesh}
-\end{figure}
+In the actual 3D experiment, the height of the water at the end of the injection under steady state conditions
+ can be estimated using the dimensions and the volume of the discharged water to $\approx 42$\,mm. The 
+ water injection is similarly cutoff, at around $2.75$\,s, after the water level reaches approximately $42$\,mm in the simulation, 
+ following which the simulation proceeds to run for another $5$\,s with no inflow velocity.
 
-An adaptive trimmed cell mesh is used to mesh the computational domain.
+
+Section probes present along the mid-section of the evaporation 
+ chamber and at various points along the nozzle measure the temperature as they would be measured 
+ in the actual experiment. An isosurface defines the water-air interface where the volume fraction 
+ of water is $0.5$. This isosurface marks the highest position of the water along the mid-section probe and
+ records the $y-$axis velocity at the point. 
 
 \begin{itemize}
-\item \COMMENT{ABOUT CONVERGENCE}
+\item \textbf{Spatial and Temporal Convergence: }
+    In order to assess the spatial convergence of the solution, four uniform quadrilateral meshes are used. Using the reference length,
+    $L_{x}$, the mesh sizes from coarse to fine are $\Delta \text{h}_{1} = d_{in}/4$, $\Delta \text{h}_{2} = d_{in}/8$, $\Delta \text{h}_{3} = d_{in}/16$,
+     and $\Delta \text{h}_{4} = d_{in}/32$ respectively. A uniform timestep,
+    $\Delta t = 0.001$\,s is used for all the meshes along with the same initial conditions. Data is recorded at every $0.01$\,s.
+    The maximum height of the isosurface against the middle section is used to measure the water level. The velocities at 
+    various points along the middle section of the chamber are also recorded. Figure~\ref{fig:sub1_conv} depicts the
+    recorded water level against simulation time and the y-axis component of the velocities 
+    measured along the middle section at the simulation stop time, $t_{f}$. All quantities have been non-dimensionalised
+    using the reference length, velocity, and time scales. 
+    \begin{figure}[htb]
+        \centering
+        \includegraphics[width = \textwidth]{sub1_conv}
+        \caption{Water level and y-axis velocity component at time, $t_{f}$, for various mesh refinements}
+        \label{fig:sub1_conv}
+    \end{figure}
+    \begin{figure}[htb]
+        \centering
+        \includegraphics[width = \textwidth]{sub1_mesh_conv}
+        \caption{Interface at time, $t = 3.25$\,s}
+        \label{fig:sub1_mesh_conv}
+    \end{figure}
+    The coarsest mesh size, h$_{1}$, tends to behave like a vibrating membrane with no discernible development of any waves. The fluid bulk does 
+    not contain any air pockets as the mesh is too coarse to resolve any fine details. The finer mesh, h$_{2}$, is able to resolve
+    bubbles in the fluid bulk during times of low bubble velocities and when the bubble diameter spans atleast four cells.
+    The coarse mesh is, however, able to resolve waves and the oscillatory motion of the isosurface is clearly noticeable.
+    The finest mesh size h$_{4}$ is able to resolve merging and breaking apart 
+    of the bubbles, droplets escaping the bulk fluid, as well as the flow features developed due to the interaction between the phases at the 
+    free surface. The mesh h$_{3}$ while also resolving the bubble interactions in the bulk flow and some coarse droplets, is unable to resolve
+    the interface as sharply. However, the increasing void fraction is apparent with decreasing mesh size. 
 \item \COMMENT{ON EVOLUTION OF INTERFACE and FLOW FIELD and RESULTING HEIGHT OF WATER}
-\item \COMMENT{ON EVOLUTION OF TEMPERATURE FIELD}
+\item \textbf{Comments: } Solution is highly sensitive; development is mostly symmetric; the thinning of the interface before separating into droplets is called 'pinching off'; that peak in water level is higher and also thinner which is nice.
 \end{itemize}
 \pagebreak

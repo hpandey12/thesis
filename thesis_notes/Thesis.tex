@@ -70,19 +70,25 @@
 \usepackage{framed}
 \usepackage{dashrule}
 \usepackage{hyperref}
-\usepackage[T1]{fontenc}
-\usepackage{mathpazo}
-\usepackage[sfdefault]{biolinum}
+\usepackage[T1, OT1]{fontenc}
 \usepackage[a-1b]{pdfx}
 \usepackage[latin9,utf8]{inputenc}
 \usepackage{booktabs}
 \usepackage{multirow}
 \usepackage{makecell}
 \usepackage{float}
+%\usepackage[noSTIXops,scaled=0.92]{newtxsf}
+\usepackage{sansmathfonts}
+\usepackage[sfdefault]{atkinson}
+
+%\usepackage[sfdefault]{biolinum}
+\renewcommand{\familydefault}{\sfdefault}
 \newcommand{\ra}[1]{\renewcommand{\arraystretch}{#1}}
 \allowdisplaybreaks[1]
 \predisplaypenalty=0
-\DeclareMathSizes{11}{19}{13}{9} %\DeclareMathSizes{ds}{ts}{ss}{sss}
+\DeclareMathSizes{10}{10}{7}{5}   % For size 10 text
+%\DeclareMathSizes{11}{19}{13}{9}   % For size 11 text
+%\DeclareMathSizes{12}{20}{14}{10}  % For size 12 text %\DeclareMathSizes{ds}{ts}{ss}{sss}: 10: {10}{18}{12}{8} {11}{19}{13}{9}
 \everymath{\displaystyle}
 \abovedisplayskip=12pt
 \belowdisplayskip=12pt
@@ -142,7 +148,7 @@
 \newcommand*\circled[1]{\tikz[baseline=(char.base)]{%
             \node[shape=circle,fill=blue!20,draw,inner sep=2pt] (char) {#1};}}
 
-\newcommand{\tens}[1]{\mathbf{\underline{\underline{#1}}}}
+\newcommand{\tens}[1]{\mathbb{\underline{\underline{#1}}}}
 \newcommand{\vetor}[1]{\mathbf{\underline{#1}}}
 
 %\usepackage[pdftex,colorlinks,hypertexnames=false]{hyperref}
@@ -150,6 +156,9 @@
 %	linkcolor={blue},
 %	citecolor={red},
 %}
+
+\captionsetup[figure]{font=normalsize, aboveskip=0.5\baselineskip, labelfont={normalsize, bf}}
+\captionsetup[table]{font=normalsize, aboveskip=0.5\baselineskip, labelfont={bf}}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                           %
 % DOKUMENT                                                                  %
@@ -249,12 +258,16 @@
 %\input{Chapters/Notes/notes.tex}
 %\input{Chapters/ActualThesis/chap1_rough.tex}
 %\newpage
-\input{Chapters/ActualThesis/chap2.tex}
+\input{Chapters/ActualThesis/intros.tex}
+\newpage
+\input{Chapters/ActualThesis/mathematics.tex}
+\newpage
+\input{Chapters/ActualThesis/nums.tex}
 \newpage
 \input{Chapters/ActualThesis/subprob1.tex}
 \newpage
-\input{Chapters/ActualThesis/subprob2.tex}
-\newpage
+%\input{Chapters/ActualThesis/subprob2.tex}
+%\newpage
 %\input{Chapters/Review/review}
 %\newpage
 %\input{Chapters/YOURCHAPTER/yourtexfile.tex}

@@ -1,0 +1,150 @@
+\section{Introduction}
+Their potential to host extraterrestrial life has made icy moons, 
+ such as the Jovian moon Europa and Saturn's moon Enceladus, prime targets for
+ exploration in the upcoming decades. The Cassini-Huygens mission 
+ discovered active cryovolcanism on Enceladaus in $2005$ in the form of
+ water rich plumes erupting from the south polar region. These plumes 
+ consist of~\COMMENT{what and what}, and supply most of the material 
+ making up Saturn's E ring.~\citelater{sklaventis, fontes} 
+
+The mechanisms of cryovolcanism and the disparity between the 
+ recorded flow behaviour and contituents of the plumes are subject
+ to ongoing research. 
+ Various models aim to explain the plume mechanics and the observed 
+ flow behaviour - explosive boiling due to exposure of the subsurface 
+ ocean to vacuum due to 
+ cracks opened by tidal stresses; simulating the 
+ fissures in the surface as convergent-divergent (de Laval) nozzles that
+ accelerate the vapor to the observed supersonic speeds; or channels inside
+ the icy crust acting as a de Laval nozzle where the grains are 
+ initially decelerated 
+ due to frequent wall collisions before being re-accelerated by the 
+ vapour flow.~\citelater{sklaventis, fontes, porco, Brilliantov \& Schmidt (2016), yeoh et al 2016}
+ To be able to use plumes as a surrogate to learn about the subsurface 
+ ocean, a better 
+ understanding of their driving processes in key.   
+
+As part of the icy moon experiments, in an effort to contribute to the understanding 
+ of the fluid dynamics of the supersonic plumes, an experimental setup is under
+ development at the FH Aachen - University of Applied Sciences. In collaboration with the 
+ Rocket Experiments for University Students (REXUS) programme of the 
+ German Aerospace Center (DLR) and the Swedish Space Agency (SNSA), the experimental 
+ setup will be installed on a sounding rocket and will perform under reduced gravity and 
+ vacuum conditions. The experiment consists of heated liquid 
+ water being let into a chamber connected to a de Laval nozzle, initially filled with 
+ low-pressure air. The nozzle lid is opened after a short time period and this 
+ depressurisation of the chamber is expected
+ to result in vaporisation of the water present in the evaporation chamber.
+
+
+\subsection{The Problem} 
+The 'flow system assembly' in the experimental setup, as shown in figure~\COMMENT{FIG}, 
+ consists of the hydraulic accumulator, 
+ the evaporation chamber, and the injection 
+ system subassembly that drives the liquid from the hydraulic 
+ accumulator into the evaporation chamber. In the current 
+ design of the setup, these components are assembled vertically and the 
+ water is driven up into the evaporation chamber. The evaporation chamber is constructed 
+ out of aluminium and can 
+ be assumed to be separated into a water reservior and the nozzle.~\COMMENT{-dimensions of reservoir, nozzle. CAD in appendix; where are flow measurements made}
+
+The hydraulic accumulator and the evaporation chamber can be heated until lift-off. Current design considerations 
+ assume the temperature of the evaporation chamber and water in the accumulator to be $368.15$\,K and $353.15$\,K respectively. 
+ The ambient temperature at lift-off is assumed to be $280$\,K based on the remarks and considerations made in~\citelater{OLD-SED}.
+ The flow system assembly is sealed off before lift-off and an intial pressure of $1$\,bar is assumed in the evaporation chamber, initially 
+ occupied by air. The hydraulic accumulator is sufficiently insulated and the nozzle is encased in a golden foil to minimise the amount of 
+ heat lost. No stipulations have been made regarding the evaporation chamber, however as there is no fluid convection
+ during operation, losses are assumed to be minimum. 
+
+Water injection begins after the electronics module signals the start of data storage and ends shortly before the apogee is reached. 
+ Due to water remaining at the time of cutoff in the injection subassembly and also the accumulator, the total amount of water discharged to 
+ the chamber is assumed to be $150$\,mL. A constant mass flow rate of $15$\,mL/s is assumed. The inflow velocity in the actual experiment can be tuned to 
+ desired values. Discharge time in the simulation is calculated based on the estimated water level at the end of discharge.
+ A minimum time of $6$\,s and a system pressure
+ of $1.7$\,bar is assumed before the electronics system signals the opening of the nozzle lid ensuing the vaporisation of the water.
+ As no active heating is provided, the phase change also takes place in the fluid bulk. This process is facilitated by the presence 
+ of nucleation points that are found in the water as $2.5$\,g of silicates per $100$\,mL of water. The silicates are assumed to be spherical 
+ with a uniform diameter of $0.8\,\mu$m. At the start of depressurisation, these 'seed' points are assumed to be uniformly
+ distributed in the water bulk.
+
+%The physical quantities listed above - velocity, pressure, and temperature - consist of the main unknowns 
+% that drive the flow characteristics of the system. 
+% Characteristically similar to a free surface problem, the first subproblem is modelled 
+% using the volume-of-fluid method. 
+ %The first subproblem is modelled as a two-phase problem and uses the volume-of-fluid method. The 
+ %Considerations about the gravitational force are based on the accelerometer data
+ %recorded during previous REXUS flights and are made .~\citelater{newSED} 
+T%he phases involved 
+T%he evaporation chamber is constructed out of Aluminium-6061 has a stipulated height, width, and depth of $128$, $72.34$, and $50$\,mm respectively.
+ %A technical drawing of the evaporation chamber is attached in the appendix~\COMMENT{fake news}. 
+%No flow measurements are made in the injection assembly. Pressure and temperature are measured in the evaporation chamber along 
+% the nozzle at the midspan, the throat, and the exit.
+%measurements in the simualation are made using section probes instead of point probes because section probes are essentially infinite point probes in 2D
+
+\subsection{Multiphase Flows and Star-CCM+}
+Multiphase flows are characterised by the simultaneous flow of several phases. Regardless of our 
+ improved understanding 
+ of such flows, multiphase flows remain complicated to model. Multiphase flows are 
+ multiscale in nature - where 
+ the cascasding effects of various physics acting over 
+ system-level to the microscopic scale must be taken into account.~\cite{ishiiThermoFluidDynamicsTwoPhase2011} 
+ Along with turbulence, multiple deformable, moving interfaces pose discontinuities 
+ in the fluid properties and induce fluctuations in the flow variables in the neighbourhood. 
+ The distribution of the phases cannot be accurately estimated
+ a priori~\cite{yadigarogluNatureMultiphaseFlows2018} but the macroscopic 
+ behaviour of the system is dependent on small-scale interactions of the 
+ phases~\cite{hanrattyPhysicsGasLiquid}. These evolving interfacial structures tend
+ to directly affect the inertial and thermodynamical development of the flow field.~\cite{ishiiThermoFluidDynamicsTwoPhase2011}
+
+Two-phase flow can be classified into three main flow regimes based on the 
+ distribution of the phases - dispersed flow, transitional flow, and separated flow.
+ In case of liquid-gas flows, this ranges from bubbly flows - where small gas bubbles are finely dispersed through the
+ continuous liquid phase, to the separated flows - where a sharp interface
+ marks the boundary between the two phases.
+ The transitional flow regime is marked by the presence of both dispersed and 
+ separated flows.~\cite{yadigarogluNatureMultiphaseFlows2018}
+
+Star-CCM+ is a commerical CFD software currently maintained and developed 
+ by Siemens Digital Industries Software. The software uses the Finite Volume Method to
+ discretise the integral form of the governing differential equations over a number 
+ of control volumes in the domain. The software has an automatic meshing system but allows
+ the implementation of custom meshing using surface wrappers. The relevant variables are
+ calculated at the center of each control volume and interpolated to the control volume surfaces.
+ Convective and diffusive fluxes are interpolated using the second-order upwind differentiation
+ scheme which uses the linear interpolation between two upwind centroids to approximate
+ the fluxes at the surfaces of the control volume. Gradients are interpolated using 
+ the least squares method with Venkatakrishnan gradient limiters.
+ The semi-implicit method for pressure-linked equations (SIMPLE) algorithm is used 
+ as the default segregated pressure-velocity coupling scheme. ~\citelater{star-ccm+}~\COMMENT{what convection schemes for flow variables? and SIMPLE}\hfill\\
+
+~\COMMENT{what to mention later: volume fraction convection, semi-implicit treatment, blending schemes and stuff.}
+
+\subsection{Objectives and Outline}
+~\COMMENT{--------under construction ---------------}\hfill\\
+\begin{itemize}
+    \item we describe the theoretical framework involved in modelling the 
+     two phenomenon
+    \item we simulate the 1D stefan problem and 2D RT instability
+  using the vof method. we also compare the emp framework in its ability to 
+  simulate the 2D RT instability? 
+    \item we simulate the infiltration of the evaporation chamber using the 
+    vof method,
+    discuss the spatial and temporal convergence and a qualitative
+    behaviour of the flow field. 
+\end{itemize}
+The two main physical processes in the experiment - infiltration and evaporation - not only occur at distinct
+ points in time but also require distinct mathematical treatment in their simulation. Thus, dividing 
+ the experiment into two subproblems -  
+ \begin{itemize}
+    \item the infiltration of heated water in the evaporation chamber exposed to ambient temperature conditions, 
+    \item and the evaporation of superheated water in the evaporation subject to depressurisation - 
+ \end{itemize}
+  this thesis investigates the feasibility of modelling the two processes in the commercial CFD software tool - Star-CCM+.
+
+  
+~\COMMENT{to add: overview and the description of the structure}
+
+
+
+
+
