@@ -1,4 +1,5 @@
 \section{Introduction}
+%credit: Credit: NASA/JPL/Space Science Institute, the Cassini imaging team home page, http://ciclops.org.
 Their potential to host extraterrestrial life has made icy moons, 
  such as the Jovian moon Europa and Saturn's moon Enceladus, prime targets for
  exploration in the upcoming decades. The Cassini-Huygens mission 
@@ -8,7 +9,7 @@ Their potential to host extraterrestrial life has made icy moons,
  making up Saturn's E ring.~\citelater{sklaventis, fontes} 
 
 The mechanisms of cryovolcanism and the disparity between the 
- recorded flow behaviour and contituents of the plumes are subject
+ recorded flow behaviour and constituents of the plumes are subject
  to ongoing research. 
  Various models aim to explain the plume mechanics and the observed 
  flow behaviour - explosive boiling due to exposure of the subsurface 
@@ -87,7 +88,7 @@ Multiphase flows are characterised by the simultaneous flow of several phases. R
  of such flows, multiphase flows remain complicated to model. Multiphase flows are 
  multiscale in nature - where 
  the cascasding effects of various physics acting over 
- system-level to the microscopic scale must be taken into account.~\cite{ishiiThermoFluidDynamicsTwoPhase2011} 
+ system-level to the microscopic scale must be taken into account~\cite{ishiiThermoFluidDynamicsTwoPhase2011}. 
  Along with turbulence, multiple deformable, moving interfaces pose discontinuities 
  in the fluid properties and induce fluctuations in the flow variables in the neighbourhood. 
  The distribution of the phases cannot be accurately estimated
@@ -108,16 +109,8 @@ Star-CCM+ is a commerical CFD software currently maintained and developed
  by Siemens Digital Industries Software. The software uses the Finite Volume Method to
  discretise the integral form of the governing differential equations over a number 
  of control volumes in the domain. The software has an automatic meshing system but allows
- the implementation of custom meshing using surface wrappers. The relevant variables are
- calculated at the center of each control volume and interpolated to the control volume surfaces.
- Convective and diffusive fluxes are interpolated using the second-order upwind differentiation
- scheme which uses the linear interpolation between two upwind centroids to approximate
- the fluxes at the surfaces of the control volume. Gradients are interpolated using 
- the least squares method with Venkatakrishnan gradient limiters.
- The semi-implicit method for pressure-linked equations (SIMPLE) algorithm is used 
- as the default segregated pressure-velocity coupling scheme. ~\citelater{star-ccm+}~\COMMENT{what convection schemes for flow variables? and SIMPLE}\hfill\\
-
-~\COMMENT{what to mention later: volume fraction convection, semi-implicit treatment, blending schemes and stuff.}
+ the implementation of custom meshing using surface wrappers.~\citelater{star-ccm+}
+ \COMMENT{add small para about different physics and modelling capabilities.}
 
 \subsection{Objectives and Outline}
 ~\COMMENT{--------under construction ---------------}\hfill\\
@@ -141,8 +134,6 @@ The two main physical processes in the experiment - infiltration and evaporation
  \end{itemize}
   this thesis investigates the feasibility of modelling the two processes in the commercial CFD software tool - Star-CCM+.
 
-  
-~\COMMENT{to add: overview and the description of the structure}
 
 
 

@@ -18,7 +18,7 @@
 %                                                                           %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\documentclass[paper=a4,10pt,titlepage,listof=totoc,index=totoc,bibliography=totoc]{scrartcl}
+\documentclass[paper=a4,12pt,titlepage,listof=totoc,index=totoc,bibliography=totoc]{scrartcl}
 % paper=a4		Papierformat DinA 4
 % 12pt		Schriftgr��e 12pt
 % titlepage 		Deckblatt
@@ -215,10 +215,10 @@
 % VERZEICHNISSE    
 %----------------------------------------
 \setcounter{tocdepth}{1}
-%\listoffigures              % Abbildungsverzeichnis
-%\newpage
-%\listoftables               % Tabellenverzeichnis
-%\newpage
+\listoffigures              % Abbildungsverzeichnis
+\newpage
+\listoftables               % Tabellenverzeichnis
+\newpage
 
 
 %----------------------------------------
@@ -238,8 +238,9 @@
 
 % Inhalt
 
-%\printglossaries
-%\input{InputExample/symbole_2}		% Glossar mit Einteilung in Kategorien
+%\makenoidxglossaries
+%\input{Chapters/symbols}		% Glossar mit Einteilung in Kategorien
+%\printnoidxglossaries
 %\input{Chapters/todo.tex}
 
 % You can insert your source here. Split the 

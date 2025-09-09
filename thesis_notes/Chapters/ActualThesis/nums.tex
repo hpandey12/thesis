@@ -1,6 +1,7 @@
 \section{Nums}
 Star-CCM+ uses the one-fluid formulation to implement the volume-of-fluid method. 
- The two-fluid model is implemented as the eulerian multiphase (EMP) model. The eulerian
+ The two-fluid model is implemented as the eulerian multiphase (EMP) model.
+ The eulerian
  multiphase model is further equipped to resolve large scale interfaces and
  thus can model both disperse and separated flow regimes.~\cite{gadaLargeScaleInterface2017}~\citelater{starccm} 
  This chapter details the numerical implementation of both the models in Star-CCM+ and discusses 
@@ -12,7 +13,7 @@ The volume-of-fluid (VOF) method is an interface capturing method that utilises 
  the computational mesh is fine enough to resolve the interface topology.
  Using the volume fraction as the marker function - the interface is assumed to be present
  in cells with volume fraction values between 0 and 1.
- The distribution of the phase $i$ is driven by the volume fraction transport equation.
+ The distribution of the phase $i$ is driven by the volume fraction transport equation,
 \begin{equation}\label{eq_vof_transport}
 \frac{\partial}{\partial t}\int\limits_{V} \alpha_{i}\,\mathrm{d}V +
 \int\limits_{\partial V} \alpha_{i} \vetor{v}_{i} \cdot \mathrm{d}\vetor{a}\;= \;
@@ -23,11 +24,12 @@ The volume-of-fluid (VOF) method is an interface capturing method that utilises 
  element, the volume fraction of phase $j$ is given as $\alpha_{j} = 1 - \alpha_{i}$.
  
 The High Resolution Interface Capturing (HRIC) scheme is the default volume fraction convection scheme used.
- The scheme is based on the normalised variable diagrams. The scheme blends the downwind
+ The scheme is based on the normalised variable diagrams and blends the downwind
  scheme with the upwind scheme to resolve the interface parallel or perpendicular to the flow direction.
- The calculated normalised face values of the volume fractions are then corrected in order 
+ The calculated normalised face values of the volume fractions are further corrected in order 
  to conform to the local Courant number. The spurious oscillations that may arise in the volume fraction field due to meshes with large aspect ratios
- are suppressed by the artificially smoothening the volume fraction gradient across the interface.~\citelater{star-ccm+}
+ are suppressed by artificially smoothening the volume fraction gradient across the interface.~\citelater{star-ccm+}
+~\COMMENT{how is turbulence implemented?}
 
 \subsection{EMP}
 Star-CCM+ implements the governing equations of the two-fluid model as detailed in Section~\ref{sec:two-fluid} as the eulerian multiphase (EMP) model. 
@@ -55,9 +57,22 @@ A variety of convection schemes for the transport of volume fraction are availab
  ADIS uses the HRIC scheme in the vicinity of a large scale interface and uses a standard 
  upwind scheme away from the sharp interface.~\citelater{starccm}
  %turbulence damping near interfaces?
+~\COMMENT{how is turbulence implemented?}
 
 \subsection{Star-CCM+ Stuff - needs a better heading}
 ~\COMMENT{relevance?}
+%multiple flow regimes - blinkov 1993 plots a simple regime map where bubbly flow is \alpha<0.3 and droplet flow at \alpha>0.7
+The relevant variables are
+ calculated at the center of each control volume and interpolated to the control volume surfaces.
+ Convective and diffusive fluxes are interpolated using the second-order upwind differentiation
+ scheme which uses the linear interpolation between two upwind centroids to approximate
+ the fluxes at the surfaces of the control volume. Gradients are interpolated using 
+ the least squares method with Venkatakrishnan gradient limiters.
+ The semi-implicit method for pressure-linked equations (SIMPLE) algorithm is used 
+ as the default segregated pressure-velocity coupling scheme. 
+~\COMMENT{what to mention later: volume fraction convection, semi-implicit treatment, blending schemes and stuff.}
+
+
 The implementation of the SST k-$\omega$ model in Star-CCM+ can be further controlled to
  adjust the realisability. Realisability is the positive semi-definiteness of the 
  reynolds stress tensor. The specification of turbulence is done using
@@ -93,7 +108,7 @@ The implementation of the SST k-$\omega$ model in Star-CCM+ can be further contr
 % the incorporation of an artificial viscosity term.   
 
 
-\subsection{Momentum Closures}\label{sec:closures}
+\subsection{Closures}\label{sec:closures}
 Closures are critical to the accurate prediction of the relevant flow variables and the distribution
  of volume fraction~\cite{sugrueRobustMomentumClosure}. Existing literature reviews 
  the overwhelming number of closures available that yield a range of varyinh performance 
@@ -130,13 +145,14 @@ The industry has, however, attempted to establish generality that can be transfe
  tunable parameters"~\cite{sugrueRobustMomentumClosure}, and utilise more
  physics based closures that are more physically consistent~\cite{liaoEulerianModellingTurbulent2018,colomboBenchmarkingCFDModelling}.
 
+Considering the 
 
 Drag force is generally more dominant than other forces as they tend to be a magnitude
  higher than other forces~\cite{tas-koehlerCriticalAnalysisDrag2021a}. Most drag models perform 
  equally well at low gas volume fractions. However as they are based on ideal conditions, 
  they do not account for bubble swarm effects at higher gas volume fractions and show reduced 
  accuracy. Certain swarm corrections do exist, but they are averaged along a radial profile when
- the swarm effects are also felt in the bulk.~\cite{sugrueRobustMomentumClosure, sugrueAssessmentSimplifiedSet2017,colomboBenchmarkingCFDModelling}
+ the swarm effects are also felt in the bulk~\cite{sugrueRobustMomentumClosure, sugrueAssessmentSimplifiedSet2017,colomboBenchmarkingCFDModelling}.
  The accurate modelling of interaction area density and length becomes relevant for the calculation
  of the drag force. 
  Using the linearised drag coefficient, $A_{D}$, and the relative velocity between the phases
@@ -156,7 +172,7 @@ The lift force models are particularly sensitive and uncertain in their performa
  They suffer from the same discrepancy between performance in low and 
  high gas volume fractions. Moreover, existing 
  lift force implementations in Star-CCM+ fail to replicate the experimental data
- they were derived from.~\cite{sugrueRobustMomentumClosure}
+ they were derived from~\cite{sugrueRobustMomentumClosure}.
  Assuming $\alpha_{p}$ is the volume fraction of the primary (continuous)
  phase, Star-CCM+ implements the lift force as
  \begin{equation}
@@ -194,7 +210,7 @@ Most lift
  been explained
  through a liquid film forming at the walls repelling the bubbles. This has been demonstrated to
  not actually occur in practice. The wall lubrication force has thus been criticised
- as lacking any physical justification.~\cite{sugrueRobustMomentumClosure,colomboBenchmarkingCFDModelling}
+ as lacking any physical justification~\cite{sugrueRobustMomentumClosure,colomboBenchmarkingCFDModelling}.
  Newer closures~\citelater{lubchenko} utilise a turbulent dispersion force based 
  formualtion to maintain the desired gas volume fraction and use the closure instead
  as a correction term to resolve the phase distribution at the boundary lost due to
@@ -219,7 +235,7 @@ Surface tension, although an interfacial force, is implemented using the
  The EMP treats surface tension by splitting it among the phases occupying
  the cell using the local volume fractions. The pressure gradient
  is then the summation of the 
- individual phase surface tension contributions $\vetor{f}_{\sigma, i}$,~\cite{gadaLargeScaleInterface2017} ~\citelater{starccm},
+ individual phase surface tension contributions $\vetor{f}_{\sigma, i}$~\cite{gadaLargeScaleInterface2017}~\citelater{starccm},
  \begin{equation}
     \vetor{f}_{\sigma, i} = \alpha_{i} \sigma \kappa \nabla \alpha_{i}.
  \end{equation}
@@ -233,6 +249,7 @@ using kinetic models for flash evaporation).
     \item Interphase energy transfer
      Encompasses latent heat and sensible heat exchange at the interface 
 and throughout the phases (essential for accurate phase change modeling).
+- conduction component based on the 'thin thermal boundary layer' assumption
     \item Nucleation (wall and bulk)
     \item Interfacial area changes due to bubble growth, coalescence, breakup
     \item Local pressure and temperature gradients driving simultaneous mass and energy transfer
