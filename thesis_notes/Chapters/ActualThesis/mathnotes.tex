@@ -11,3 +11,114 @@
 \subsection{Interface Capturing}
 \subsubsection{VOF}
 \subsection{Solution Procedure}
+\subsubsection{The Two-Fluid Formulation}\label{sec:two-fluid}
+Considering the volume element $V$ as described in the previous section, 
+ the volume fractions of the two phases $\alpha_{i}\,,\,i \in \{l,v\}$ must satisfy the continuity constraint 
+ \begin{equation}\label{eq:vol-frac-cont}
+  \sum_{i}\alpha_{i}\;=\;1\,.
+ \end{equation}
+ The volume of the phase $i$ is given as 
+ \begin{equation}
+  V_{i} = \int\limits_{V} \alpha_{i}\,\mathrm{d}V\,.
+ \end{equation}
+ The ratio $V_{i}/V$ of the effective volume of the phase $i$ to the total volume is defined as 
+ the void fraction of the phase. 
+ 
+The averaged macroscopic equation for the conservation of mass is given in~\eqref{eq:emp-mass}.
+ The density and velocity of the phase $i$ is denoted by $\rho_{i}$ and $\vetor{v}_{i}$.
+ The interfacial mass transfer unit volume between the two phases is denoted
+ by $\Gamma$ and the surface area vector of the 
+ volume element is denoted by $\vetor{a}$. With an additional phase mass source term $\mathcal{S}_{i}^{\alpha}$,
+ the conservation of mass for a generic phase $i$ is 
+ \begin{equation}\label{eq:emp-mass}
+\frac{\partial}{\partial t}
+\int\limits_{V} \alpha_{i} \rho_{i} \,\mathrm{d}V
++ \int\limits_{\partial V} \alpha_{i} \rho_{i} \vetor{v}_{i} \cdot \mathrm{d}\vetor{a}\;=\;
+\int\limits_{V} \Gamma_{i} \,\mathrm{d}V
++ \int\limits_{V} \mathrm{S}^{\alpha}_{i} \,\mathrm{d}V\,.
+\end{equation}
+%The interfacial mass transfer term $\Gamma_{i}$
+% represents the rate of mass transfer from the phase $i$. The interaction area density $a_{lv}$ specifies 
+% the interfacial area available in the volume element over which the mass transfer occurs.
+%\begin{equation}
+% \Gamma_{i}\;=\;a_{lv}\;\dot{m}_{i}\;=\; \rho_{i} \vetor{n}_{i} \cdot (\vetor{v}_{i} - \vetor{v}_{\mathcal{S}})\,.
+%\end{equation}
+%The term $\rho_{i} \vetor{n}_{i} \cdot (\vetor{v}_{i} - \vetor{v}_{\mathcal{S}})$ consists of the local instantaneous 
+% variables instead of the averaged quantities. The interface normal vector and interface 
+% velocity are given as $\vetor{n}_{i}$ and $\vetor{v}_{\mathcal{S}}$ respectively. 
+
+
+The governing equation for the conservation of momentum is given in~\eqref{eq:emp-mom}.
+ The equation describes the change in momentum of the phase $i$ due to the effects of the
+ fundamental forces in the system along with the effects of any internal forces or potentials $(\vetor{F_{int}})_{i}$
+ or any phase momentum source terms $\vetor{S}_{i}^{\alpha}$. The pressure and gravitational acceleration is given as $p$ and $\vetor{g}$ respectively.
+ The stress tensor $\tens{T}_{i}$ comprises of the molecular and turbulent stress tensors. Turbulence
+ in addressed in Section~\ref{sec:turbs}.
+\begin{equation}\label{eq:emp-mom}
+\begin{split}
+\frac{\partial}{\partial t}
+\int\limits_{V} \alpha_{i} \rho_{i} \vetor{v}_{i} \,\mathrm{d}V
++ \int\limits_{\partial V} \alpha_{i} \rho_{i} \vetor{v}_{i} \otimes \vetor{v}_{i} \cdot\,\mathrm{d}\vetor{a}
+&\;=\; 
+\int\limits_{V} \left(-\alpha_{i} \nabla p 
++ \alpha_{i} \rho_{i} \vetor{g}
++ (\vetor{F_{int}})_{i} \right) \,\mathrm{d}V
++ \int\limits_{\partial V} \left[ \alpha_{i} \left( \tens{T}_{i}\right) \right] \cdot \,\mathrm{d}\vetor{a} \\
+&\qquad {} + \int\limits_{V} \vetor{S}^{\alpha}_{i} \,\mathrm{d}V
++ \int\limits_{V}  \bigl(\Gamma_{i} \vetor{v}_{i} + \vetor{\mathcal{M}}_{i}\bigr)  \,\mathrm{d}V\,.
+\end{split}
+\end{equation}
+The momentum transfer term $\vetor{\mathcal{M}}_{i}$ accounts for the momentum transfer from 
+ the phase $i$ to the interface. This term also accounts for the momentum transfer
+ due to interfacial mass transfer and is further detailed in Section~\ref{sec:closures}. It is only non-zero in case 
+ of a relative motion between the phases and is subject to the constraint
+ %\begin{equation}
+ % \vetor{M}_{i} \;=\; a_{lv} \dot{m}_{i}\vetor{v}_{i}\,.%\left(\left(-p_{i} + \tens{T}_{i}\right)\cdot\vetor{n}_{i} - \dot{m}_{i}\vetor{v}_{i}\right)
+ %\end{equation}
+I%n case of constant surface tension, the dynamic condition that the effects of the hydrodynamic forces are 
+ %in equilibrium with the forces due to surface tension. Denoting the part of the interface $\mathcal{S}$ in the 
+ %volume element $V$ as $\mathcal{S} \cap V$, the dynamic jump condition can be written as
+ %\begin{equation}
+ % \vetor{M}_{l} + \vetor{M}_{v}\;=\; \frac{1}{V}\int\limits_{\mathcal{S} \cap V} 
+ %   \vetor{f_{\sigma}}\,\mathrm{d}V\,.
+ %\end{equation}
+
+%The rate of change of momentum due to the 
+% interfacial mass transfer can be given using the velocities of the phases $l$ and $v$ and the rate 
+% of mass transfer between the two phases,
+%\begin{equation}
+%\vetor{\Gamma} = (m_{vl}\vetor{v}_{l} - m_{lv}\vetor{v}_{v}) a_{lv}\,.
+%\end{equation}
+
+The averaged macroscopic formulation of the conservation of energy in the two-fluid formulation is 
+ shown in~\eqref{eq:emp-en}. The equation accounts for the change of the total energy $E_{i}$ in the 
+ volume $V$ due to the work done by line, surface, and volume (body) forces on the volume element,
+ any heat transfer (in this specific case, only conduction and convection are considered),
+ and due to the interfacial mass transfer in the volume element. 
+  
+\begin{align}\label{eq:emp-en}
+\frac{\partial}{\partial t}
+\int\limits_{V} \alpha_{i} \rho_{i} E_{i} \,\mathrm{d}V
++ \int\limits_{\partial V} \alpha_{i} \rho_{i} H_{i}&
+\vetor{v}_{i} \cdot \mathrm{d}\vetor{a}
+\;=\;
+\int\limits_{\partial V} \alpha_{i} (k_{\mathrm{eff}})_{i} \nabla T_{i} \cdot \mathrm{d}\vetor{a}
++ \int\limits_{\partial V} \tens{T}_{i} \vetor{v}_{i} \cdot \mathrm{d}\vetor{a}\nonumber \\
+& + \int\limits_{V} \vetor{f_{b}}_{i} \cdot \vetor{v}_{i} \,\mathrm{d}V
++ \int\limits_{V} \mathrm{S}_{u,i} \,\mathrm{d}V + \int\limits_{V} \bigl(\Gamma_{i}H_{i} + \mathcal{E}_{i}\bigr)\,\mathrm{d}V\,.
+\end{align} 
+
+%[ 
+%    \underbrace{
+%        h_{i}^{\text{REF}} 
+%+ \int\limits_{T_{i}^{\text{REF}}}^{T_{i}} C_{p,i}(T') \,\mathrm{d}T' 
+%+ \frac{1}{2} \vetor{v}_{i} \cdot \vetor{v}_{i}
+%}_{\text{total enthalpy, $H_{i}$}}
+%]
+Having each transfer process of each phase balanced separately, 
+ the two-fluid formulation is much more complex and requires closure models
+ for each interaction. It is, simultaneously, a much more
+ complete and general description of two-phase flow - accounting for the dynamic and non-equilibrium 
+ interactions between the phases. The mixture or the two-fluid model do not retain information about the interface topology.
+ Given a certain void fraction of a phase the two models are
+ unable to comment on the nature of the flow regime.~\cite{ishiiThermoFluidDynamicsTwoPhase2011}

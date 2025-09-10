@@ -1,0 +1,175 @@
+% !TeX root = ../../Thesis.tex
+\section{Introduction}
+%credit: Credit: NASA/JPL/Space Science Institute, the Cassini imaging team home page, http://ciclops.org.
+Their potential to host extraterrestrial life has made icy moons, 
+ such as the Jovian moon Europa and Saturn's moon Enceladus, prime targets for
+ exploration in the upcoming decades. The Cassini-Huygens mission 
+ discovered active cryovolcanism on Enceladus in $2005$ in the form of
+ water rich plumes erupting from the south polar region (~\fig{fig:eneladus_fountains}). These plumes 
+ consist mainly of water vapour, ice particles along with dissolved gases with a source rate estimated to be
+ $300\,$\si {kg/s} and supply most of the material 
+ making up Saturn's E ring.\cite{fontesIcyPlumesEnceladus, noneExperimentalSimulationAssessment2022}
+
+The mechanisms of cryovolcanism and the disparity between the 
+ recorded flow behaviour and constituents of the plumes are subject
+ to ongoing research. 
+ Various models aim to explain the plume mechanics and the observed 
+ flow behaviour - explosive boiling due to exposure of the subsurface 
+ ocean to vacuum due to 
+ cracks opened by tidal stresses; simulating the 
+ fissures in the surface as convergent-divergent (de Laval) nozzles that
+ accelerate the vapor to the observed supersonic speeds; or channels inside
+ the icy crust acting as a de Laval nozzle where the grains are 
+ initially decelerated 
+ due to frequent wall collisions before being re-accelerated by the 
+ vapour flow.~\cite{noneExperimentalSimulationAssessment2022,yeohUnderstandingPhysicsEnceladus2015}
+ To be able to use plumes as a surrogate to learn about the subsurface 
+ ocean, a better 
+ understanding of their driving processes is key.   
+\begin{figure}[h]
+  \centering
+  \caption{Enceladus and its cryovolcanic plumes. Credit: NASA/JPL/Space Science Institute.}
+  \begin{subfigure}[b]{0.45\textwidth}
+    \includegraphics[width=\linewidth]{./Chapters/Introduction/figs/enceladus_plumes}
+    \caption{Distant view of Enceladus.}
+    \label{fig:enceladus_plumes}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[b]{0.45\textwidth}
+    \includegraphics[width=\linewidth]{./Chapters/Introduction/figs/enceladus_fountains}
+    \caption{Enhanced, colour-coded image of the plumes outlining their extreme extents.}
+    \label{fig:eneladus_fountains}
+  \end{subfigure}
+  
+\end{figure}
+
+Icy moon experiments, in an effort to contribute to the understanding 
+ of the fluid dynamics of the supersonic plumes, an experimental setup is under
+ development at the FH Aachen - University of Applied Sciences. In collaboration with the 
+ Rocket Experiments for University Students (REXUS) programme of the 
+ German Aerospace Center (DLR) and the Swedish Space Agency (SNSA), the experimental 
+ setup will be installed on a sounding rocket and will perform under reduced gravity and 
+ vacuum conditions. The experiment consists of heated liquid 
+ water being let into a chamber connected to a de Laval nozzle, initially filled with 
+ low-pressure air. The nozzle lid is opened after a short time period and this 
+ depressurisation of the chamber is expected
+ to result in vaporisation of the water present in the evaporation chamber.
+
+%We have developed a fluid dynamics model based on Schmidt et al. (2008), to describe the plumes
+%characteristics along icy crevasses that could exist on Enceladus. This model accounts for particle
+%production generated from homogeneous nucleation, particle growth, wall accretion and sublimation
+%and the viscous interaction with the walls. The wall interactions, reservoir conditions and the
+%geometry of the channel are studied to reproduce some characteristics of the plumes observed by
+%Cassini. Icy crevasses’ geometry will evolve with time due sublimation of ices from the walls or
+%accretion onto the walls. The evolution of the geometry of the crevasses and the effect on the
+%plumes’ characteristics has been determined with our model. In parallel, we developed an
+%experimental setup to study the effect of the nozzle geometries on the plumes characteristics and to
+%verify experimentally that under the icy moon’s conditions (pressure, temperature) a plume reaches
+%hypersonic/supersonic velocities.
+\subsection{The Problem} 
+\begin{wrapfigure}{r}{0.40\textwidth}
+  \centering
+  \caption{Schematic of the flow system assembly.}
+  \includegraphics[width = 1\linewidth]{./Chapters/Introduction/figs/experiment}
+  \label{fig:experiment}
+\end{wrapfigure}
+The 'flow system assembly' in the experimental setup, as shown in~\fig{fig:experiment}, 
+ consists of the hydraulic accumulator, 
+ the evaporation chamber, and the injection 
+ system subassembly that drives the liquid from the hydraulic 
+ accumulator into the evaporation chamber. In the current 
+ design of the setup, these components are assembled vertically and the 
+ water is driven up into the evaporation chamber. The evaporation chamber is constructed 
+ out of aluminium and can 
+ be assumed to be separated into a water reservior and the nozzle.~\COMMENT{-dimensions of reservoir, nozzle. CAD in appendix; where are flow measurements made}
+
+The hydraulic accumulator and the evaporation chamber can be heated until lift-off. Current design considerations 
+ assume the temperature of the evaporation chamber and water in the accumulator to be $368.15$\,\si{K} and $353.15$\,\si{K} respectively. 
+ The ambient temperature at lift-off is assumed to be $280$\,\si{K} based on the remarks and considerations made during reviews of one such previous FH Aachen experiment.
+ The flow system assembly is sealed off before lift-off and an intial pressure of $1$\,\si{bar} is assumed in the evaporation chamber, initially 
+ occupied by air. The hydraulic accumulator is sufficiently insulated and the nozzle is encased in a golden foil to minimise the amount of 
+ heat lost. No stipulations have been made regarding the evaporation chamber, however as there is no fluid convection
+ during operation, losses are assumed to be minimum. 
+
+
+Water injection begins after the electronics module signals the start of data storage and ends shortly before the apogee is reached. 
+ Due to water remaining at the time of cutoff in the injection subassembly and also the accumulator, the total amount of water discharged to 
+ the chamber is assumed to be $150$\,\si{mL}. A constant mass flow rate of $15$\,\si{mL/s} is assumed. The inflow velocity in the actual experiment can be tuned to 
+ desired values. Discharge time in the simulation is calculated based on the estimated water level at the end of discharge.
+ A minimum time of $6$\,\si{s} and a system pressure
+ of $1.7$\,\si{bar} is assumed before the electronics system signals the opening of the nozzle lid ensuing the vaporisation of the water.
+ As no active heating is provided, the phase change also takes place in the fluid bulk. This process is facilitated by the presence 
+ of nucleation points that are found in the water as $2.5$\,\si{g} of silicates per $100$\,\si{mL} of water. The silicates are assumed to be spherical 
+ with a uniform diameter of $0.8\,\mu$\si{m}. At the start of depressurisation, these 'seed' points are assumed to be uniformly
+ distributed in the water bulk.
+
+%The physical quantities listed above - velocity, pressure, and temperature - consist of the main unknowns 
+% that drive the flow characteristics of the system. 
+% Characteristically similar to a free surface problem, the first subproblem is modelled 
+% using the volume-of-fluid method. 
+ %The first subproblem is modelled as a two-phase problem and uses the volume-of-fluid method. The 
+ %Considerations about the gravitational force are based on the accelerometer data
+ %recorded during previous REXUS flights and are made .~\citelater{newSED} T%he phases involved 
+%he evaporation chamber is constructed out of Aluminium-6061 has a stipulated height, width, and depth of $128$, $72.34$, and $50$\,mm respectively.
+ %A technical drawing of the evaporation chamber is attached in the appendix~\COMMENT{fake news}. 
+%No flow measurements are made in the injection assembly. Pressure and temperature are measured in the evaporation chamber along 
+% the nozzle at the midspan, the throat, and the exit.
+%measurements in the simualation are made using section probes instead of point probes because section probes are essentially infinite point probes in 2D
+
+\subsection{Multiphase Flows and Star-CCM+}
+Multiphase flows are characterised by the simultaneous flow of several phases. Regardless of our 
+ improved understanding 
+ of such flows, multiphase flows remain complicated to model. Multiphase flows are 
+ multiscale in nature - where 
+ the cascasding effects of various physics acting over 
+ system-level to the microscopic scale must be taken into account~\cite{ishiiThermoFluidDynamicsTwoPhase2011}. 
+ Along with turbulence, multiple deformable, moving interfaces pose discontinuities 
+ in the fluid properties and induce fluctuations in the flow variables in the neighbourhood. 
+ The distribution of the phases cannot be accurately estimated
+ a priori~\cite{yadigarogluNatureMultiphaseFlows2018} but the macroscopic 
+ behaviour of the system is dependent on small-scale interactions of the 
+ phases~\cite{hanrattyPhysicsGasLiquid}. These evolving interfacial structures tend
+ to directly affect the inertial and thermodynamical development of the flow field.~\cite{ishiiThermoFluidDynamicsTwoPhase2011}
+
+Two-phase flow can be classified into three main flow regimes based on the 
+ distribution of the phases - dispersed flow, transitional flow, and separated flow.
+ In case of liquid-gas flows, this ranges from bubbly flows - where small gas bubbles are finely dispersed through the
+ continuous liquid phase, to the separated flows - where a sharp interface
+ marks the boundary between the two phases.
+ The transitional flow regime is marked by the presence of both dispersed and 
+ separated flows.~\cite{yadigarogluNatureMultiphaseFlows2018}
+
+Star-CCM+ is a commerical CFD software currently maintained and developed 
+ by Siemens Digital Industries Software. The software uses the Finite Volume Method to
+ discretise the integral form of the governing differential equations over a number 
+ of control volumes in the domain. The software has an automatic meshing system but allows
+ the implementation of custom meshing using surface wrappers.~\cite{star-ccm+}
+ \COMMENT{add small para about different physics and modelling capabilities.}
+
+\subsection{Objectives and Outline}
+~\COMMENT{--------under construction ---------------}\hfill\\
+\begin{itemize}
+    \item we describe the theoretical framework involved in modelling the 
+     two phenomenon
+    \item we simulate the 1D stefan problem and 2D RT instability
+  using the vof method. we also compare the emp framework in its ability to 
+  simulate the 2D RT instability? 
+    \item we simulate the infiltration of the evaporation chamber using the 
+    vof method,
+    discuss the spatial and temporal convergence and a qualitative
+    behaviour of the flow field. 
+\end{itemize}
+The two main physical processes in the experiment - infiltration and evaporation - not only occur at distinct
+ points in time but also require distinct mathematical treatment in their simulation. Thus, dividing 
+ the experiment into two subproblems -  
+ \begin{itemize}
+    \item the infiltration of heated water in the evaporation chamber exposed to ambient temperature conditions, 
+    \item and the evaporation of superheated water in the evaporation subject to depressurisation - 
+ \end{itemize}
+  this thesis investigates the feasibility of modelling the two processes in the commercial CFD software tool - Star-CCM+.
+
+
+
+
+
+
