@@ -43,9 +43,9 @@ The mechanisms of cryovolcanism and the disparity between the
   
 \end{figure}
 
-Icy moon experiments, in an effort to contribute to the understanding 
- of the fluid dynamics of the supersonic plumes, an experimental setup is under
- development at the FH Aachen - University of Applied Sciences. In collaboration with the 
+In an effort to contribute to the understanding of the fluid 
+ dynamics of the supersonic plumes, an experimental setup 
+ is under development at FH Aachen - University of Applied Sciences. In collaboration with the 
  Rocket Experiments for University Students (REXUS) programme of the 
  German Aerospace Center (DLR) and the Swedish Space Agency (SNSA), the experimental 
  setup will be installed on a sounding rocket and will perform under reduced gravity and 
@@ -66,7 +66,7 @@ Icy moon experiments, in an effort to contribute to the understanding
 %experimental setup to study the effect of the nozzle geometries on the plumes characteristics and to
 %verify experimentally that under the icy moon’s conditions (pressure, temperature) a plume reaches
 %hypersonic/supersonic velocities.
-\subsection{The Problem} 
+\subsection{Experimental Setup} \label{sec:exp-setup}
 \begin{wrapfigure}{r}{0.40\textwidth}
   \centering
   \caption{Schematic of the flow system assembly.}
@@ -81,12 +81,12 @@ The 'flow system assembly' in the experimental setup, as shown in~\fig{fig:exper
  design of the setup, these components are assembled vertically and the 
  water is driven up into the evaporation chamber. The evaporation chamber is constructed 
  out of aluminium and can 
- be assumed to be separated into a water reservior and the nozzle.~\COMMENT{-dimensions of reservoir, nozzle. CAD in appendix; where are flow measurements made}
+ be assumed to be separated into a water reservoir and the nozzle.
 
 The hydraulic accumulator and the evaporation chamber can be heated until lift-off. Current design considerations 
  assume the temperature of the evaporation chamber and water in the accumulator to be $368.15$\,\si{K} and $353.15$\,\si{K} respectively. 
  The ambient temperature at lift-off is assumed to be $280$\,\si{K} based on the remarks and considerations made during reviews of one such previous FH Aachen experiment.
- The flow system assembly is sealed off before lift-off and an intial pressure of $1$\,\si{bar} is assumed in the evaporation chamber, initially 
+ The flow system assembly is sealed off before lift-off and an initial pressure of $1$\,\si{bar} is assumed in the evaporation chamber, initially 
  occupied by air. The hydraulic accumulator is sufficiently insulated and the nozzle is encased in a golden foil to minimise the amount of 
  heat lost. No stipulations have been made regarding the evaporation chamber, however as there is no fluid convection
  during operation, losses are assumed to be minimum. 
@@ -121,7 +121,7 @@ Multiphase flows are characterised by the simultaneous flow of several phases. R
  improved understanding 
  of such flows, multiphase flows remain complicated to model. Multiphase flows are 
  multiscale in nature - where 
- the cascasding effects of various physics acting over 
+ the cascading effects of various physics acting over 
  system-level to the microscopic scale must be taken into account~\cite{ishiiThermoFluidDynamicsTwoPhase2011}. 
  Along with turbulence, multiple deformable, moving interfaces pose discontinuities 
  in the fluid properties and induce fluctuations in the flow variables in the neighbourhood. 
@@ -131,9 +131,9 @@ Multiphase flows are characterised by the simultaneous flow of several phases. R
  phases~\cite{hanrattyPhysicsGasLiquid}. These evolving interfacial structures tend
  to directly affect the inertial and thermodynamical development of the flow field.~\cite{ishiiThermoFluidDynamicsTwoPhase2011}
 
-Two-phase flow can be classified into three main flow regimes based on the 
+Two-phase liquid-gas flows can be classified into three main flow regimes based on the 
  distribution of the phases - dispersed flow, transitional flow, and separated flow.
- In case of liquid-gas flows, this ranges from bubbly flows - where small gas bubbles are finely dispersed through the
+ This ranges from bubbly flows - where small gas bubbles are finely dispersed through the
  continuous liquid phase, to the separated flows - where a sharp interface
  marks the boundary between the two phases.
  The transitional flow regime is marked by the presence of both dispersed and 
@@ -144,29 +144,56 @@ Star-CCM+ is a commerical CFD software currently maintained and developed
  discretise the integral form of the governing differential equations over a number 
  of control volumes in the domain. The software has an automatic meshing system but allows
  the implementation of custom meshing using surface wrappers.~\cite{star-ccm+}
- \COMMENT{add small para about different physics and modelling capabilities.}
 
 \subsection{Objectives and Outline}
-~\COMMENT{--------under construction ---------------}\hfill\\
+As the two main physical processes in the experiment - liquid infiltration and subsequent evaporation -
+ take place in very distinct flow regimes and at separated points in time, we divide the experiment into 
+ two subproblems - 
 \begin{itemize}
-    \item we describe the theoretical framework involved in modelling the 
-     two phenomenon
-    \item we simulate the 1D stefan problem and 2D RT instability
-  using the vof method. we also compare the emp framework in its ability to 
-  simulate the 2D RT instability? 
-    \item we simulate the infiltration of the evaporation chamber using the 
-    vof method,
-    discuss the spatial and temporal convergence and a qualitative
-    behaviour of the flow field. 
-\end{itemize}
-The two main physical processes in the experiment - infiltration and evaporation - not only occur at distinct
- points in time but also require distinct mathematical treatment in their simulation. Thus, dividing 
- the experiment into two subproblems -  
- \begin{itemize}
     \item the infiltration of heated water in the evaporation chamber exposed to ambient temperature conditions, 
-    \item and the evaporation of superheated water in the evaporation subject to depressurisation - 
+    \item and the evaporation of superheated water in the evaporation subject to depressurisation.
  \end{itemize}
-  this thesis investigates the feasibility of modelling the two processes in the commercial CFD software tool - Star-CCM+.
+ We will refer to the infiltration subdivision as the infiltration subproblem, and the flash evaporation
+ as the evaporation/flash evaporation subproblem. This thesis will investigate the modelling 
+ of the two processes in the commercial CFD software tool - STAR-CCM+. We investigate the theoretical framework
+ of modelling the experiment under the constraints of our general understanding of the physics behind
+ rapid non-equilibrium phase change and the capabilities of a general purpose CFD solver. We study 
+ flash evaporation from a thermodynamics and kinetic theory viewpoint and identify the primary contributing
+ factors important for the accurate capture of the flow phenomenon. Due to the complex and
+ multiscale nature of the phenomenon, a working simulation could not be modelled. A theoretical framework
+ is described and possible ways of implementation are discussed.
+
+ The theoretical framework behind separated flows as in the infiltration problem is also discussed. 
+ The infiltration process is modelled using the Volume-of-Fluid method based on the one-fluid 
+ formulation of two-phase flows. We investigate the flow behaviour and assess the conditions in the 
+ system that would be expected at the start of the depressurisation process. 
+
+ The thesis is divided into four parts.~\sect{chap1} introduces the most important concepts and 
+ reviews the theory behind flash evaporation. We review the existing practices in modelling 
+ evaporation, boiling, and flash evaporation to different degrees of complexity. Phase stability 
+ of superheated liquids, nucleation based on classical nucleation theory, and bubble growth in superheated
+ liquids as a free-moving boundary problem involving phase change is studied. Free surface flows without phase 
+ change are a simplification of this problem. Two multiphase models are identified relevant to 
+ the two subproblems - the one-fluid and two-fluid formulation respectively. Turbulence modelling is 
+ briefly discussed in the context of multiphase flows.
+
+ {}~\sect{chap2} discusses the numerical implementation of the two mathematical models in the context 
+ of STAR-CCM+. Closure relations for the interphase momentum and heat transfer are reviewed and 
+ an attempt is made to identify the most general closures. We discuss the implementation of 
+ adaptive mesh refinement based on user defined criteria for 2D domains in STAR-CCM+. The mathematical model 
+ of the two subproblems is laid out - assumptions involved in the modelling considerations are
+ defined along with the governing equations and jump conditions. 
+
+ The numerical results are described in~\sect{chap3}. In order to benchmark STAR-CCM+'s modelling of two-phase flows 
+ in the presence of free-moving boundaries, the 1D Stefan 
+ problem and the 2D Rayleigh-Taylor instability are modelled. Numerical results are compared with the 
+ analytical solutions in case of the Stefan problem and existing DNS studies for the Rayleigh-Taylor instability.
+ The simulation setup for the infiltration problem is described. A grid convergence study is undertaken
+ to investigate the spatial and temporal dependence of the solution on the mesh and timestep size. We finally
+ comment on the evolution of the flow behaviour during infiltration and estimate the initial conditions
+ for the second subproblem.
+
+ All findings are summarised in~\sect{chap4} along with suggestions for improvements and future work.
 
 
 

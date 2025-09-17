@@ -37,15 +37,52 @@ The averaged macroscopic equation for the conservation of mass is given in~\eqre
 \int\limits_{V} \Gamma_{i} \,\mathrm{d}V
 + \int\limits_{V} \mathrm{S}^{\alpha}_{i} \,\mathrm{d}V\,.
 \end{equation}
-%The interfacial mass transfer term $\Gamma_{i}$
-% represents the rate of mass transfer from the phase $i$. The interaction area density $a_{lv}$ specifies 
-% the interfacial area available in the volume element over which the mass transfer occurs.
-%\begin{equation}
-% \Gamma_{i}\;=\;a_{lv}\;\dot{m}_{i}\;=\; \rho_{i} \vetor{n}_{i} \cdot (\vetor{v}_{i} - \vetor{v}_{\mathcal{S}})\,.
-%\end{equation}
-%The term $\rho_{i} \vetor{n}_{i} \cdot (\vetor{v}_{i} - \vetor{v}_{\mathcal{S}})$ consists of the local instantaneous 
-% variables instead of the averaged quantities. The interface normal vector and interface 
-% velocity are given as $\vetor{n}_{i}$ and $\vetor{v}_{\mathcal{S}}$ respectively. 
+
+\subsubsection{Interfacial Jump Conditions}
+Jump conditions are the kinematic and dynamic conditions that 
+account for the discontinuities in material properties 
+or flow variables across an interface and couple the behaviour of the two 
+fluids across it. 
+
+The mass flow across the interface is satisfied using the Rankine-Hugoniot condition. 
+
+
+
+The formulation of the interfacial energy jump condition is complicated
+and will be avoided here for brevity. This is generally replaced by 
+the conditions of phase change at the interface.
+
+
+The interfacial mass transfer term $\Gamma_{i}$ in~\eq{eq:emp-mass}
+ represents the rate of mass transfer from the phase $i$. The interaction area density $a_{lv}$ specifies 
+ the interfacial area available in the volume element over which the mass transfer occurs.
+\begin{equation}
+ \Gamma_{i}\;=\;a_{lv}\;\dot{m}_{i}\;=\; \rho_{i} \vetor{n}_{i} \cdot (\vetor{v}_{i} - \vetor{v}_{X(t)})\,.
+\end{equation}
+The term $\rho_{i} \vect{n}_{i} \cdot (\vect{v}_{i} - \vetor{v}_{\X(t)})$ consists of the local instantaneous 
+ variables instead of the averaged quantities. The interface normal vector and interface 
+ velocity are given as $\vect{n}_{i}$ and $\vetor{v}_{X(t)}$ respectively. 
+
+The momentum transfer term $\Gamma_{i}\vect{v}_{i}$ accounts for the momentum transfer from 
+ the phase $i$ to $j$ due to mass transfer. The momentum transfer to the interface is accounted through 
+ the \(\vect{\mathcal{M}}_{\ind{i}}\) term. It is only non-zero in case 
+ of a relative motion between the phases and represents the actions of the various forces coupling the phases.
+ \begin{equation}\label{eq:mom-trans}
+  \vect{\mathcal{M}}_{\ind{i}} = \vect{F}_{ij}^{D} + F_{ij}^{L} + F_{ij}^{VM} + F_{ij}^{TD} + F_{ij}^{WL}\,.
+ \end{equation}
+The right hand side in~\eq{eq:mom-trans} is composed of the interfacial drag, lift, virtual mass, turbulent 
+dispersion, and the wall lubrication force respectively. The term $\vect{\mathcal{M}}_{\ind{i}}$, similar to
+$\dot{m}$ is weighted using the interfacial surface area $a_{ind{lv}}$.
+
+In case of constant surface tension, the dynamic condition that the effects of the hydrodynamic forces are 
+ in equilibrium with the forces due to surface tension. Denoting the part of the interface $X(t)$ in the 
+ volume element $V$ as $X(t) \cap V$, the dynamic jump condition can be written as
+ \begin{equation}
+  \vect{\mathcal{M}}_{\ind{l}} + \vect{\mathcal{M}}_{\ind{v}} + \sum \Gamma_{\ind{i}} \vect{v}_{\ind{i}}
+  =
+  \frac{1}{V}\int\limits_{X(t) \cap V} 
+    \vect{f_{\sigma}}\,\mathrm{d}V\,.
+ \end{equation}
 
 
 The governing equation for the conservation of momentum is given in~\eqref{eq:emp-mom}.
@@ -68,27 +105,14 @@ The governing equation for the conservation of momentum is given in~\eqref{eq:em
 + \int\limits_{V}  \bigl(\Gamma_{i} \vetor{v}_{i} + \vetor{\mathcal{M}}_{i}\bigr)  \,\mathrm{d}V\,.
 \end{split}
 \end{equation}
-The momentum transfer term $\vetor{\mathcal{M}}_{i}$ accounts for the momentum transfer from 
- the phase $i$ to the interface. This term also accounts for the momentum transfer
- due to interfacial mass transfer and is further detailed in Section~\ref{sec:closures}. It is only non-zero in case 
- of a relative motion between the phases and is subject to the constraint
- %\begin{equation}
- % \vetor{M}_{i} \;=\; a_{lv} \dot{m}_{i}\vetor{v}_{i}\,.%\left(\left(-p_{i} + \tens{T}_{i}\right)\cdot\vetor{n}_{i} - \dot{m}_{i}\vetor{v}_{i}\right)
- %\end{equation}
-I%n case of constant surface tension, the dynamic condition that the effects of the hydrodynamic forces are 
- %in equilibrium with the forces due to surface tension. Denoting the part of the interface $\mathcal{S}$ in the 
- %volume element $V$ as $\mathcal{S} \cap V$, the dynamic jump condition can be written as
- %\begin{equation}
- % \vetor{M}_{l} + \vetor{M}_{v}\;=\; \frac{1}{V}\int\limits_{\mathcal{S} \cap V} 
- %   \vetor{f_{\sigma}}\,\mathrm{d}V\,.
- %\end{equation}
 
-%The rate of change of momentum due to the 
-% interfacial mass transfer can be given using the velocities of the phases $l$ and $v$ and the rate 
-% of mass transfer between the two phases,
-%\begin{equation}
-%\vetor{\Gamma} = (m_{vl}\vetor{v}_{l} - m_{lv}\vetor{v}_{v}) a_{lv}\,.
-%\end{equation}
+
+The rate of change of momentum due to the 
+ interfacial mass transfer can be given using the velocities of the phases $l$ and $v$ and the rate 
+ of mass transfer between the two phases,
+\begin{equation}
+\vect{\Gamma} = (m_{vl}\vetor{v}_{l} - m_{lv}\vetor{v}_{v}) a_{lv}\,.
+\end{equation}
 
 The averaged macroscopic formulation of the conservation of energy in the two-fluid formulation is 
  shown in~\eqref{eq:emp-en}. The equation accounts for the change of the total energy $E_{i}$ in the 
@@ -108,13 +132,7 @@ The averaged macroscopic formulation of the conservation of energy in the two-fl
 + \int\limits_{V} \mathrm{S}_{u,i} \,\mathrm{d}V + \int\limits_{V} \bigl(\Gamma_{i}H_{i} + \mathcal{E}_{i}\bigr)\,\mathrm{d}V\,.
 \end{align} 
 
-%[ 
-%    \underbrace{
-%        h_{i}^{\text{REF}} 
-%+ \int\limits_{T_{i}^{\text{REF}}}^{T_{i}} C_{p,i}(T') \,\mathrm{d}T' 
-%+ \frac{1}{2} \vetor{v}_{i} \cdot \vetor{v}_{i}
-%}_{\text{total enthalpy, $H_{i}$}}
-%]
+
 Having each transfer process of each phase balanced separately, 
  the two-fluid formulation is much more complex and requires closure models
  for each interaction. It is, simultaneously, a much more

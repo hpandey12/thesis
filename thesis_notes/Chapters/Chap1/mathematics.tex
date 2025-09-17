@@ -1,30 +1,61 @@
 % !TeX root = ../../Thesis.tex
-\section{Modelling the Physical Problem}
-This section describes the evaporation of superheated fluids. The existing literature
-documenting the phenomenological process is reviewed, along with the modelling
-of nucleation, bubble growth, and the various methods to model flash evaporation.
-Additionally,  the mathematical framework and governing equations used to model the two-phase flow problems are introduced.
-The rationale behind averaging techniques for multiphase flow modelling is explained and the 
-macroscopic formulations of the one-fluid and two-fluid models are presented. 
-Multiphase turbulence is addressed and the two subproblems and their parameters(?) 
-are defined. 
-
+\section{Modelling the Physical Problem}\label{chap1}
+This chapter describes the evaporation of superheated fluids. 
+The physical and mathematical foundation for 
+flash evaporation of superheated liquids under low-pressure and reduced-gravity conditions are discussed. 
+It reviews metastability and superheat limits, nucleation pathways, and bubble-growth regimes, 
+connecting these to kinetic interfacial mass transfer. 
+It then surveys model classes and delineates when 
+non-equilibrium and slip must be resolved, before formulating one-fluid 
+and two-fluid macroscopic balances, interfacial 
+jump conditions, and RANS turbulence modeling choices pertinent to separated and dispersed regimes.
 
 \subsection{Evaporation}
 Evaporation processes are characterised based on whether they occur at saturation
 temperatures or not. Evaporation at saturation temperatures, known as vaporisation, is a much
 faster process in comparison to evaporation at normal temperatures. 
 Here, the metastability of liquids becomes relevant and the inception of vaporisation
-is governed by how far a liquid can enter the metastable zone. A liquid that is heated 
+is governed by how far a liquid can enter the metastable zone. 
+\begin{figure}[h]
+  \centering
+  \begin{subfigure}[t]{0.5\textwidth}
+    \includegraphics[width=\linewidth]{./Chapters/Chap1/figs/water_phase_diag}
+    \caption{Phase diagram of water showing initial and final experimental state regions relevant to flash evaporation.}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.48\textwidth}
+    \includegraphics[width=\linewidth]{./Chapters/Chap1/figs/spinodal.jpg}
+    \caption{Spinodal lines and metastable regions for a liquid on a P-v diagram.}
+  \end{subfigure}
+  \caption{Thermodynamic stability of water}
+  \label{fig:thermo_intro}
+\end{figure}
+
+A liquid that is heated 
 above its equilibrium saturation temperature without undergoing phase change 
-is termed as being metastable. The degree of superheat is 
+is termed as being metastable and exists in a non-equilibrium condition. The degree of superheat is 
 \begin{equation}
-  \Delta T \;=\; T - T_{\ind{sat}}\,,
+  \Delta T  =  T - T_{\ind{sat}}\,,
 \end{equation}
 where \(T\) is the temperature of the bulk liquid and \(T_{\ind{sat}}\) is the 
-saturation temperature at the system pressure. The intensity of vaporisation
-is strongly dependent on the degree of superheat.~\cite{wickertSimulation, pinhasiModelingFlashingTwoPhase2005}
+saturation temperature at the system pressure. 
+In instances of depressurisation, the difference between
+the minimum pressure after depressurisation and the saturation pressure corresponding
+to the initial temperature is called the pressure undershoot. The metastable states can be assumed to lie 
+along an isotherm extending from the stable single-phase liquid region into the vapour dome, 
+eventually reaching the metastable vapour region and then stable vapour phase, as illustrated in~\fig{fig:thermo_intro}.
+Attainable states throughout this process can be described using a general curve such as BCDE in~\fig{fig:thermo_intro},
+where intensity and behaviour
+of the phase change is strongly dependent on 
+the level of superheat and the pressure undershoot.~\cite{wickertSimulation, pinhasiModelingFlashingTwoPhase2005,carey2020}
 
+Flash evaporation is triggered when the superheat limit of the liquid is reached.
+The limit of superheat can be the thermodynamic or the kinetic limit based
+on thermodynamical and kinetic theory considerations respectively. 
+The absolute thermodynamical limit, also known as the spinodal limit, is never
+practically attained. Vaporisation is always triggered much before the spinodal limit due to 
+internal impurities, density fluctuations, wall nucleation, or  the presence of 
+pre-existing nuclei.~\cite{pinhasiModelingFlashingTwoPhase2005,carey2020, liaoComputationalModellingFlash2017}
 
 In cases where vaporisation occurs along a heated wall, most CFD models distribute the energy 
 transfer by separating the wall heat flux into two components: 
@@ -35,12 +66,11 @@ the area fractions covered by liquid and vapour phases.
 Empirical results or models of subprocesses have 
 established correlations between the heat flux and wall superheat.~\cite{gilmanDevelopmentGeneralPurpose2014,ghiaasiaanTwoPhaseFlowBoiling2007}
 
-
 \subsubsection{Vaporisation: Phenomenological and Literature Review}
 Boiling processes take place due to consistent heat transfer to the system and takes place on the heated surface. 
 Additionally, boiling of pure liquids is an isothermal process that is 
 driven by the difference between the hot surface and the liquid. 
-Flash evaporation is the intense vaporisation triggered through depressurisation 
+Flash evaporation is the intense vaporisation triggered by depressurisation 
 of superheated fluids below the saturation pressure.
 This process induces a violent and transient heat
 and mass transfer, resulting in the explosive formation and growth
@@ -48,101 +78,92 @@ of vapour bubbles throughout the liquid volume. The phenomenon is significant
 in desalination on ships, nuclear reactor safety, and venting of cryogenic
 propellant tanks, and the harvesting of low-temperature geothermal energy.~\cite{sauryExperimentalStudyFlash2002, wuExperimentalStudyFlash2019, liaoReviewNumericalModelling2021, mutairExperimentalInvestigationCharacteristics2010, vahajiEfficiencyTwophaseNozzle2014}
 
-
 Early experiments that systematically studied flash evaporation in liquid pools and sprays in superheated 
 water jets and early empirical correlations to determine the amount of generated 
 vapour were established~\cite{miyatakeExperimentalStudySpray1981, miyatakeEffectLiquidTemperature1981, gopalakrishnaExperimentalStudyFlash1987, petersonInvestigationsLiquidflashingEvaporation1984}.
 For flash evaporation in static pools, the amount of liquid height increased the duration 
 of the phenomenon and the rate of depressurisation increases the intensity.
-The final evaporated mass also increases proportional to the amount of superheat.
 While greater thermal inertia at larger depths slows the flashing process, the amount of total 
-mass evaporated does not increase proportionally.~\cite{sauryFlashEvaporationWater2005,sauryExperimentalStudyFlash2002}
-It has been observed during flashing, that a liquid-vapour interface is generated 
+mass evaporated does not increase proportionally. The total flashed mass scales with superheat via 
+ the available sensible-to-latent conversion.~\cite{sauryFlashEvaporationWater2005,sauryExperimentalStudyFlash2002}
+%For the final evaporated mass, under moderate superheat conditions \(\Delta T \leq 35\,\munit{K}\),
+%a strong linear scaling is observed~\cite{liaoFlashingEvaporationDifferent2013,liaoReviewNumericalModelling2021}.
+
+As the flash evaporation process is far from equilibrium, a limiting factor to the vapour generation rate is
+ also the rate at which molecules cross the liquid-vapour interface rather than the rate 
+ of bulk heat supply. It has been observed during flashing, that a liquid-vapour interface is generated 
 on the free surface which then progresses into the superheated liquid~\cite{mansourReviewFlashEvaporation2019, HahneBarthau2000, reinkeExplosiveVaporizationSuperheated2001}.
 High-speed imaging and temperature measurements consistently show that
 flash evaporation proceeds through three distinct stages: bubble generation,
 boiling growth, and a boiling reduction stage~\cite{wuExperimentalStudyFlash2019}.
-%For the final evaporated mass, under moderate superheat conditions \(\Delta T \leq 35\,\munit{K}\),
-%a strong linear scaling is observed~\cite{liaoFlashingEvaporationDifferent2013,liaoReviewNumericalModelling2021}.
-
+ 
 
 Parameters like the non-equilibrium fraction (NEF) and non-equilibrium temperature difference (NETD) have been proposed to 
 quantify the flash evaporation phenomenon. Correlations between the evaporated mass and the dependency on temperature 
-have been obtained by fitting curves to experimental data under various operating conditions. However,
+have been obtained by fitting curves to experimental data under various operating conditions.  However,
 the experimental study of the physics remains a challenge due to the inadequacy of measurement techniques that
 can measure local flow phenomenon accurately. Numerical simulations generally also use the empirical assumptions 
 and relations from specific experiments, making the extension to a general case difficult.~\cite{haoMathematicalStudyBubble2019}
 
-
 \begin{figure}[ht]
 \centering
-\includegraphics[width=1.\linewidth]{Chapters/Chap1/figs/flowchart_flashing2}
-\caption{Categorisation of flash evaporation models}
-%\label{\fig{rt_conv_3000}} % \fig used here
+\includegraphics[width=1.\linewidth]{Chapters/Chap1/figs/flowchart_flashing}
+\caption{Classification of flash evaporation models based on complexity of phase-change modeling and interphase interaction assumptions.}
+\label{fig:flashing_chart} % \fig used here
 \end{figure}
-The approaches to modelling flash evaporation can be differentiated by:
+Given the complex nature of flash evaporation, several modelling approaches 
+have been developed to capture different levels of physical fidelity and computational complexity. 
+These approaches vary mainly based on how they treat phase change kinetics and interphase interactions, 
+as summarised in~\fig{fig:flashing_chart}.
+
+Interaction modelling between the phases can be distinguished based on the assumptions of thermal non-equilibrium or relative (slip) velocity between the phases. 
+The incorporation of these assumptions results in an increasingly complex formulation for flashing flow.
+The resulting four distinct modelling approaches as summarised as follows.~\cite{liaoComputationalModellingFlash2017, liaoReviewNumericalModelling2021, wallisCriticalTwophaseFlow1980, dangleComputationalFluidDynamics2018}. 
 \begin{itemize}
-  \item the level of complexity captured in the phase change modelling process, and
-  \item how the interaction between the phases is modelled.
-\end{itemize}
-Interaction between the phases can be distinguished primarily through the consideration of thermal non-equilibrium or
-relative (slip) velocity between the phases~\cite{liaoComputationalModellingFlash2017}. 
-\begin{itemize}
-  \item \textbf{Homogenous Equilibrium Models (HEM)} assume thermal equilibrium and no slip velocity between the phases. 
+  \item \textbf{Homogeneous Equilibrium Models (HEM)} assume thermal equilibrium and no slip velocity between the phases. 
   Similar to the one-fluid formulation described in \sect{sec:one-fluid} where the thermodynamic properties are interpolated from tables or constitutive relations.
   Sometimes applicable for flows in long pipes where the phases have enough time to achieve equilibrium, HEM tends to underpredict flow rates and
   is incapable of predicting early time non-equilibrium thermal effects and later time momentum non-equilibrium effects between the phases.
-  \item \textbf{Non-Homogenous Equilibrium Models (NHEM)} treat the system as a mixture but account for slip velocities. With gas volume fractions over \(0.3\),
-  the relative motion between the phases become significant. However, correlations for the interphase relative motion tend to over-predict the 
-  flow rates in comparison to the two-fluid model, described in \sect{sec:two-fluid}, that assumes thermal and velocity non-equilibrium.
+  \item \textbf{Non-Homogeneous Equilibrium Models (NHEM)} treat the system as a mixture but account for slip velocities. With gas volume fractions over \(0.3\),
+  the relative motion between the phases become significant. The relation of mass-flow rate with changing 
+  slip ratios is analysed and the slip ratio that maximises the mass flow rate is assumed. Such correlations for the interphase relative motion tend to over-predict the 
+  flow rates in comparison to the two-fluid model that assumes thermal and velocity non-equilibrium. 
   %Determines the slip ratio parametrically by analysis for which slip ratio the mass flow rate is maximum
-  \item \textbf{Homogenous Non-Equilibrium Models (HNEM)} assume thermal non-equilibrium but do not account for the relative motion between the liquid and vapour phases.
+  \item \textbf{Homogeneous Non-Equilibrium Models (HNEM)} assume thermal non-equilibrium but do not account for the relative motion between the liquid and vapour phases.
   While assuming thermal equilibrium underpredicts vapour generation in short geometries, limited understanding of the non-equilibrium physical phenomena such as nucleation 
   and interphase transfers can lead to equally unphysical results while accounting non-equilibrium. HNEMs are primarily boiling delay models based on physical or empirical 
   observations and relaxation models. The boiling models try to emulate the nucleation process as a quasi-step function or trigger flashing inception at a certain
   superheat threshold. Mixture models need accurate modelling of the vapour generation, interphase momentum transfer, and nucleation rate. Relaxation models
-  solve a rate equation along with a homogenous equilibrium model - the rate equation, based on empirical relaxation times, 'relaxes' the non-equilibrium mixture to the 
+  solve a rate equation along with a homogeneous equilibrium model - the rate equation, based on empirical relaxation times, 'relaxes' the non-equilibrium mixture to the 
   equilibrium state.
-  \item \textbf{Non-Homogenous Non-Equilibrium Models (NHNEM)} such as the drift-flux and two-fluid models are the most general formulations. Although the drift-flux model can
+  \item \textbf{Non-Homogeneous Non-Equilibrium Models (NHNEM)} such as the drift-flux and two-fluid models are the most general formulations. Although the drift-flux model can
   be used to model the slip between phases based on other flow field variables, it can't accurately capture non-equilibrium effects. The two-fluid model provides the most 
   general formulation to model flash evaporation, however all interactions and non-equilibrium exchanges must be accurately modelled. The drift-flux model provides a good compromise between
   the modelling complexity and computational efficiency between the HNEM and the two-fluid formulations.
 \end{itemize}
-\cite{dangleComputationalFluidDynamics2018,liaoComputationalModellingFlash2017,liaoReviewNumericalModelling2021}
 
-
-The phase change modelling process can be extended to account for the various sub-processes observed in flash evaporation phenomena:
+Modelling phase change becomes similarly convoluted through the incorporation of non-equilibrium and interphase exchanges. While empirical correlations
+ provide a reference estimate for the flow behaviour and resulting vapour generation rate, a more accurate description of the 
+ flow behaviour requires a more thorough description of the physics of phase change.
+However, the accuracy of this detailed description is entirely dependent on the accuracy of the 
+implemented closures. Such models incorporate the various subprocesses observed in 
+flash evaporation.~\cite{liaoComputationalModellingFlash2017, wallisCriticalTwophaseFlow1980, dangleComputationalFluidDynamics2018, liaoNumericalAnalysisFlashing2019} 
 \begin{itemize}
-    \item nucleation and number density of nucleation sites,
-    \item bubble growth, diameter at time of detachment, frequency of detachment,
-    \item and interactions between the bubbles.
-\end{itemize}\cite{dangleComputationalFluidDynamics2018}
-Phase change can also be modelled simply by assuming a constant bubble number density and diameter disregarding bubble 
-growth or nucleation rates. Artificial coefficients based on empirical relations or assumptions can be used to accommodate the non-equilibrium effects.
-Mono-disperse assumptions for bubble sizes, however, tend to have inherent limitations in reproducing accurate bubble dynamics.~\cite{liaoNumericalAnalysisFlashing2019}
-
-
-Nucleation affects the number and distribution of bubbles in the fluid. Walls - particularly so in case they're heated - are more susceptible 
-to be nucleation sites for bubble growth
-as the activation energy is much lower. This nucleation can be modelled through the domain as homogenous or heterogeneous - where nucleation sites are modelled using a 
-presumed PDF function or be determined by empirical correlations.~\cite{liaoComputationalModellingFlash2017}
-
-
-After a stable bubble nucleus has been formed, the growth of the bubble becomes pertinent in the evaluation
-of the diameter at departure and the interphase energy and mass transfer. In the case of an ideal
-spherical bubble undergoing expansion in a uniformly superheated liquid, the rate of growth
-is determined by the surface tension, liquid inertia, and the difference in pressures inside
-and outside the bubble. Surface tension dominates and restricts the initial bubble growth.
-This initial rapid expansion of the bubble results in the formation of a thin liquid layer separating
-the vapour from the wall surface. This microlayer can be a significant contributor to the 
-bubble growth and heat transfer process.
-As bubble radius increases, the liquid layer surrounding the bubble 
-cools due to evaporation, resulting in a decrease in vapour pressure. 
-The bubble growth dynamics are initially governed by thermal diffusion 
-and inertia. Over time, inertial effects become less important as 
-the bubble expands more slowly. Further growth is determined 
-primarily by interphase energy exchange.~\cite{sherFlashboilingAtomization2008}
-
+  \item \textbf{Nucleation} governs the number and spatial distribution of bubbles in the fluid. Heated walls are particularly prone 
+  to serve as nucleation sites due to the lower threshold of activation energy required.
+   This nucleation can be modelled through the domain as homogeneous or heterogeneous - where nucleation sites are modelled using a 
+presumed PDF function or be determined by empirical correlations. This also serves as the first estimation of the interfacial 
+area available for mass and energy exchange.
+  \item \textbf{Bubble Dynamics} is crucial in calculating the total interfacial area available for energy and mass exchange. 
+  After formation of a stable bubble nucleus, the growth process influences the bubble diameter at detachment and interphase energy and mass transfer rates.
+  Bubbles can be modeled as either monodisperse with a constant radius or an estimated growth rate, or as polydisperse with varying radii. 
+  Growth of ideal spherical bubbles in uniformly superheated liquids forms the basis of the estimation of bubble growth rates. This growth rate 
+  is dependent on the surface energy and the rate of interphase energy exchange. Any relative motion
+  between the bubble and the encasing liquid, along with inter-bubble interactions greatly influence bubble growth rate.
+  \item \textbf{Vapour Generation Rate} can be modelled through pre-existing empirical correlations or the usage of rate equations. With increasing 
+  complexity, it can be estimated through the physics-based models accounting for nucleation, bubble dynamics, and interfacial mass and
+  energy transfer.
+\end{itemize}
 
 \subsubsection{Effects of low pressure and gravity conditions}
 The absence of significant gravitational forces alters the dynamics of vaporisation - affecting natural convection, buoyancy
@@ -152,16 +173,14 @@ to buoyancy. This density driven natural convection is affected in low gravity c
 the thermal gradient. Bulk fluid movement is affected and heat and mass transfer processes shift
 from being convection dominated to being diffusion dominated.~\cite{cochranEffectsFluidProperties, leeExperimentalComputationalInvestigation2022}
 
-
 In nucleate boiling under low gravity conditions, vapour bubbles tend to remain near the heat source, growing
 significantly larger and coalescing with smaller bubbles. Prolonged bubble presence on the
-surface results in drying out of the surface and unsteady rise in surface temperatures during nucleate boiling.\cite{qiuSingleBubbleDynamicsPool2002}~\COMMENT{Mention some numbers}
+surface results in drying out of the surface and unsteady rise in surface temperatures during nucleate boiling\cite{qiuSingleBubbleDynamicsPool2002}.
 In conditions where the dominance of surface tension forces becomes more pronounced,
 the surface tension gradients can induce fluid circulation. This is known as Marangoni
-convection and is observed to affect bubble growth and heat transfer.~\cite{xuNumericalStudyMarangoni2014}
+convection and is observed to affect bubble growth and heat transfer.
 Recent experiments studying stationary volatile drop evaporation in microgravity
-report a \(56\%\) reduction in evaporation rate as compared to normal gravity conditions~\cite{kumarSessileVolatileDrop2020}
-
+report a \(56\%\) reduction in evaporation rate as compared to normal gravity conditions.~\cite{xuNumericalStudyMarangoni2014, kumarSessileVolatileDrop2020}
 
 Reduced system pressure impacts the overall intensity of heat transfer. The onset of nucleate boiling also
 requires higher superheat values in low pressure conditions.
@@ -171,168 +190,335 @@ bulk nucleation is reported along with the increased relevance of bubble growth.
 An over-prediction is vapour mass generation is reported since large bubbles decrease
 the interfacial area density.~\cite{serdyukovInfluencePressureLocal2023, zhangExperimentalTheoreticalStudy2002,liaoFlashingEvaporationDifferent2013}
 
-
-\subsection{The Physics and Thermodynamics of Flash Evaporation}
+\subsection{Modelling Flash Evaporation}
 %Although comparable to cavitation, where phase change and bubble nucleation are 
 % also observed due to a pressure drop, flashing is differentiated 
 % due to the sustenance of the bubbles formed and the higher temperatures 
-% observed during flashing~\cite{pinhasiModelingFlashingTwoPhase2005}.
-Flash evaporation is triggered when the superheat limit is reached.
-The limit of superheat can be the thermodynamic or the kinetic limit based
-on thermodynamical and kinetic theory considerations respectively. 
-The absolute thermodynamical limit, also known as the spinodal limit, is never
-practically attained. Vaporisation is always triggered much before the spinodal limit due to 
-internal impurities, density fluctuations, wall nucleation, or  the presence of 
-pre-existing nuclei.~\cite{pinhasiModelingFlashingTwoPhase2005,liaoComputationalModellingFlash2017}
-
-
-The maximum 
-degree of superheat or the pressure undershoot determines the behaviour of the
-subsequent boiling. The pressure undershoot is defined as the difference between
-the minimum pressure after depressurisation and the saturation pressure corresponding
-to the initial temperature.
-
-\begin{figure}[h]
-  \centering
-  \begin{subfigure}[t]{0.5\textwidth}
-    \includegraphics[width=\linewidth]{./Chapters/Chap1/figs/water_phase_diag}
-    \caption{Phase diagram of water with approximately marked initial and final experimental conditions.}
-  \end{subfigure}
-  \hfill
-  \begin{subfigure}[t]{0.48\textwidth}
-    \includegraphics[width=\linewidth]{./Chapters/Chap1/figs/spinodal.jpg}
-    \caption{Spinodal lines and metastable regions for a liquid on a P-v diagram.}
-  \end{subfigure}
-  \caption{Thermodynamic stability of water}
+% observed during flashing~\cite{pinhasimodellingFlashingTwoPhase2005}.
+Rapid phase-change phenomena such as flash evaporation, boiling, and cavitation 
+ are driven by temperature or pressure drops that push the liquid into metastability
+ beyond the saturation boundary. While boiling involves sustained heat transfer 
+ at a heated surface, the other two phenomena are pressure driven. 
+ However, these processes differ significantly in their characteristics: cavitation exhibits 
+ violent bubble collapse, whereas flash evaporation displays explosive nucleation followed 
+ by sustained vapour generation.
+\begin{figure}
+\centering
+\includegraphics[width=0.9\linewidth]{Chapters/Chap1/figs/evap_phen}
+\caption{Initial nucleation in a bulk of superheated liquid, followed by the subsequent bubble growth turning to explosive boiling and further nucleation.}
 \end{figure}
-Phase transition starts with a random 
-aggregation of molecules to form a 'nucleus' with the properties of the new phase. 
-Nucleation modelling allows the estimation of the size of the unstable bubble embryos 
-at the moment of flashing inception. Homogenous nucleation establishes the conditions for a bubble embryo to be in equilibrium with 
-the surrounding superheated liquid. Energetically, a
-curved surface is characterised by its free surface energy which for a curved liquid-vapour
-interface is essentially the surface tension, \(\sigma\). 
-The change in Gibbs free energy \(\Delta G\) associated with the formation of a bubble of radius
-\(R_{\ind{i}}\) with volume \(\frac{4}{3} \pi R_{\ind{i}}^{3}\) in a superheated liquid, as described in~\eq{eq:delta-gibbs},
-can be given using the specific Gibbs free energies \(\hat{g}_{\ind{i}}\), 
-the number of moles \(\hat{N}_{\ind{i}}\), the pressure \(p_{\ind{i}}\), where \(i\,=\,\{\ind{l},\ind{v}\}\)
-for the liquid and vapour phase respectively.
+\subsubsection*{Nucleation}\par\vspace{-\baselineskip}\vspace{\parskip}
+The thermodynamics of phase stability provide the foundational 
+framework for understanding flash evaporation. Phase transition starts with random molecular aggregation that forms a 'nucleus' due to density fluctuations. 
+This nucleus possesses the properties of the new phase.
+Treating a vapour
+nucleus as a sphere of radius $R_{\ind{b}}$ surrounded by a superheated liquid, 
+the free-energy change $\Delta G$ required to form this nucleus is 
+given by the sum of volumetric and surface contributions.
 \begin{equation}\label{eq:delta-gibbs}
-  \Delta G \;=\; \hat{N}_{\ind{v}}(\hat{g}_{\ind{v}} - \hat{g}_{\ind{l}}) 
-  + 4\pi R_{\ind{i}}^{2} \sigma 
-  - \frac{4}{3} \pi R_{\ind{i}}^{3}(p_{\ind{v}} - p_{\ind{l}}),
+  \Delta G  =  \hat{N}_{\ind{v}}(\hat{g}_{\ind{v}} - \hat{g}_{\ind{l}}) 
+  + 4\pi R_{\ind{b}}^{2} \sigma 
+  - \frac{4}{3} \pi R_{\ind{b}}^{3}(p_{\ind{v}} - p_{\ind{l}})\,.
 \end{equation}
-For a bubble with the critical radius \(R_{\ind{e}}\) at thermodynamic and mechanical equilibrium 
-with the superheated fluid, the chemical potentials of the two phases must be equal
-and the momentum jump equation - the Young-Laplace equation must be satisfied.
+Mechanical and thermal equilibrium expected at the critical radius \(R^{\ind{*}}\) requires 
+the equilibrium of the chemical potentials of the two phases and the Young-Laplace equation
+be satisfied. Using the following results,
 \begin{subequations}
   \begin{align}
-    \hat{g}_{\ind{v}} & = \hat{g}_{\ind{l}},\\
-    p_{\ind{v}} - p_{\ind{l}} & = \frac{2\sigma}{R_{\ind{i}}},
+    \hat{g}_{\ind{v}} & = \hat{g}_{\ind{l}}\,,\\
+    p_{\ind{v}} - p_{\ind{l}} & = \frac{2\sigma}{R^{\ind{*}}}\,,
   \end{align}
 \end{subequations}
-{}~\eq{eq:delta-gibbs} at equilibrium conditions between the bubble and the liquid, 
-thus reduces to 
-\begin{equation}
-  \Delta G_{\ind{e}} = 4\pi R_{\ind{e}}^{2} \sigma - \frac{4}{3} \pi R_{\ind{e}}^{3}\frac{2\sigma}{R_{\ind{e}}} = \frac{4}{3} \pi R_{\ind{e}}^{2} \sigma,
+~\eq{eq:delta-gibbs} reduces to the free-energy barrier,
+\begin{equation}\label{eq:energy-barrier}
+  \Delta G^{\ind{*}}\,=\,4\pi (R^{\ind{*}})^{2} \sigma - \frac{4}{3} \pi\,\left(R^{\ind{*}}\right)^{3}\left(\frac{2\sigma}{R^{\ind{*}}}\right)\,=\,\frac{4}{3} \pi (R^{\ind{*}})^{2} \sigma\,= \,\frac{16\,\pi\,\sigma^{3}}{3\,\left(p_{\ind{l}} - p_{\ind{v}}\right)^{2}}\,, 
 \end{equation}
-The equilibrium is unstable as seen in~\fig{FIG}, and the loss of one molecule from
-the bubble embryo will lead to bubble collapse. Conversely, a bubble embryo with radius greater than
-\(R_{\ind{e}}\) is expected to spontaneously grow - resulting in homogenous nucleation of the vapour phase in the system.
- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+for the formation of stable nuclei. The nuclei exist in an unstable equilibrium where an infinitesimal 
+ increase or decrease in the radius \(R^{\ind{*}}\) leads to a spontaneous growth or collapse respectively.
+This stochasticity is represented in the rate of homogeneous nucleation of vapour nuclei in superheated liquid as described using the classical nucleation theory
+\begin{equation}\label{eq:hom_nucleation}
+  J = J_{0} \exp \bigl(-\;\frac{\Delta G^{\ind{*}}}{k_{\ind{B}}T}\bigr)\,,
+\end{equation}
+where $k_{\ind{B}}$ is the Boltzmann constant. Heterogeneous nucleation can be described in
+ the fluid bulk using a correction term added to the~\eq{eq:hom_nucleation}. Nucleation along 
+ liquid-solid interfaces require further knowledge about the wall surface and it's
+ influence in the lowering of the free-energy barrier.
+ An extensive discussion of phase stability, the thermodynamic and kinetic aspects of nucleation, and 
+ subsequent derivations for homogeneous and 
+ heterogeneous nucleation can be found in~\cite{pinhasiModelingFlashingTwoPhase2005, carey2020}.
+ 
+In computational modelling, nucleation is either accounted for through balance equations or 
+simplified by bypassing the metastable liquid state preceding flash evaporation. Further 
+simplifications may assume constant nucleus density, though real systems involve complex interactions 
+between bulk-heterogeneous nucleation from impurities, surface nucleation, and homogeneous 
+nucleation occurring simultaneously. 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection*{Bubble Growth}\par\vspace{-\baselineskip}\vspace{\parskip}
+Once nucleation occurs and bubbles exceed the critical radius, the subsequent growth dynamics 
+become crucial for understanding the overall phase-change 
+process. Considering an ideal spherical bubble expanding in a uniformly superheated liquid, 
+the growth rate is dependent upon the the surface tension, liquid inertia, and the difference in pressures inside
+and outside the bubble. 
 
+This idealised growth can be casted as a moving interface by solving transient conduction in the surrounding superheated liquid and enforcing 
+ the interfacial energy balance (Stefan condition) to convert heat flux into phase-change rate at the bubble surface.
+ A solution to the Stefan problem results in the equation for calculating heat flow at the interface,
+ \begin{equation}\label{eq:interface_heat}
+  q(t)\Big|_{X(t)} = \frac{k_{\ind{l}} \Delta T}{\sqrt{\alpha t}} \frac{\lambda}{St}\,,
+ \end{equation}
+ where $k_{\ind{l}}$ and $\alpha_{\ind{l}}$ are the thermal conductivity and diffusivity of the liquid respectively.
+ $\Delta T$ is the temperature difference between the liquid and vapour phase and $St$ is the dimensionless Stefan number
+ which characterises the amount of superheat. Using the specific heat at constant pressure
+ for the liquid $C_{p,\ind{l}}$ and the latent heat of evaporation $h_{\ind{lv}}$,
+ \begin{equation}
+  St = \frac{C_{p,\ind{l}} (T_{\ind{l}} - T_{\ind{v}})}{h_{\ind{lv}}}\,.
+ \end{equation}
+The thermal diffusivity $\alpha_{\ind{l}}$ is defined using the specific heat, thermal conductivity 
+ and the density, \(\alpha_{\ind{l}} = k_{\ind{l}}/(\rho_{\ind{l}} C_{p,\ind{l}})\).
+ The determination of $\lambda$ and a discussion of 
+ the Stefan problem is present in~\sect{sec:stef}. 
+~\cite{pinhasiModelingFlashingTwoPhase2005,Gartner2024-zh,sherFlashboilingAtomization2008}
 
-
-
-\subsection{Modelling Multiphase Flows}
-The computational tribulations of directly solving local instantaneous governing equations throughout 
- the entire domain necessitates dimensional reduction through macroscopic formulations. 
- For two-phase flows (used interchangeably with multiphase flows), these formulations rely 
- on averaging local flow field fluctuations while preserving continuum mechanics principles. 
-
-In the following, we use the subscript \(i \in \{l, v\}\)~\COMMENT{(and \(j\) such that if \(i = l\), \(j = v\))}
- to denote variables associate with the 
- liquid (\ind{l}) and vapour (\ind{v}) phase respectively. Figure~\fig{FIG} % \fig used here
-displays a region \(\Omega\) where two phases \ind{l}, \ind{v} occupy
- regions \(\Omega_{\ind{l}}(t)\) and \(\Omega_{\ind{v}}(t)\) such that \(\Omega = \Omega_{\ind{l}}(t) \cup \Omega_{\ind{v}}(t)\) is constant in time.     
- The boundaries of the domains - \(\partial \Omega_{\ind{l}}\), \(\partial \Omega_{\ind{v}}\), and \(\partial \Omega\) - together define the interface that separates the two phases as
-\begin{equation}
-  \mathcal{S}(t) \;=\;\Bigl(\partial\Omega_{\ind{l}} \cap \partial\Omega_{\ind{v}}\Bigr)\setminus\partial\Omega\,.
-  \label{eq:interface}
-\end{equation}~\COMMENT{Equation seems a bit pretentious or? also idk if is a good choice for notation}
-Eulerian averaging is related to the Eulerian description of the flow - the local instantaneous
-variables are averaged with the time and space variables being kept constant.
-Volume averaging admits a general 
-representative volume element \(V\) bounded by \(\partial V\), and 
-time averaging uses a time interval at
-every spatial reference point \((\vect{x}, t)\) in the region.
-The averaging volume \(V\) is partitioned into \(\textstyle \sum V_{\ind{i}}\) with the volume fraction for phase \(i\) being
-\begin{equation}
-  \alpha_{\ind{i}}(\vect{x},t) \;=\; \frac{V_{\ind{i}}}{V}\,,\qquad
-  \alpha_{\ind{l}} + \alpha_{\ind{v}} = 1\,.
-  \label{eq:volfrac}
+The Rayleigh-Plesset equation~\eq{eq:rayleigh-plesset} describes the growth of the bubble of radius $R_{\ind{b}}$ in an infinite body of superheated liquid.
+ The equation assumes constant liquid density and viscosity, $\rho_{\ind{l}}$ and $\nu_{\ind{l}}$, and that the pressure $p_{\ind{v}}$ and temperature
+ $T_{\ind{v}}$ in the bubble are homogeneous. Using the external pressure $p_{\infty}$ far away from the bubble, the 
+ bubble growth is described using
+ \begin{equation}\label{eq:rayleigh-plesset}
+  \frac{p_{\ind{v}}(T_{\ind{v}}) - p_{\infty}(t)}{\rho_{\ind{l}}} = R_{\ind{b}} \ptwoderiv{R_{\ind{b}}}{t}
+  + \frac{3}{2}\bigl(\pderiv{R_{\ind{b}}}{t}\bigr)^{2} + \frac{4\nu_{\ind{l}}}{R_{\ind{b}}} \deriv{R_{\ind{b}}}{t}
++ \frac{2\sigma}{\rho_{\ind{l}} R_{\ind{b}}}\,.
 \end{equation}
 
-All averaging procedures generally utilise a phase indicator function that 
- marks the presence of the phase in the averaging domain. Denoted as \(\gamma_{\ind{i}}\), 
- the phase indicator function can be used to define the average of the general scalar or vector quantity \(\psi\) over the averaging 
- volume \(V\),
-\begin{equation}
-  \overline{\psi_{\ind{i}}}^V
-  \;=\;
-  \frac{1}{V}\integ{V}{} \gamma_{\ind{i}}\,\psi_{\ind{i}}(\vect{x},t)\,\diff{V}\,,
-  \label{eq:volavg}
-\end{equation}\cite{ishiiThermoFluidDynamicsTwoPhase2011, ishiiThermoFluidDynamicsTwoPhase2011}
-and the phase-intrinsic average then is
-\begin{equation}
-  \overline{\psi_{\ind{i}}}^{\ind{i}} \;=\;\frac{1}{V_{\ind{i}}}\integ{V_{\ind{i}}}{}\psi(\vect{x},t)\,\diff{V}
-  \;=\;
-  \frac{\overline{\psi_{\ind{i}}}^V}{\alpha_{\ind{i}}}\,.
-  \label{eq:intravg}
+During the initial inertially driven growth, the vapour inside the bubble is assumed to be at saturation,
+thus $T_{\ind{v}} = T_{\ind{l}}$ and $p_{\ind{v}}(T_{\ind{v}}) = p_{\ind{sat}}(T_{\ind{l}})\,$. Growth is 
+maintained through the liquid superheat and is given as
+\begin{equation}\label{eq:inertial-lim}
+  \deriv{R_{\ind{b}}}{t}  = \sqrt{\frac{2 (p_{\ind{sat}}(T_{\ind{l}}) - p_{\ind{l}})}{3\rho_{\ind{l}}}}\,.
 \end{equation}
+
+At later stages, growth driven by heat transfer assumes that the pressure inside the bubble equals the surrounding liquid pressure, while the temperature in the bubble equals the saturation temperature at the liquid pressure.
+This thermally limited growth is described using energy flux absorbed as a result of phase 
+transition. As both $T_{\ind{v}}$ and $p_{\ind{v}}$ are constant, the density 
+can be assumed to be constant. Using~\eq{eq:interface_heat} and a thin-boundary layer assumption,
+ the growth rate for a spherical bubble is described using the heat flux at the interface $q_{\ind{lv}}$ as, 
+  \begin{align}\label{eq:thermal-limit-radius}
+   h_{\ind{lv}} \rho_{v}(T_{\ind{sat}}(p_{\ind{l}}))&\,\deriv{}{t}\bigl(\frac{4}{3}\,\pi R^{3}_{\ind{b}}\bigr) = -4\pi R_{\ind{b}}^{2} q_{\ind{lv}}\,,\\
+   \implies \deriv{R_{\ind{b}}}{t} &= 
+   \frac{\rho_{\ind{l}}\,C_{p,\ind{l}}\,(T_{\ind{l}} - T_{\ind{sat}}(p_{\ind{l}}))}{\rho_{\ind{v}}h_{\ind{lv}}}
+   \sqrt{\frac{3\,\alpha_{\ind{l}}}{\pi\,t}}\,.
+  \end{align}
+The ratio of sensible heat in the liquid to the latend heat required for phase change
+ is represented by the Jakob number $Ja$ which is related to the Stefan number by the 
+ ratio of densities,
+\begin{equation}
+Ja = \frac{\rho_{\ind{l}}\,C_{p,\ind{l}}\,|T_{\ind{l}} - T_{\ind{sat}}(p_{\ind{l}})|}{\rho_{\ind{v}}h_{\ind{lv}} } = \frac{\rho_{\ind{l}}}{\rho_{\ind{v}}} St \,.
+\end{equation}
+
+Modifications based on the two limiting cases can be implemented as 
+in~\cite{yaoThermodynamicCavitationModel2010}, where the inertially-
+limiting case can be extended by superposing the thermally-limiting case as follows:
+\begin{equation}
+\frac{dR_{\ind{b}}}{dt} = \sqrt{\frac{2 (p_{\ind{sat}}(T_{\ind{l}}) - p_{\ind{l}})}{3\rho_{\ind{l}}}} 
++ \frac{\rho_{\ind{l}}\,C_{p,\ind{l}}\,|\Delta T|}{\rho_{\ind{v}}L_{\ind{lv}} } \sqrt{\frac{3}{\pi\,t}\bigl(\frac{\kappa_{\ind{l}}}{\rho_{\ind{l}}\,C_{p,\ind{l}}}\bigr)}\,.
+\end{equation}
+
+While in real-world situations, relative motion between bubbles and 
+ liquid or inter-bubble interactions influence growth rates, these effects 
+ are negligible under the low-pressure and low-gravity conditions of the present experiment. 
+ The classical theories are also insufficient to describe explosive boiling.
+ Fast interface processes exhibit non-equilibrium molecular effects
+ and the limiting factor to phase change is not only nucelation and bubble 
+ growth rates,
+ but also mass transfer between the phases due to kinetic theory considerations. 
+
+\subsubsection*{Kinetic Effects in Non-equilibrium Phase Change}\par\vspace{-\baselineskip}\vspace{\parskip}
+Under rapid non-equilibrium phase change, the rate of mass transfer is limited by the 
+rate at which molecules can physically escape the liquid surface. This is particularly true
+in low-pressure, high-superheat conditions. Derived from the kinetic theory of gases,
+the Hertz-Knudsen equation links the mass-transfer rate across the interface to the 
+physical properties of the two phases. 
+
+Assuming a plane liquid-vapour interface and the influx of molecules in the vapour phase
+ representing a Maxwellian distribution with a net bulk velocity, the Schrage extension
+ to the Hertz-Knudsen equation represents the interphase mass flux as, 
+\begin{equation}
+\dot{m} = \frac{2\sigma_c}{2-\sigma_c} \sqrt{\frac{M}{2 \pi R T_{sat}}} \left(P_{sat}(T_{\ind{l}}) - P_{\ind{v}}\right)\,.
+\end{equation}
+
+This equation describes the net mass flux, $\dot{m}$, as a function of the 
+pressure difference between the saturated pressure at the 
+liquid temperature, $P_{sat}(T_{\ind{l}})$, and the actual vapour pressure 
+in the bulk, $P_{\ind{v}}$, The equation is modified by the evaporation/condensation 
+coefficient, $\sigma_c$, which accounts for the fraction of molecules that successfully 
+cross the interface. The term under the square root represents a 
+thermal velocity scale for the vapour molecules,
+ where $M$ is the molar mass and $R$ is the universal gas 
+ constant. This formulation highlights that at low pressures and high superheat, 
+ the rate of evaporation is not only limited by heat transfer, 
+ but also by the finite speed of molecular movement across the interface.
+% %Additionally,
+%  since modern commercial CFD software typically assumes that phases share a common pressure 
+%  field, pressure-driven growth mechanisms are inherently difficult to account for in 
+%  standard implementations. To accurately simulate the two-phase flows arising during flash 
+%  evaporation, it is crucial to choose appropriate macroscopic flow models that can 
+%  handle interfacial phenomena, phase interactions, and turbulence effects. 
+\subsection{Liquid-Vapour Multiphase Flows}
+Directly solving local instantaneous governing equations throughout 
+the entire domain for multiphase flows is computationally challenging, necessitating 
+dimensional reduction via macroscopic formulations. For two-phase flows 
+(used interchangeably with multiphase flows), these formulations rely on averaging local flow field 
+fluctuations while preserving continuum mechanics principles. % EDIT: simplified sentence
+
+We denote variables associated with the liquid and vapour phases by the subscript
+ \(ind{i} \in \{\ind{l}, \ind{v}\}\), respectively. Considering the classical continuum mechanics 
+ depiction of a region \(\Omega\) where the
+  two phases occupy time-dependent subregions \(\Omega_{\ind{l}}(t)\) and \(\Omega_{\ind{v}}(t)\), 
+  with \(\Omega = \Omega_{\ind{l}}(t) \cup \Omega_{\ind{v}}(t)\) constant in time. The 
+  domain boundaries \(\partial \Omega_{\ind{l}}\), \(\partial \Omega_{\ind{v}}\), and \(\partial \Omega\) 
+  define the phase interface as
+\begin{equation}
+  X(t)(t) = \bigl(\partial \Omega_{\ind{l}} \cap \partial \Omega_{\ind{v}}\bigr) \setminus \partial \Omega\,.
+\end{equation} % EDIT: clarified wording and formatting
+Eulerian averaging is performed by keeping space and time variables constant while averaging 
+ instantaneous local variables. Volume averaging considers a representative volume 
+ element \(V\) bounded by \(\partial V\), while time averaging applies over intervals at fixed
+ spatial points \((\vect{x}, t)\). The averaging volume \(V\) is partitioned into 
+ phase volumes \(V_{\ind{i}}\) with volume fractions
+\begin{equation}
+  \alpha_{\ind{i}}(\vect{x}, t) = \frac{V_{\ind{i}}}{V}, \quad \alpha_{\ind{l}} + \alpha_{\ind{v}} = 1.
+\end{equation} % EDIT: improved sentence flow and punctuation
+
+These averaging procedures commonly use a phase indicator 
+function \(\gamma_{\ind{i}}\) that marks phase presence within the averaging 
+volume. The volume average of any scalar or vector quantity \(\psi\) for 
+phase \(i\) is defined as~\cite{ishiiThermoFluidDynamicsTwoPhase2011,prosperettiCOMPUTATIONALMETHODSMULTIPHASE}
+\begin{equation}
+  \overline{\psi_{\ind{i}}}^V = \frac{1}{V} \int_V \gamma_{\ind{i}} \psi_{\ind{i}}(\vect{x}, t) \, \diff{V},
+\end{equation}
+and the phase-intrinsic average is
+\begin{equation}
+  \overline{\psi_{\ind{i}}}^{\ind{i}} = \frac{1}{V_{\ind{i}}} \int_{V_{\ind{i}}} \psi(\vect{x}, t) \, \diff{V} = \frac{\overline{\psi_{\ind{i}}}^V}{\alpha_{\ind{i}}}.
+\end{equation} % EDIT: polished wording and LaTeX spacing
 
 % Example: temperature in Kelvin (unit)
 %The temperature \(T\) at which phase change occurs is typically about \(T_{\ind{sat}} = 373\,\munit{K}\).
+Substituting instantaneous variables with their averaged counterparts acts as a 
+ low-pass filter, smoothing out interface discontinuities but removing direct interface topology information. 
+ This necessitates closure models for the averaged variables and lost interfacial details. While STAR-CCM+ 
+ employs Euler-averaged equations for its multiphase models, 
+ the software documentation leaves the specific averaging 
+ approach (time, volume, or a combination) open.
+A compact and thorough discussion on the averaging procedures can be found~\cite{wornerCompactIntroductionNumerical}
+and~\cite{drewMathematicalModelingTwoPhase, prosperettiCOMPUTATIONALMETHODSMULTIPHASE, brennenFundamentalsMultiphaseFlow2006}. The development
+of the two-fluid model and one-fluid model for two-phase flows is detailed~\cite{ishiiThermoFluidDynamicsTwoPhase2011} and~\cite{tryggvasonDirectNumericalSimulations2011} respectively.
+
 \begin{figure}[h]
 \centering
 \includegraphics[width=1.\linewidth]{./Chapters/Chap1/figs/flowchart_multiphase2}
-\caption{Two-phase flow formulations.}
+\caption{Flowchart summarising derivation steps for macroscopic two-phase flow formulations, differentiating one-fluid and two-fluid approaches.}
 %\label{\fig{rt_conv_3000}} % \fig used here
 \end{figure}
+
+Macroscopic formulations for multiphase flows can treat each phase separately or 
+ consider the mixture as a whole. The two-fluid formulation solves averaged governing equations 
+ for each phase independently, coupled through interfacial transfer terms. Alternatively, 
+ summing the equations yields mixture behaviour, with relevant mixture constitutive terms
+ describing the physical properties of the mixture and interfacial transfers between the phases.~\cite{ishiiThermoFluidDynamicsTwoPhase2011,wornerCompactIntroductionNumerical,tryggvasonDirectNumericalSimulations2011,yadigarogluNatureMultiphaseFlows2018}. % EDIT: improved flow and precision
+
+Often a one-fluid model is used for its computational efficiency and ease of 
+ implementation. It generally assumes no relative velocity between phases, treating them as a single 
+ fluid with variable properties that change abruptly at the interface. This is analogous 
+ to the homogenous mixture formulation of two-phase flow. Interface-capturing methods 
+ such as volume-of-fluid (VOF) employ the one-fluid formulation along with an advected 
+ tracking function to geometrically reconstruct the interface~\cite{gadaLargeScaleInterface2017,tryggvasonDirectNumericalSimulations2011,prosperettiCOMPUTATIONALMETHODSMULTIPHASE,star-ccm+}. % EDIT: clarified phrasing
+
+The following discussion assumes the averaging has been performed and considers the 
+ governing equations in their averaged macroscopic form as implemented in STAR-CCM+, 
+ assuming continuum hypothesis validity, infinitely thin interfaces, and neglecting 
+ intermolecular forces. % EDIT: slightly reworded for clarity
+
 \subsubsection{The One-Fluid Formulation}\label{sec:one-fluid}
-In order to account for the varying material properties when representing
- two-phase flow as a single fluid, the mixture properties are defined in the 
- volume element \(V\). 
- The mixture density \(\rho\), viscosity \(\mu\), and thermal conductivity \(k\) 
- are defined as
-\begin{subequations}
- \begin{align}
-   \rho &\;=\;\textstyle\sum\nolimits_{\ind{i}} \alpha_{\ind{i}} \rho_{\ind{i}}\,,\\
-   \mu &\;=\; \textstyle\sum\nolimits_{\ind{i}} \alpha_{\ind{i}} \mu_{\ind{i}}\,,\\
-   k &\;=\; \textstyle\sum\nolimits_{\ind{i}} \alpha_{\ind{i}} k_{\ind{i}}\,.
- \end{align}
-\end{subequations}
- Here, the properties \(\rho_{\ind{i}}\), \(\mu_{\ind{i}}\), and \(k_{\ind{i}}\) are phase intrinsic averages.
- Using the defined mixture density \(\rho\), the velocity, specific heat, and enthalpy can 
- be also defined as mass averaged mixture values.
-\begin{subequations}\label{eq_vof_defs}
-\begin{align}
-  \vect{v} &\;=\; \textstyle\sum\nolimits_{\ind{i}} \alpha_{\ind{i}} \rho_{\ind{i}} \vect{v}_{\ind{i}}/ \rho,\\
-  C_{p} &\;=\; \textstyle\sum\nolimits_{\ind{i}} \alpha_{\ind{i}} C_{p,\ind{i}} \rho_{\ind{i}}/\rho,\\
-  H &\;=\; \textstyle\sum\nolimits_{\ind{i}} \alpha_{\ind{i}} \rho_{\ind{i}} \mathrm{H}_{\ind{i}}/\rho + |\vect{v}|^{2}/2\,,\text{where \(\vect{v}\) is the mixture velocity}. 
-\end{align}
-\end{subequations}
+To represent two-phase flow as a single fluid with varying material properties, 
+mixture properties are defined over the volume element \(V\). Mixture 
+density \(\rho\), viscosity \(\mu\), and thermal conductivity \(k\) are volume 
+fraction-weighted sums of the phase intrinsic averages:
+\begin{equation}
+ %\begin{align}
+   \rho = \textstyle\sum\nolimits_{\ind{i}} \alpha_{\ind{i}} \rho_{\ind{i}}\,,\quad
+   \mu = \textstyle\sum\nolimits_{\ind{i}} \alpha_{\ind{i}} \mu_{\ind{i}}\,,\quad
+   k = \textstyle\sum\nolimits_{\ind{i}} \alpha_{\ind{i}} k_{\ind{i}}\,.
+ %\end{align}
+\end{equation}
+Similarly, mixture velocity \(\vect{v}\), specific heat \(C_p\), and enthalpy \(H\) are mass-averaged:
+\begin{equation}\label{eq_vof_defs}
+%\begin{align}
+  \vect{v} = \textstyle\sum\nolimits_{\ind{i}} \alpha_{\ind{i}} \rho_{\ind{i}} \vect{v}_{\ind{i}}/ \rho\,,\quad
+  C_{p} =\textstyle\sum\nolimits_{\ind{i}} \alpha_{\ind{i}} C_{p,\ind{i}} \rho_{\ind{i}}/\rho\,,\quad
+  H =\textstyle\sum\nolimits_{\ind{i}} \alpha_{\ind{i}} \rho_{\ind{i}} H_{\ind{i}}/\rho + |\vect{v}|^{2}/2\,,
+%\end{align}
+\end{equation}
+where \(\vect{v}\) is the mixture velocity.
+
+The diffusion velocity for phase \(\ind{i}\) is its velocity relative to the mixture and can be used to
+account for relative motion between the phases,
+\begin{equation}\label{eq:v-diff}
+  \vect{v}_{d,\ind{i}} = \vect{v}_{\ind{i}} - \vect{v}\,.
+\end{equation} % EDIT: clarified explanation
+
+Including molecular and turbulent stresses via the stress tensor \(\tens{T}\), the 
+mass, momentum, and energy conservation equations in the one-fluid formulation are expressed in 
+integral form over \(V\) as shown in equations \eqref{eq:vof-mass}, \eqref{eq:vof-momentum}, 
+and \eqref{eq:vof-energy}. The mass, momentum, and energy sources for the phase \(\ind{i}\) 
+ are denoted using \(S_{\ind{i}}^{\alpha}\), \(\vect{S}_{\ind{i}}^{\alpha}\), and
+ \(S_{\ind{i}}^{E}\) respectively.
+\begin{equation}\label{eq:vof-mass}
+\begin{split}
+\text{Mass conservation: }\qquad&\\  \pderiv{}{t}\integ{V}{} \rho\,\diff{V} &+
+\ointeg{\partial V}{} \rho \vect{v} \cdot \diff{\vect{a}}
+ =  \integ{V}{} \sum_{\ind{i}}\mathrm{S}^{\alpha}_{\ind{i}} \rho_{\ind{i}}\,\diff{V}\,.
+\end{split}
+\end{equation}
+
+\begin{equation}\label{eq:vof-momentum}
+\begin{split}
+\text{Momentum conservation: }\qquad&\\   
+\pderiv{}{t}\integ{V}{} \rho \vect{v}\,\diff{V} +
+\ointeg{\partial V}{} \rho\vect{v} \otimes \vect{v} \cdot \diff{\vect{a}}
+&= \ointeg{\partial V}{} \left(-p \tens{I} + \tens{T}\right)\cdot\diff{\vect{a}} 
++ \integ{V}{} \rho \vect{g}\,\diff{V}
++ \integ{V}{} \vect{f}_{b}\,\diff{V}\\
+&- \sum_{\ind{i}}\ointeg{\partial V}{} \alpha_{\ind{i}} \rho_{\ind{i}} \vect{v}_{d,\ind{i}} \otimes \vect{v}_{d,\ind{i}} \cdot\diff{\vect{a}}
++ \integ{V}{} \sum_{\ind{i}}\vect{S}^{\alpha}_{\ind{i}}\,\diff{V}\,.
+\end{split}
+\end{equation}
+\begin{equation}\label{eq:vof-energy}
+\begin{split}
+\text{Energy conservation: }\qquad&\\  
+\pderiv{}{t}\integ{V}{}\rho \mathrm{E}\,\diff{V} +&
+\ointeg{\partial V}{} \left[\rho H \vect{v} +  \sum_{\ind{i}}\alpha_{\ind{i}} \rho_{\ind{i}} H_{\ind{i}} \vect{v}_{d,\ind{i}}\right] \cdot \diff{\vect{a}}
+ =  - \ointeg{\partial V}{} \vect{\dot{q}''}  \cdot \diff{\vect{a}}\\  &+ \ointeg{\partial V}{} \tens{T}\cdot\vect{v}\,\diff{\vect{a}} 
++ \integ{V}{}\vect{f}_{b}\cdot\vect{v}\,\diff{V}
++ \integ{V}{} \sum_{\ind{i}} S_{\ind{i}}^{E}\,\diff{V}\,.
+\end{split}
+\end{equation}
+
+While computationally efficient, the one-fluid model faces challenges due to 
+ phase coupling and complex interfacial dynamics. Jump conditions are not explicitly enforced, 
+ requiring added interfacial terms which introduce numerical difficulties. modelling phase 
+ change typically involves source terms in volume fraction and energy 
+ equations~\cite{hardtEvaporationModelInterfacial2008,tryggvasonDirectNumericalSimulations2011}. Many 
+ one-fluid formulations are analytically inconsistent under vaporization, failing to fully recover 
+ momentum and energy jump conditions~\cite{trujilloReexaminingOnefluidFormulation2021}. % EDIT: clarified limits and challenges
 
 \subsubsection{The Two-Fluid Formulation}\label{sec:two-fluid}
-Considering the volume element \(V\) as described in the previous section, 
- the volume fractions of the two phases \(\alpha_{\ind{i}}\,,\,i \in \{\ind{l},\ind{v}\}\) must satisfy the continuity constraint 
- \begin{equation}\label{eq:vol-frac-cont}
-  \sum_{\ind{i}}\alpha_{\ind{i}}\;=\;1\,.
- \end{equation}
- The volume of the phase \(\ind{i}\) is given as 
- \begin{equation}
-  V_{\ind{i}} = \integ{V}{} \alpha_{\ind{i}}\,\diff{V}\,.
- \end{equation}
+In the two-fluid formulation, the volume fractions \(\alpha_{\ind{i}}\) satisfy
+\begin{equation}
+  \sum_{\ind{i}} \alpha_{\ind{i}} = 1,
+\end{equation}
+and the phase volume is
+\begin{equation}
+  V_{\ind{i}} = \int_V \alpha_{\ind{i}} \, \diff{V}.
+\end{equation}
  The ratio \(V_{\ind{i}}/V\) of the effective volume of the phase \(\ind{i}\) to the total volume is defined as 
  the void fraction of the phase. 
  
@@ -345,14 +531,14 @@ The averaged macroscopic equation for the conservation of mass is given in~\eq{e
  \begin{equation}\label{eq:emp-mass}
 \pderiv{}{t}
 \integ{V}{} \alpha_{\ind{i}} \rho_{\ind{i}} \,\diff{V}
-+ \ointeg{\partial V}{} \alpha_{\ind{i}} \rho_{\ind{i}} \vect{v}_{\ind{i}} \cdot \diff{\vect{a}}\;=\;
++ \ointeg{\partial V}{} \alpha_{\ind{i}} \rho_{\ind{i}} \vect{v}_{\ind{i}} \cdot \diff{\vect{a}} = 
 \integ{V}{} \Gamma_{\ind{i}} \,\diff{V}
 + \integ{V}{} \mathrm{S}^{\alpha}_{\ind{i}} \,\diff{V}\,.
 \end{equation}
 
 The governing equation for the conservation of momentum is given in~\eq{eq:emp-mom}.
  The equation describes the change in momentum of the phase \(\ind{i}\) due to the effects of the
- fundamental forces in the system along with the effects of any internal forces or potentials \((\vect{F_{int}})_{\ind{i}}\)
+ fundamental forces in the system along with the effects of any internal forces or potentials \((\vect{F}_{\ind{int}})_{\ind{i}}\)
  or any phase momentum source terms \(\vect{S}_{\ind{i}}^{\alpha}\). The pressure and gravitational acceleration are given as \(p\) and \(\vect{g}\) respectively.
  The stress tensor \(\tens{T}_{\ind{i}}\) comprises the molecular and turbulent stress tensors. Turbulence
  is addressed in~\sect{sec:turbs}.
@@ -361,13 +547,13 @@ The governing equation for the conservation of momentum is given in~\eq{eq:emp-m
 \pderiv{}{t}
 \integ{V}{} \alpha_{\ind{i}} \rho_{\ind{i}} \vect{v}_{\ind{i}} \,\diff{V}
 + \ointeg{\partial V}{} \alpha_{\ind{i}} \rho_{\ind{i}} \vect{v}_{\ind{i}} \otimes \vect{v}_{\ind{i}} \cdot \diff{\vect{a}}
-&\;=\; 
+& =  
 \integ{V}{} \left(-\alpha_{\ind{i}} \nabla p 
 + \alpha_{\ind{i}} \rho_{\ind{i}} \vect{g}
-+ (\vect{F_{int}})_{\ind{i}} \right) \,\diff{V}
-+ \ointeg{\partial V}{} \left[ \alpha_{\ind{i}} \left( \tens{T}_{\ind{i}}\right) \right] \cdot \,\diff{\vect{a}} \\
-&\qquad {} + \integ{V}{} \vect{S}^{\alpha}_{\ind{i}} \,\diff{V}
-+ \integ{V}{}  \bigl(\Gamma_{\ind{i}} \vect{v}_{\ind{i}} + \vect{\mathcal{M}}_{\ind{i}}\bigr)  \,\diff{V}\,.
++ (\vect{F}_{\ind{int}})_{\ind{i}} \right) \,\diff{V}\\
++ \ointeg{\partial V}{} \left[ \alpha_{\ind{i}} \left( \tens{T}_{\ind{i}}\right) \right] \cdot \,\diff{\vect{a}} 
+&+ \integ{V}{} \vect{S}^{\alpha}_{\ind{i}} \,\diff{V}
++ \integ{V}{} \bigl(\Gamma_{\ind{i}} \vect{v}_{\ind{i}} + \vect{\mathcal{M}}_{\ind{i}}\bigr)  \,\diff{V}\,.
 \end{split}
 \end{equation}
 
@@ -387,23 +573,86 @@ The averaged macroscopic formulation of the conservation of energy in the two-fl
 \integ{V}{} \alpha_{\ind{i}} \rho_{\ind{i}} E_{\ind{i}} \,\diff{V}
 + \ointeg{\partial V}{} \alpha_{\ind{i}} \rho_{\ind{i}} H_{\ind{i}}&
 \vect{v}_{\ind{i}} \cdot \diff{\vect{a}}
-\;=\;
+ = 
 \ointeg{\partial V}{} \alpha_{\ind{i}} (k_{\mathrm{eff}})_{\ind{i}} \nabla T_{\ind{i}} \cdot \diff{\vect{a}}
 + \ointeg{\partial V}{} \tens{T}_{\ind{i}} \vect{v}_{\ind{i}} \cdot \diff{\vect{a}}\nonumber \\
 & + \integ{V}{} \vect{f_{b}}_{\ind{i}} \cdot \vect{v}_{\ind{i}} \,\diff{V}
 + \integ{V}{} \mathrm{S}_{u,\ind{i}} \,\diff{V} + \integ{V}{} \bigl(\Gamma_{\ind{i}}H_{\ind{i}} + \mathcal{E}_{\ind{i}}\bigr)\,\diff{V}\,.
 \end{align} 
+The effective thermal conductivity, $k_{\text{eff}}$ is an extension of the thermal conductivity along with 
+ turbulence contributions to it. 
+\[
+  k_{\text{eff},\ind{i}} = k_{\ind{i}} + \frac{\mu_{t,\ind{i}} C_{p,\ind{i}}}{\sigma_{t, \ind{i}}}\,
+\]
+The interphase energy transfer term $\Gamma_{\ind{i}}H_{\ind{i}} + \mathcal{E}_{\ind{i}}$
+consists of the enrgy exchange due to mass transfer, and $\mathcal{E}_{\ind{i}}$ which consists of the 
+interphase heat transfer rate due to temperature differences between the two phases and 
+the rate of heat transfer from the phase $\ind{i}$ to the interface. Interphase heat transfer terms 
+are modelled using the Newton's law of cooling and are represented by the heat transfer coefficient,
+the interfacial area concentration, and the temperature difference.~\cite{star-ccm+}
 
-Having each transfer process of each phase balanced separately, 
- the two-fluid formulation is much more complex and requires closure models
- for each interaction. It is, simultaneously, a much more
- complete and general description of two-phase flow - accounting for the dynamic and non-equilibrium 
- interactions between the phases. The mixture or the two-fluid model do not retain information about the interface topology.
- Given a certain void fraction of a phase the two models are
- unable to comment on the nature of the flow regime.~\cite{ishiiThermoFluidDynamicsTwoPhase2011}
+The total energy $E_{\ind{i}}$ is related to the total enthalpy $H_{\ind{i}}$
+\[
+  E_{\ind{i}} = H_{\ind{i}} - \frac{p}{\rho_{i}}\,
+\]
+and the total enthalpy to the sensible enthalpy such as,
+\begin{equation}
+\begin{split}
+  H_{\ind{i}} &= h_{\ind{i}}(T_{\ind{i}}) + \frac{1}{2} \vetor{v}_{i} \cdot \vetor{v}_{\ind{i}}\\
+  & = h_{\ind{i}}^{\text{REF}} + \int\limits_{T_{\ind{i}}^{\text{REF}}}^{T_{\ind{i}}} C_{p,\ind{i}}(T') \,\mathrm{d}T' + \frac{1}{2} \vetor{v}_{i} \cdot \vetor{v}_{\ind{i}}\,.
+\end{split}
+\end{equation}
+By explicitly balancing transfer processes for each phase, 
+the two-fluid formulation offers a more complete and general two-phase flow description. 
+It captures dynamic and non-equilibrium phase interactions but requires closure models for 
+interphase exchanges. Neither the mixture nor two-fluid models retain interface topology information 
+and cannot specify flow regimes based solely on void fraction~\cite{ishiiThermoFluidDynamicsTwoPhase2011}. 
+
+\subsubsection{Interfacial Jump Conditions}\label{sec:jumps}
+Jump conditions are the kinematic and dynamic conditions that 
+account for the discontinuities in material properties 
+or flow variables across an interface and couple the behaviour of the two 
+fluids across it.
+
+The interfacial mass transfer term $\Gamma_{i}$ in~\eq{eq:emp-mass}
+ represents the rate of mass transfer from the phase $i$. The interaction area density $a_{lv}$ specifies 
+ the interfacial area available in the volume element over which the mass transfer occurs.
+ Globally the sum $\sum\Gamma_{i}$ must be equal to zero.
+\begin{equation}
+ \Gamma_{i}\;=\;a_{lv}\;\dot{m}_{i}\;=\; \rho_{i} \vetor{n}_{i} \cdot (\vetor{v}_{i} - \vetor{v}_{X(t)})\,.
+\end{equation}
+The term $\rho_{i} \vect{n}_{i} \cdot (\vect{v}_{i} - \vect{v}_{X(t)})$ consists of the local instantaneous 
+ variables instead of the averaged quantities. The interface normal vector and interface 
+ velocity are given as $\vect{n}_{i}$ and $\vetor{v}_{X(t)}$ respectively. 
+
+The momentum transfer term $\Gamma_{i}\vect{v}_{i}$ accounts for the momentum transfer from 
+ the phase $i$ to $j$ due to mass transfer. The momentum transfer to the interface is accounted through 
+ the \(\vect{\mathcal{M}}_{\ind{i}}\) term. It is only non-zero in case 
+ of a relative motion between the phases and represents the actions of the various forces coupling the phases.
+ \begin{equation}\label{eq:mom-trans}
+  \vect{\mathcal{M}}_{\ind{i}} = \vect{F}_{ij}^{D} + F_{ij}^{L} + F_{ij}^{VM} + F_{ij}^{TD} + F_{ij}^{WL}\,.
+ \end{equation}
+The right hand side in~\eq{eq:mom-trans} is composed of the interfacial drag, lift, virtual mass, turbulent 
+dispersion, and the wall lubrication force respectively. The term $\vect{\mathcal{M}}_{\ind{i}}$, similar to
+$\dot{m}$ is weighted using the interfacial surface area $a_{ind{lv}}$.
+
+In case of constant surface tension, the dynamic condition that the effects of the hydrodynamic forces are 
+ in equilibrium with the forces due to surface tension. Denoting the part of the interface $X(t)$ in the 
+ volume element $V$ as $X(t) \cap V$, the dynamic jump condition can be written as
+ \begin{equation}
+  \vect{\mathcal{M}}_{\ind{l}} + \vect{\mathcal{M}}_{\ind{v}} + \sum \Gamma_{\ind{i}} \vect{v}_{\ind{i}}
+  =
+  \frac{1}{V}\int\limits_{X(t) \cap V} 
+    \vect{f_{\sigma}}\,\mathrm{d}V\,.
+ \end{equation}
+
+The interfacial thermal energy transfer condition satisfies the constraint
+\begin{equation}
+  \sum_{i}\bigl(\Gamma_{\ind{i}}H_{\ind{i}} + \mathcal{E}_{\ind{i}}\bigr) = 0\,.
+\end{equation}
 
 
-\subsection{Modelling Turbulence}\label{sec:turbs}
+\subsection{Turbulence}\label{sec:turbs}
 Flows are generally turbulent. Turbulence is characterised by irregular fluid motion dominated by
  eddies and vortices across a wide range of spatial and temporal scales. The largest eddies
  extract kinetic energy from the mean flow, which is then, through a cascade, transferred
@@ -411,7 +660,7 @@ Flows are generally turbulent. Turbulence is characterised by irregular fluid mo
  the smallest scale where the energy is dissipated due to viscosity, raising the 
  internal energy of the fluid~\cite{gilmanDevelopmentGeneralPurpose2014, davidsonIntroductionTurbulenceModels}.
 
-RANS models result from decomposing flow variables into
+Reynolds Averaged Navier Stokes (RANS) models result from decomposing flow variables into
  mean and fluctuating components, \(\displaystyle \phi = \overline{\phi} + \phi'\), applying Reynolds averaging,
  which filters out turbulent fluctuations below the
  averaging scale~\cite{besnardTurbulenceMultiphaseFlow1988a, hirschNumericalComputationInternal2007}.
@@ -422,41 +671,40 @@ RANS models result from decomposing flow variables into
     \item the turbulent scalar flux vector aligns with the mean scalar gradient.
     \item the Reynolds stress tensor is proportional to the mean velocity strain rate through an eddy viscosity.
  \end{itemize}
- While these assumptions simplify modelling, they tend to be, more often than not, invalid
- as they do not fully capture turbulence physics, especially in anisotropic 
- or non-equilibrium flow~\cite{popeTurbulentFlows2015}. This limitation can be significant
- in regions with complex strain rates or strong secondary flows.
+While simplifying turbulence modelling, these assumptions often fail to fully capture 
+ turbulence physics, especially in anisotropic or non-equilibrium flows~\cite{popeTurbulentFlows2015}. 
+ This limitation is significant in regions with complex strain rates or strong secondary flows. % EDIT: combined sentences for clarity
 
-Although turbulence can be modelled in various ways to various levels of resolutions,
- no general purpose turbulence model exists that accurately captures all flow scenarios.
- Turbulence in this study has been modelled using the Shear Stress Transport (SST) k-\(\omega\) model.
- The SST k-\(\omega\) model is a two-equation eddy-viscosity turbulence model
- based on the Reynolds-Averaged Navier-Stokes (RANS) equations.
- The model combines the advantages of the \(k\)-\(\omega\) model near walls - which
- accurately resolves boundary layer behaviour - and the \(k\)-\(\varepsilon\) model in
- the free stream, enhancing robustness and accuracy in separated flows~\cite{wilcoxTurbulenceModelingCFD2006}.
- The SST approach uses a blending function to smoothly transition between these models,
- which is especially effective in flows with strong adverse pressure gradients and separation,
- such as multiphase cavity flows~\cite{Menter1994}. Another blending function limits the eddy viscosity 
- in wake regions and a cross-diffusion term ensures consistency between the \(k\)-\(\omega\) and \(k\)-\(\varepsilon\)
- models.
+Although various turbulence models exist at different levels of resolution, no general-purpose model 
+ perfectly captures all flow scenarios. In this study, turbulence is modeled using the Shear Stress 
+ Transport (SST) \(k\)-\(\omega\) model, a two-equation eddy-viscosity model based on the RANS equations.
 
-The SST k-\(\omega\) models the eddy-viscosity \(\mu_{t}\) as
-\begin{equation}
-  \mu_{t}\;=\;\rho k T_{t}\,,
+The SST \(k\)-\(\omega\) model combines the advantages of the \(k\)-\(\omega\) model near 
+ walls, which accurately resolves boundary layers, and the \(k\)-\(\varepsilon\) model in the free 
+ stream, enhancing robustness and accuracy especially in separated flows~\cite{wilcoxTurbulenceModelingCFD2006}.
+ It uses a blending function to smoothly transition between these models, which is 
+ particularly effective in flows exhibiting strong adverse pressure gradients and separation, 
+ such as multiphase cavity flows~\cite{Menter1994}. Another blending function limits 
+ the eddy viscosity in wake regions, and a cross-diffusion term ensures consistency 
+ between the \(k\)-\(\omega\) and \(k\)-\(\varepsilon\) formulations. % EDIT: improved explanation and flow
+
+
+The model defines the eddy viscosity \(\mu_t\) as
+\begin{equation}\label{eq:turb_visc}
+  \mu_t = \rho\, k\, T_t\,,
 \end{equation}
- where \(T_{t}\) is the turbulent time scale defined using the k-\(\omega\) parameter \(\beta^{*}\) and the dissipation rate.
- The turbulent time and scales, along with the Kolmogorov time and length scales, and the Taylor microscale are defined below.
- \begin{subequations}
-  \begin{align}
-    T_{t}&\;=\; \bigl(\beta^{*}\,\omega\bigr)^{-1}\,,\\
-    l_{t} & \quad \text{(definition omitted here)}
-  \end{align}
-\end{subequations}
-Since the form of the RANS governing equations remains similar to the governing equations described in the
- previous section, they are not explicitly written here but can be found in the Star-CCM+ documentation~\citelater{starccm}.
- The additional equations accounting for the transport of the turbulent kinetic energy and dissipation rate 
- is given in~\eqref{eq:turbs-kw}
+where \(T_t\) is the turbulent time scale defined using the model constant \(\beta^*\) and the 
+ dissipation rate \(\omega\). The turbulent time along with the turbulent length scale are defined as
+\begin{equation}
+  T_t = \frac{1}{\beta^* \omega}\,.
+  %\quad l_t = \quad \text{(definition omitted here)}\,.
+\end{equation} % EDIT: kept placehold
+
+Since the RANS governing equations closely resemble those described in the previous section, 
+they are omitted here for brevity. The implemented set of equations can be found in the STAR-CCM+ documentation~\cite{star-ccm+}.
+
+The transport equations for the turbulent kinetic energy \(k\) and the 
+specific dissipation rate \(\omega\) are given by
  \begin{subequations}\label{eq:turbs-kw}
 \begin{align}
     \pderiv{}{t} \rho k  + \nabla \cdot (\rho k \vect{\overline{v}}) &= \nabla \cdot \left[(\mu + \sigma_{k} \mu_{t}) \nabla k\right] + P_k
@@ -465,35 +713,41 @@ Since the form of the RANS governing equations remains similar to the governing 
         - \rho \beta f_{\beta}(\omega^{2} - \omega_{0}^{2}) + S_{\omega},
 \end{align} 
  \end{subequations}
- The turbulent viscosity, \(\mu_t\), is calculated as \(\mu_{t} = \rho k T_{t}\), where \(T_{t}\) is the turbulent time scale. 
- where \(\sigma_{k}\) and \(\sigma_{\omega}\) are the Prandtl numbers for \(k\) and \(\omega\) respectively.
+where \(\sigma_k\) and \(\sigma_\omega\) are the turbulent Prandtl numbers for \(k\) and \(\omega\), respectively. % EDIT: clarified notation
 
-\subsection{Modelling Vaporisation}
-\subsection{Modelling Subproblem 1}
-Not considering the mixing effects that might occur at later times, the infiltrating
- water into the evaporation chamber is a separated flow problem due to the sharp interface
- separating the two phases - water and air.
- 
-The objective - we want to understand the development of the flow field, 
- understand the amount of sloshing that can be expected in the system, and the amount of
- mixing that happens during the injection process and what the result flow system might look like 
- before the evaporation step. 
 
-%The fundamental forces active in the system are the inertial, gravitational, viscous,
-% pressure, and surface tension forces. The governing equations are analogous to the 
-% governing equations of the homogenous two-fluid flow model.
-% The flow field is described using the primary variables for each phase - $\rho_{i}, \vec{u}_{i}, E_{i}$.
 
-\begin{itemize}
-   \item what we're looking for and why we're interested in this
-   \item phases involved, forces active and stuff
-   \item assumptions we make
-   \item variables we care about
-   \item governing eqs (?)
-   \item 3D vs 2D
-\end{itemize}
+\subsection{Summary}
+Flash evaporation is inherently non-equilibrium: accurate prediction hinges on nucleation seeding, 
+transient interfacial area, bubble dynamics, and kinetic mass transfer - not solely 
+on bulk heat supply. Low pressure and reduced gravity 
+amplify kinetic and diffusion limits while suppressing 
+buoyancy-convection, reinforcing the need for physics-based closures and, 
+where feasible, non-homogeneous, non-equilibrium formulations. 
+The chapter thereby motivates the later numerical choices: consistent 
+interface jump conditions, careful turbulence treatment near 
+phase boundaries, and closure selections that remain transferable beyond case-specific tuning.
+%\subsection{The Infiltration Subproblem}
+%The liquid intrusion phase involves simulating the transient displacement 
+% of resident air by injected water within a sealed, low-pressure tank.
+% Neglecting potential mixing effects that may arise at later stages, the
+% infiltration of water into the evaporation chamber is treated as a 
+% separated flow problem characterized by a sharp interface between the 
+% two immiscible phases—water and air.
 
-\subsection{Modelling Subproblem 2}
-\begin{itemize}
-  \item from the top 
-\end{itemize}
+% In the model, both water and air phases are assumed to have constant 
+% density, justified by the moderate pressure and velocity conditions during 
+% the intrusion where compressibility effects can be neglected. Initial temperature 
+% fields are set consistent with the experimental conditions and allowance 
+% is made for ambient heat transfer with the surroundings.
+
+
+
+%\subsection{Modelling Subproblem 2}
+%In computational fluid dynamics, the physical phenomena described 
+%in the previous sections must be translated into macroscopic closure models 
+%for the governing equations. A two-fluid Eulerian approach, which treats each 
+%phase as an interpenetrating continuum, is well-suited to model the two-phase flows 
+%%arising from flash evaporation. However, to account for the physics of nucleation and 
+%bubble growth, this framework requires several crucial closure models.
+
