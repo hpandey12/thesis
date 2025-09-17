@@ -1,0 +1,367 @@
+% !TeX root = ../../Thesis.tex
+\section{Computational Methodology}\label{chap2}
+This chapter documents the numerical framework in STAR-CCM+, 
+detailing the one-fluid VOF method for separated free surfaces and 
+the Eulerian Multiphase model with Large-Scale Interface capabilities 
+for regime-spanning applications. It explains interface-capturing, 2D adaptive remeshing to sharpen fronts, 
+and the closure palette for surface tension using the continuum surface theory, 
+interfacial momentum (drag, lift, turbulent dispersion, wall lubrication), 
+and interphase heat transfer. Finally, it states modeling assumptions and boundary conditions for both 
+infiltration and the envisioned flashing application.
+\subsection{Multiphase-Flows in STAR-CCM+}
+STAR-CCM+ employs a finite-volume, cell-centered scheme with 
+ variables stored at cell centroids and interpolated to faces, 
+ using second-order upwind for convection, least-squares gradients 
+ with Venkatakrishnan limiting, and the Semi-Implicit Method for Pressure Linked Equations 
+ (SIMPLE) scheme for segregated pressure-velocity coupling. This ensures a balance of accuracy, boundedness, and 
+ robustness in the presence of large density jumps and under-resolved interfaces. 
+ Interface-capturing methods necessarily produce a minimum interface thickness of a few cells, motivating bounded convective schemes 
+ and careful limiter usage to control numerical diffusion and spurious currents. RANS modeling is used with the SST $k-\omega$ model, realizability controls, turbulence intensity and length-scale boundary specification, and optional quadratic/cubic 
+stress-strain relations for anisotropy in flows with strong secondary motions
+
+At large scale interfaces, the near-interface flow often exhibits
+ laminar characteristics with the development of boundary layers. However, in situations
+ with significant velocity gradients, turbulent fluctuations can arise in the
+ regions adjacent to the interface (especially when the interface is mobile or
+ highly distorted). Recognizing that standard RANS turbulence
+ models tend to overpredict turbulence intensity near phase boundaries,
+ STAR-CCM+ allows the user to apply turbulence damping strategies
+ (vorticity limiters) which suppress excessive eddy viscosity and
+ restore physically consistent laminar sublayers adjacent to the interface.
+
+\subsubsection{Volume-of-Fluid Method}
+The volume-of-fluid (VOF) method is an interface capturing method that utilises the governing 
+ equations of the one-fluid model as detailed in~\sect{sec:one-fluid}. The method presumes that
+ the computational mesh is fine enough to resolve the interface topology.
+ Using the volume fraction as the marker function - the interface is assumed to be present
+ in cells with volume fraction values between 0 and 1.
+ The distribution of the phase \(\ind{i}\) is driven by the volume fraction transport equation,
+\begin{equation}\label{eq_vof_transport}
+\pderiv{}{t}\integ{V}{} \alpha_{\ind{i}}\,\diff{V} +
+\ointeg{\partial V}{} \alpha_{\ind{i}} \vect{v}_{\ind{i}} \cdot \diff{\vect{a}} = 
+\integ{V}{} \left(S^{\alpha}_{\ind{i}} - \frac{\alpha_{\ind{i}}}{\rho_{\ind{i}}} \frac{D \rho_{\ind{i}}}{D t}\right)\,\diff{V}
+- \integ{V}{} \frac{1}{\rho_{\ind{i}}} \nabla \cdot \left(\alpha_{\ind{i}} \rho_{\ind{i}} \vect{v}_{d,\ind{i}}\right)\diff{V}\,.
+\end{equation}
+ In case of two phases, the volume fraction transport is solved only for the first phase, thus in each volume
+ element, the volume fraction of phase \(j\) is given as \(\alpha_{j} = 1 - \alpha_{\ind{i}}\).
+ 
+For convection of volume fraction, STAR-CCM+ employs a modified High-Resolution Interface 
+Capturing (HRIC) scheme that blends downwind and
+ upwind via normalized-variable 
+diagrams with Courant-number corrections to preserve boundedness and sharpness.The spurious oscillations that may arise in the volume fraction field due to meshes with large aspect ratios
+ are suppressed by artificially smoothening the volume fraction gradient across the interface.~\cite{star-ccm+}
+
+\subsubsection{Eulerian Multiphase Method}
+Star-CCM+ implements the governing equations of the two-fluid model as detailed in~\sect{sec:two-fluid} as the eulerian multiphase (EMP) model. 
+ The two-fluid model is predominantly used to simulate dispersed flows and the mesh resolution is
+ assumed to be coarse enough to not capture the interface topology between the phases. The EMP model,
+ however, utilises the multiple flow regime framework to allow the simulation of multiscale flows.
+ Based on increasing volume fraction of the
+ secondary phase, \(\alpha_{\ind{s}}\), in a finite volume cell,
+ the topology transitions through three principal 
+ regimes~\cite{gadaLargeScaleInterface2017, star-ccm+}, where the secondary phase is:
+ \begin{itemize}
+    \item dispersed in the primary phase (first dispersed regime, \(0 \le \alpha_{\ind{s}} \le \alpha_{\ind{fr}} \))
+    \item separated from the primary phase through a large scale interface (interfacial flow regime, \(\alpha_{\ind{fr}} \le \alpha_{\ind{s}} \le \alpha_{\ind{sr}} \)) 
+    \item continuous while having the primary phase dispersed (second dispersed regime, \(\alpha_{\ind{sr}} \le \alpha_{\ind{s}} \le 1\))
+ \end{itemize}
+The first and second regime terminuses, \(\alpha_{\ind{fr}}\) and \(\alpha_{\ind{sr}}\), mark the values of \(\alpha_{\ind{s}}\)
+that define the end of the first dispersed and large scale interface regimes respectively. STAR-CCM+ uses regime-specific closure models for 
+ the interfacial momentum and energy terms. These models are blended using a weighting
+ scheme according to the calculated proportion of each regime in the cell.
+
+Adaptive Interface Sharpening (ADIS) is used 
+in the multiregime framework to switch to HRIC near large interfaces and 
+revert to upwind away from interfaces, avoiding spurious
+ sharpening in smooth regions while limiting oscillations at high aspect-ratio meshes.
+
+\subsubsection{Adaptive Mesh Refinement}
+STAR-CCM+ provides provisions to include adaptive mesh refinement to locally refine the mesh 
+ based on either pre-defined or user-field functions. For 2D meshes, this provision has
+ not been included, however the Remeshing solver can be included in the solution to
+ locally refine the mesh during the evolution of the solution. The mesh refinement 
+ is unidirectional and does not coarsen already refined regions of the mesh.
+
+\begin{figure}
+  \centering
+  \includegraphics[width = 0.9\linewidth]{Chapters/Chap2/figs/sub1_amr} 
+\caption{Adaptive mesh refinement based on volume fraction of liquid as refinement criteria.} \label{fig:amr}
+\end{figure}
+In context of this thesis, a user defined field function based on the volume fraction of water 
+has been used in the implementation of the VOF method to refine the mesh 
+with increasing time steps.~\fig{fig:amr} displays progressive refinements in the remeshing 
+process as the solution evolves for the case of water flowing into a chamber. 
+%"neither of the two methodology - VOF or two-fluid - is suitable for multiscale flows~\cite{gadaLargeScaleInterface2017}".
+%"most data for the semi-empirical relations covers rather narrow domains~\cite{yadigarogluNatureMultiphaseFlows2018}"
+%"if one considers a non flow situation in the two horizontal layers, the forces acting on the 
+%two fluids and their interface are gravity and surface tension - in this case we speak of
+%the RT instability~\cite{hewittModellingStrategiesTwoPhase2018}."
+%"there exists a wide spectrum of scales, ranging from the global one dictated by the flow
+%configuration, to the smallest one where turbulent energy is dissipated into heat\cite{shyyComputationalTechniquesComplex1997}"
+
+\subsection{Closures}\label{sec:closures}
+Closures are critical to the accurate prediction of the relevant flow variables and the distribution
+ of volume fraction~\cite{sugrueRobustMomentumClosure}. Existing literature reviews 
+ the overwhelming number of closures available that yield a range of varying performance 
+ along with their comparison with experimental data, however literature
+ presenting CFD simulations tend to choose 'result-oriented' closures that aren't
+ transferable to a wider range of flow situations.
+ Literature admits that the industry relies on the tunable parameters in the closures to 
+ match the specific experimental data being simulated or the arbitrariness of this choice
+ to get improved flow predictions.~\cite{krepperValidationClosureModel2018, sugrueAssessmentSimplifiedSet2017, liaoEulerianModellingTurbulent2018}
+ 
+Models may also provide satisfying predictions for certain parameters or situations while
+ failing in others and a general inconsenus prevails while discussing the effects of interfacial
+ forces. Early work has tended to neglect 
+ the effects of lift or virtual mass forces, or chosen to use constant coefficients to 
+ describe them while using formulations for the drag forces based on 
+ relevant non-dimensional numbers.
+ The effect of non-drag forces, however, tends to be as significant on the 
+ distribution of phases.~\cite{liaoEulerianModellingTurbulent2018}
+
+ Since it is 
+ difficult to separate the effects of the various forces in actual experiments,
+ the development of these closures assumes certain idealisations when they're not
+ partly or wholly based on empirical data, rendering them highly flow 
+ dependent. The methodology of resolving a 
+ complex interfacial momentum transfer through a linear superposition 
+ of several simple forces is also questioned.~\cite{sugrueRobustMomentumClosure}. 
+
+ Closures should reflect the local physical phenomenon occurring on the non-resolved scale. 
+ But this requires a better understanding of the physics of such local flow phenonema. 
+ Consequently, the closures should reflect the physics including their dependence 
+ on material parameters and local flow characteristics. Best practices suggest that all relevant closure models should be included 
+ - if the model reflects the physics accurately, 
+ the locally unimportant closures will be blended out automatically.
+
+The industry has, however, attempted to establish generality that can be transferred 
+ to multiple flow situations and has proposed baseline frameworks. There is a general consensus
+ that the role of turbulence is underestimated~\cite{colomboBenchmarkingCFDModelling};
+ current models also aim to reduce 
+ uncertainty and inconsistency in model selection~\cite{colomboBenchmarkingCFDModelling}, 
+ adopt closures that avoid "case-specific adjustments to unphysical coefficients and 
+ tunable parameters"~\cite{sugrueRobustMomentumClosure}, and utilise more
+ physics based closures that are more physically consistent~\cite{liaoEulerianModellingTurbulent2018,colomboBenchmarkingCFDModelling}.
+
+ \subsubsection{Surface Tension}
+Surface tension, although an interfacial force, is implemented using the 
+ Continuum Surface Force approach as a volumetric force in the momentum equation.~\cite{star-ccm+}
+ Divided into normal and tangential components and using the mean 
+ curvature of the free surface 
+ \(\kappa = - \nabla \cdot \left(\nabla \alpha_{\ind{i}}/|\nabla \alpha_{\ind{i}}|\right)\),
+ the volumetric surface tension force is given as 
+ \begin{equation}
+   \vect{f}_{\sigma} = \underbrace{-\sigma \nabla \cdot \frac{\nabla \alpha_{\ind{i}}}{|\nabla \alpha_{\ind{i}}|} \nabla \alpha_{\ind{i}}}_{\vect{f}_{\sigma,n}}
+    + \underbrace{(\nabla \sigma)_{t}|\nabla \alpha_{\ind{i}}|}_{\vect{f}_{\sigma,t}}
+ \end{equation}
+ The EMP treats surface tension by splitting it among the phases occupying
+ the cell using the local volume fractions. The pressure gradient
+ is then the summation of the 
+ individual phase surface tension contributions \(\vect{f}_{\sigma, \ind{i}}\)~\cite{gadaLargeScaleInterface2017,star-ccm+},
+ \begin{equation}
+   \vect{f}_{\sigma, \ind{i}} = \alpha_{\ind{i}} \sigma \kappa \nabla \alpha_{\ind{i}}.
+ \end{equation}
+
+\subsubsection{Interphase Momentum Closures}
+Accurate interfacial momentum exchange controls phase distribution and slip, so 
+ closure choices strongly influence mean velocities and void-fraction fields.
+
+Drag force is generally more dominant than other forces as they tend to be a magnitude
+ higher than other forces~\cite{tas-koehlerCriticalAnalysisDrag2021a}. Most drag models perform 
+ equally well at low gas volume fractions. However as they are based on ideal conditions, 
+ they do not account for bubble swarm effects at higher gas volume fractions and show reduced 
+ accuracy. Certain swarm corrections do exist, but they are averaged along a radial profile when
+ the swarm effects are also felt in the bulk~\cite{sugrueRobustMomentumClosure, sugrueAssessmentSimplifiedSet2017,colomboBenchmarkingCFDModelling}.
+ The accurate modelling of interaction area density and length becomes relevant for the calculation
+ of the drag force. 
+ Using the linearised drag coefficient, \(A_{D}\), and the relative velocity between the phases
+ \(\vect{v}_{r} = \vect{v}_{j} - \vect{v}_{i}\), STAR-CCM+ implements the drag force as,
+ \begin{equation}
+   \vect{F}_{ij}^{D} = A_{D}\vect{v}_{r}
+ \end{equation}
+ The linearised drag coefficient is related to the standard definitions of the drag 
+ coefficient \(C_{D}\) using
+ \begin{equation}
+   A_{D} = C_{D} \frac{1}{2} \rho_{c} |\vect{v}_{r}| \frac{a_{cd}}{4}
+ \end{equation}
+ where \(a_{cd}\) is the interfacial area density and \(a_{cd}/4\) represents the projected area of
+ the equivalent spherical particle. 
+
+The lift force models are particularly sensitive and uncertain in their performance~\cite{sugrueAssessmentSimplifiedSet2017}.
+ They suffer from the same discrepancy between performance in low and 
+ high gas volume fractions. Moreover, existing 
+ lift force implementations in STAR-CCM+ fail to replicate the experimental data
+ they were derived from~\cite{sugrueRobustMomentumClosure}.
+ Assuming \(\alpha_{p}\) is the volume fraction of the primary (continuous)
+ phase, STAR-CCM+ implements the lift force as
+ \begin{equation}
+   F_{ij}^{L} = C_{L,\text{eff}} \alpha_{d} \rho_{p} 
+   \left[\vect{v}_{r} \times \left(\nabla \times \vect{v}_{p}\right)\right].
+ \end{equation} 
+
+A turbulent dispersion force is supposed to act on the gas phase and 
+ spreads this dispersed phase due to turbulence
+ in the continuous phase. This is typically modelled as 
+ as a diffusion term proportional to the turbulent 
+ kinetic energy gradients~\cite{liaoFlashingEvaporationDifferent2013}. 
+ The force is theorised to arise from the averaging of the fluctuations
+ of the bubbles due to the turbulence.
+ \begin{equation}
+   F_{ij}^{TD} = A_{D} \vect{v}_{TD}
+   = A_{D}\,\underbrace{C_{0} \frac{\nu_{c}^{t}}{\sigma_{\alpha}}\tens{I}}_{\tens{D}_{TD}} \cdot 
+   \left[
+       \nabla \ln(\alpha_{d}) - \nabla \ln(\alpha_{c})
+       \right]
+ \end{equation}
+ The closure relation by Burns~\cite{star-ccm+} uses the Favre averaging of the drag
+ force and can be expressed as
+ \begin{equation}
+   F_{ij}^{TD} = C_{D} C_{TD} \frac{\mu_{l}^{t}}{\rho_{c} \sigma_{TD}}\vect{v}_{TD},
+ \end{equation}
+ where \(C_{D}\) is the drag coefficient, \(C_{TD}\) is an adjustable turbulent dispersion
+ calibration coefficient, \(\mu_{l}^{t}\) is the liquid turbulent viscosity, and
+ \(\sigma_{TD}\) is the turbulent Prandtl number.
+
+Most lift
+ coefficient correlations don't account for the decrease of the magnitude of the
+ lift force to zero 
+ near the walls. This low gas volume fraction at the walls has historically
+ been explained
+ through a liquid film forming at the walls repelling the bubbles. This has been demonstrated to
+ not actually occur in practice. The wall lubrication force has thus been criticised
+ as lacking any physical justification~\cite{sugrueRobustMomentumClosure,colomboBenchmarkingCFDModelling}.
+ Newer closures~\cite{sugrueRobustMomentumClosure,star-ccm+} utilise a turbulent dispersion force based 
+ formualtion to maintain the desired gas volume fraction and use the closure instead
+ as a correction term to resolve the phase distribution at the boundary lost due to
+ the averaging process. STAR-CCM+'s implementation of the wall lubrication force
+ \begin{equation}
+   F_{ij}^{WL} = - C_{WL}(y_{w})\alpha_{s} \rho_{p} 
+   \frac{|\vect{v}_{r} - (\vect{v}\cdot \vect{n})\vect{n}|}{d_{b}} \vect{n}
+ \end{equation}
+ can be changed to implement alternative models instead by defining user defined 
+ field functions for \(C_{WL}\).
+
+\subsubsection{Interphase Heat Transfers}
+STAR-CCM+ models heat transfer by using the analogy to Newton's law of cooling. This entails the 
+estimations of accurate heat transfer coefficient correlations that can link the 
+liquid superheat to vapour generation in a reliable manner. This choice controls the predictive
+accuracy of the rate of phase change under non-equilibrium conditions. As with the case of
+momentum closures, there is no universally valid correlation as the law of cooling is a simplification
+of the actual heat transfer mechanisms in multiphase flows. A composite heat transfer coefficient
+correlation that accounts for the conduction- and convection-based limits can be constructed using 
+a linear superposition of the various individual heat transfer correlations. Heat transfer through
+turbulence can also be similarly considered. 
+
+\subsubsection{Nucleation and Interphase Transfer Closures}
+Homogeneous nucleation and subsequent bubble growth are not inherent to the two-fluid model's 
+fundamental equations. To capture these effects, a scalar transport equation for the bubble number density must be solved along with the flow variables, with source terms accounting for:
+\begin{enumerate}
+    \item Nucleation: A nucleation model, such as the one based on the classical nucleation theory (CNT), provides the source of new bubbles. This term depends exponentially on the liquid superheat.
+    \item Bubble Growth/Collapse: The growth of these newly formed bubbles is governed by interphase heat and mass transfer. The mass transfer rate is given by a model like the 
+    HKS equation, while the heat transfer rate requires a closure for the interphase heat transfer coefficient.
+    \item Coalescence and Breakup: To account for changes in bubble size distribution, models for bubble coalescence and breakup are also required. 
+    These models are typically empirical and depend on the local turbulence and velocity gradients. In the context of our experimental conditions,
+    as bubbles in low gravity show lower detachment rates and grow much larger in size than in terrestrial conditions. Coalescence will
+    dominate as growing bubbles eat each other up but do not leave the nucleating surface. This factor, due to 
+    the modelling complications can be ignored. 
+\end{enumerate}
+While a simple, pressure-driven mass transfer model like Lee model can be used to bypass these complexities, its parameters are often highly tuned and lack physical basis. 
+The population balance approach, while more complex, provides a more fundamental and physically consistent framework for modeling two-phase flows with a changing bubble size distribution.
+
+\subsection{Model of the Experiment}
+The experimental flow system encompasses distinct flow regimes that 
+differ in physical nature and complexity across its various components. 
+To effectively capture these differences, the numerical simulation is 
+logically divided into two subproblems: the liquid intrusion phase, 
+characterized by transient multiphase displacement of air by water, and 
+the subsequent evaporation phase, involving rapid phase change under vacuum 
+conditions.
+
+In order to establish kinematic and dynamic similarity with the experimental 
+setup, the modelled domain is geometrically same as the actual setup.
+Relevant scales are defined and STAR-CCM+'s automatic assignment
+of a 1m depth to 2D domains is accounted for in the initial conditions 
+for the infiltration problem and establish dynamical similarity. 
+
+It is acknowledged that the current modeling employs two-dimensional 
+simulations predominantly for computational efficiency, which inherently 
+introduces limitations in capturing fully three-dimensional flow structures 
+and turbulence anisotropies present in the actual experimental setup. 
+Similarly, the adoption of the Boussinesq approximation within the SST 
+$k$-$\omega$ turbulence model introduces simplifications that neglect density 
+variations except in buoyancy terms, potentially diminishing accuracy 
+in regimes where density gradients or compressibility effects become significant.
+
+Despite these simplifications and inherent approximations, the staged 
+subproblem approach facilitates focused investigation of the dominant 
+physical phenomena in each phase. The following subsection details 
+the modeling setup specific to the liquid intrusion phase, outlining 
+assumptions, governing equations, boundary conditions, and validation strategies.
+
+\subsubsection{Assumptions}
+We model the experiment on a 2D domain. Water is assumed to be 
+incompressible in both the subproblems. Air is modelled as an 
+ideal gas in the infiltration problem. All phases are assumed to be immiscible.
+We assume that the continuum hypothesis holds and that the macroscopic 
+averaged quantities are smooth. 
+We assume transport properties such as viscosity and conductivity are constant 
+over the averaging procedure and that interfaces are infinitely 
+thin. 
+
+It is assumed that the fundamental assumptions in eddy-viscosity modelling are
+true and that Reynolds stress tensor is proportional 
+to the mean velocity strain rate through an eddy viscosity defined as in~\eq{eq:turb_visc}~\cite{star-ccm+}.
+\begin{equation}
+  \tens{T}_{\text{RANS}} = \mu_{t} (\nabla \vect{v} + \nabla \vect{v}^{T}) - \frac{2}{3}(\mu_{t} \nabla \vect{v}) \tens{I}\,,
+\end{equation}
+In cases of continuous-dispersed regimes, we
+assume that the interfacial shear stress is equivalent to the shear stress in the continuous phase.
+
+In the formulation of the liquid infiltration problem, no relative velocity is considered 
+between the phases and the diffusion velocity in~\eq{eq:v-diff} is 0. Apart from the 
+liquid inflow, no additional source terms are present. We assume that the heat exchanged 
+between the environment and the boundaries of the system is dominated by conduction
+and prescribe a very low heat transfer coefficient to account for the heat lost to the environment.
+This prescription is not considered in the evaporation problem, where the system is assumed 
+to be isolated.
+
+\subsubsection{Governing Equations and Boundary Conditions}
+The infiltration problem uses the governing equations for the one-fluid formulation
+ and the evaporation equation utilises the two-fluid formulation
+ as described in~\sect{sec:one-fluid} and~\sect{sec:two-fluid} respectively.
+ As only the 2D aspects of the problem are considered, 
+ the momentum and energy equations in the $z-$axis directions
+ are not solved.
+
+\subsubsection*{Boundary Conditions: Liquid Infiltration}\par\vspace{-\baselineskip}\vspace{\parskip}
+The jump conditions at the interface without phase change are considered based on the discussion~\sect{sec:jumps}.
+These are summarised below:
+\begin{subequations}
+  \begin{align}
+    \left[\! \left[\vect{v} \right]\! \right] &= 0\,, \\
+    \left[\! \left[ \left(\mu \left(\nabla \vect{v} + (\nabla \vect{v})^{T} \right) - (p + \rho \vect{g} \cdot \vect{x}) \tens{I} 
+    \right) \cdot \vect{n} \right] \! \right] &= \sigma \kappa \vect{n} + \left[\! \left[\rho \right]\! \right] \vect{g}\,.
+  \end{align}
+\end{subequations}
+The domain boundaries of the system are specified as walls without slip, thus 
+ fluid velocity at wall is 0. The inlet is assigned as a velocity inlet, with
+ the velocity and temperature of the inflowing water specified.
+
+The boundary specifications for heat transfer for the infiltration problem are summarised below:
+ \begin{subequations}
+  \begin{align}
+    &\text{Walls: Convection specification, } && \dot{q} = h_{\text{ext}} (T_{w} - T_{\infty})\,,\\
+    &\text{Outlet: Adiabatic} && \dot{q} = 0\,,\\
+    &\text{Inlet: Specified temperature of infiltrating water} && T = T_{in}\,.
+  \end{align}
+\end{subequations}
+For the specification of the wall temperature $T_{\ind{w}}$ is the static fluid temperature at the wall.
+
+\subsection{Summary}
+The chosen discretisation, advection controls, and 
+remeshing strategy balance boundedness, interface sharpness, 
+and stability in the presence of large density jumps and moving free surfaces.
+ While the approach is assumed to be pragmatic, 
+ closure selections and additional damping options aim to mitigate known artifacts near phase boundaries, 
+ enabling credible verification tests and 
+a setup applicable for the simulation of the infiltration problem.

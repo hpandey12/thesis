@@ -1,243 +1,673 @@
-\section{Subproblem: Liquid Infiltration}
-The first subproblem deals with water infiltrating the evaporation chamber during rocket ascent. 
-The flow system assembly comprises of the hydraulic accumulator, the evaporation chamber and the injection system subassembly
- that drives the liquid from the hydraulic accumulator into the evaporation chamber. The hydraulic accumulator and the evaporation
- chamber can be heated until lift-off and current design considerations assume the temperature of the evaporation chamber and
- water in the accumulator to be $368.15K$ and $353.15K$ respectively. The ambient temperature at lift-off is assummed to be $280K$ based on the
- remarks and considerations made in~\citelater{OLD-SED}. Although insulation from the environment outside the rocket is assumed and
- the hydraulic accumulator will be sufficiently insulated, the evaporation chamber can cool down slightly during ascent until the start
- of the experiment at time, $t = 140s$, after lift-off. 
+%With an initial pressure of $1 bar$ in the evaporation chamber, it is also necessary to validate if the continuum hypothesis remains valid 
+%for the air present in the chamber. The Knudsen number relates the mean free path, $\lambda$, to the scale length of the macroscopic flow property gradients 
+%and helps determine the validity of the continuum hypothesis. The magnitude of the mean free path can be used to estimate the Knudsen number.
+%\begin{equation}
+%    \lambda = \frac{\mu}{\rho} \sqrt{\frac{\pi m}{2 k_{B} T}}
+%\end{equation}
+%For dry air, at a pressure and temperature of $0.03MPa$ and $328$ respectively, molecular mass $m = 4.815e-26\,\text{kg}$, and estimating the kinematic
+%viscosity using  Sutherland's formula, the mean free path, $\lambda \approx 2.0732e-06 m$.
+\section{Numerical Results}\label{chap3}
+This chapter outlines the computational setup and results for simulating the liquid infiltration 
+into the evaporation chamber. The employed models are first validated against classical benchmark problems - 
+the 1D Stefan problem and the 2D Rayleigh-Taylor instability - to ensure credibility 
+of the numerical approach. The Stefan problem 
+benchmarks energy conservation and interface motion against the analytical 
+solution, and Rayleigh-Taylor simulations reproduce canonical interfacial 
+roll-up and mixing trends observed in two-phase flows. 
+A concise overview of the methodologies and results for these 
+benchmarks are followed by discussion of the infiltration simulations in the experimental geometry.
+The infiltration study, built with adaptive remeshing, quantifies free-surface evolution, 
+velocity fields, and probe-based pressure/temperature histories in the chamber and nozzle, 
+yielding consistent end-of-injection states that can be used to initialise the flashing phase.
 
-The over-pressure in the hydraulic accumulator that drives the water and the absolute pressure in the evaporation chamber are assumed
- to be $3.5 bar$ and $1 bar$ respectively. Water injection stops shortly before the apogee is reached and the flow is cut-off when the
- absolute pressure in the evaporation chamber rises to $1.7 bar$. As no flow measurements are made in the injection assembly, and the
- hydraulic accumulator only contains a temperature sensor, it becomes necessary to estimate the inflow conditions of the water into
- the evaporation chamber.
- Using the pressure gradient between the accumulator and the evaporation chamber, the Darcy-Weisbach equation to estimate the
- head loss in the pipe and accomodating for the minor head losses incurred through the following components of the injection subassembly: 
- \begin{itemize}
-    \item adapter to reduce the pipe diameter from $D$ to $d$
-    \item two sharp $90 deg$ connectors
-    \item and six threaded connections in the piping,
- \end{itemize}
- the total head loss from the accumulator to the evaporation chamber can be written as,
- \begin{equation}
-     h = (1 - \frac{d^{2}}{D^{2}})\frac{v^{2}}{2} + 2 (1.1 ) \frac{v^{2}}{2} + 6 (0.08)\frac{v^{2}}{2} + f \frac{L}{d} \frac{v^{2}}{2},
- \end{equation}
- where $L$ is the length of the pipe, $f$ is the Darcy friction factor, and $v$ is the inflow velocity of the water into the evaporation chamber.
- The Darcy friction factor is determined using the Haaland approximation of the Colebrook equation and the velocity is estimated by
- solving the energy balance for the flow system assembly, 
- \begin{equation}
-     \frac{\Delta P}{\rho g} = \Delta h + \frac{v}{2} + h 
- \end{equation}
- The inflow velocity, $v$, is found to be. With a corresponding Reynolds number, $Re = $, the initial assumption of turbulent flow is validated.
+\subsection{Stefan Problem}
+\label{sec:stef}
+Phase change processes are characterised by the motion of an interface 
+separating two distinct phases, where heat transfer governs the interface
+ displacement according to conservation of energy principles~\cite{Koga2020}.
 
-With an initial pressure of $0.03MPa$ in the evaporation chamber, it is also necessary to validate if the continuum hypothesis remains valid 
-for the air present in the chamber. The Knudsen number relates the mean free path, $\lambda$, to the scale length of the macroscopic flow property gradients 
-and helps determine the validity of the continuum hypothesis. The magnitude of the mean free path can be used to estimate the Knudsen number.
+In the classical Stefan problem, a prescribed temperature boundary propagates a 
+melting or freezing front, with the interface movement determined by the balance of latent 
+heat and conducted heat~\cite{jonssonOneDimensionalStefan}. Assuming uniform initial 
+temperature, constant boundary temperature, and homogeneous thermophysical properties 
+in each phase, the semi-infinite one-dimensional Stefan problem represents the simplest 
+analytically solvable phase change model. It admits an analytical solution, reducing to 
+the standard transient conduction problem when latent heat is neglected, thereby serving 
+as a benchmark for verifying phase-change models and the proper implementation of the energy 
+equation.~\cite{jonssonOneDimensionalStefan,bolediLevelsetBasedSpacetime2022,andreucciLectureNotesStefan}
+
+In context of this study, the moving-interface heat-balance problem encountered in the 
+Stefan problem is analogous to the growth of a spherical vapour bubble in superheated liquid in
+late stages. The interface normal velocity is constrained by the interfacial mass flux through density and latent heat -
+emphasising the thermal diffusion controlled growth.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.90\textwidth]{stefan_setup}
+\caption{Problem setup}
+\label{fig:stefan_setup}
+\end{figure}
+Consider a semi-infinite rectangular domain \(\Omega \subset \mathbb{R}^2\):
+
+\[
+\Omega = \{(x,y) \in \mathbb{R} \times \mathbb{R} : x \in [0,\infty), y \in [0, \Delta h]\}\,,
+\]
+
+partitioned into solid and liquid subregions \(\Omega_{\ind{s}}\) and \(\Omega_{\ind{l}}\), 
+with \(\Omega = \Omega_{\ind{s}} \cup \Omega_{\ind{l}}\). The interface location is 
+defined by \(X(t)\), and \(\partial \Omega\) denotes the boundary of \(\Omega\).
+
+The temperature field \(T(x,t)\) in the liquid phase satisfies the heat equation 
+coupled with the Stefan condition at the interface. The system reads:
+\begin{subequations}\label{eq:stefan}
+\begin{align}
+\pderiv{T}{t} &= \alpha \ptwoderiv{T}{x}\,, && 0 < x < X(t)\, \quad t_0 < t < t_f, \\
+-k \pderiv{T}{x}\Big|_{x = X(t)^-} &= \rho L \deriv{X}{t}\,, && t_0 < t < t_f, \\
+T(x,0) &= T_{m}\, && x \in \Omega\, \\
+T(0,t) &= T_{l}\, && t_0 < t < t_f\, \\
+\nabla T \cdot \vect{n} &= 0\, && \text{on } \partial \Omega \setminus \{x=0\}\,
+\end{align}
+\end{subequations}
+
+where \(\alpha\) is the thermal diffusivity, \(k\) the thermal 
+conductivity, \(\rho\) the density, \(L\) the latent heat, and \(\vect{n}\) 
+the outward normal on \(\partial \Omega\).
+
+The one-dimensional analytical solution to \eqref{eq:stefan} is given by:
+
 \begin{equation}
-    \lambda = \frac{\mu}{\rho} \sqrt{\frac{\pi m}{2 k_{B} T}}
+%\begin{align}
+T(x,t) = T_l - (T_l - T_m) 
+\frac{\operatorname{erf}\left(\frac{x}{2 \sqrt{\alpha t}}\right)}{\operatorname{erf}\left(\frac{X(t)}{2 \sqrt{\alpha t}}\right)}\,, \quad
+X(t) = 2 \lambda \sqrt{\alpha t}\,,
+%\end{align}
 \end{equation}
-For dry air, at a pressure and temperature of $0.03MPa$ and $328$ respectively, molecular mass $m = 4.815e-26\,\text{kg}$, and estimating the kinematic
-viscosity using  Sutherland's formula, the mean free path, $\lambda \approx 2.0732e-06 m$.
+
+where \(\lambda\) is determined as the unique root of
+
+\[
+f(\lambda) := \frac{C_p (T_m - T_l)}{L} - \frac{\lambda e^{-\lambda^{2}}}{\sqrt{\pi} \operatorname{erf}(\lambda)} = 0\,,
+\]
+
+with \(C_p\) the specific heat and \(\operatorname{erf}(\cdot)\) the error function:
+
+\[
+\operatorname{erf}(z) := \frac{2}{\sqrt{\pi}} \int_0^z \exp(-y^2) \diff{y}\,.
+\]
+
+%--- EDIT: combined and clarified numerical setup with units using the si{} command, reordered for readability ---
+The computational domain used to model the Stefan problem in STAR-CCM+
+is a two-dimensional rectangular region with dimensions \(L_x = 0.5\,\si{\meter}\) in the 
+horizontal direction and \(6 \Delta h = 3.0 \times 10^{-3}\,\si{\meter}\) in the 
+vertical direction, where \(\Delta h = 5.0 \times 10^{-4}\,\si{\meter}\) denotes the base mesh size.
+
+A trimmed cell mesher is used to discretize the domain into quadrilateral cells with 
+uniform size \(\Delta h\). No mesh refinement or alignment is applied to maintain mesh uniformity.
+
+The simulation models a melting-solidification process using a single-phase, constant-density 
+fluid with laminar energy transport. The fluid phase loosely corresponds to water (\(\mathrm{H_2O}\)) with 
+constant density \(\rho = 1000\,\si{\kilogram\per\meter^3}\), specific 
+heat \(c_p = 4200\,\si{\joule\per\kilogram\per\kelvin}\), and a temperature-dependent 
+thermal conductivity switching between solid and liquid values via a user-defined scalar field function. 
+The latent heat of fusion is set to \(h_m = 1.0 \times 10^5\,\si{\joule\per\kilogram}\), and 
+the melting temperature \(T_m = 273\,\si{\kelvin}\).
+
+The VOF model with a modified High-Resolution Interface Capturing (HRIC) 
+convection scheme is employed to track the phase interface. The melting-solidification coupling 
+is activated to model latent heat effects during phase change.
+
+Boundary conditions include no-slip velocity constraints on all walls. The upper and 
+lower boundaries are adiabatic, while a fixed temperature condition \(T_L = 300\,\si{\kelvin}\) is 
+applied on one vertical wall to induce melting. The initial temperature throughout the domain 
+is uniform and set to the melting temperature \(T_m = 273\,\si{\kelvin}\), with zero initial velocity.
+
+Solver settings apply the segregated flow solver with SIMPLE pressure-velocity coupling. 
+Temporal discretization utilizes an implicit first-order time-stepping scheme with a 
+fixed time step \(\Delta t = 0.5\,\si{\second}\). Relaxation factors are set conservatively 
+to maintain numerical stability.
+
+Simulation output includes temperature fields, solid volume fraction, and interface location,
+ extracted periodically for validation against the analytical solution. The simulation 
+ runs until a maximum physical time of \(t_{\mathrm{max}} = 1000\,\si{\second}\).
+
+%This configuration enables accurate modeling of the classical one-dimensional Stefan problem, 
+% serving as a validation benchmark for phase change numerical methods and the energy 
+% equation discretization in STAR-CCM+.
+\begin{table}[h]
+\centering
+\ra{1.2}
+\begingroup
+\footnotesize % make only this table use small font
+\begin{tabular}{@{}lp{6cm}@{}}
+\toprule
+\multicolumn{2}{@{}l}{\textbf{Simulation Setup}} \\
+\cmidrule(lr){1-2}
+Domain & Two-dimensional rectangular \\
+Mesh size, \(\Delta h\) & \(2.0 \times 10^{-3}\,\si{\meter}\) \\
+Time discretization & Implicit unsteady, first-order Euler \\
+Time step, \(\Delta t\) & \(0.5\,\si{\second}\) \\
+\addlinespace
+\multicolumn{2}{@{}l}{\textbf{Physical Properties}} \\
+\cmidrule(lr){1-2}
+Density, \(\rho\) & \(1000.0\,\si{\kilogram\per\meter\cubed}\) \\
+Dynamic viscosity, \(\mu\) & \(8.8871 \times 10^{-4}\,\si{\pascal\second}\) \\
+Specific heat, \(C_p\) & \(4200.0\,\si{\joule\per\kilogram\per\kelvin}\) \\
+Latent heat of fusion, \(L\) & \(1.0 \times 10^{5}\,\si{\joule\per\kilogram}\) \\
+Thermal conductivity (liquid), \(k_l\) & \(2.33\,\si{\watt\per\meter\per\kelvin}\) \\
+Thermal conductivity (solid), \(k_s\) & \(0.62\,\si{\watt\per\meter\per\kelvin}\) \\
+Melting temperature, \(T_m\) & \(273\,\si{\kelvin}\) \\
+\addlinespace
+\multicolumn{2}{@{}l}{\textbf{Numerical Methods}} \\
+\cmidrule(lr){1-2}
+Multiphase model & VOF with first-order HRIC convection scheme \\
+Flow regime & Laminar \\
+Discretisation Scheme & Second-order upwind (energy), blended second- and first-order upwind (volume fraction) \\
+\bottomrule
+\end{tabular}
+\endgroup
+\caption{Simulation parameters and physics models for the Stefan melting-solidification problem.}
+\label{tab:stefan-simulation-params}
+\end{table}
+Table~\ref{tab:stefan-simulation-params} summarises the key physical properties and numerical methods employed.
+The temperature field evolution for a simulation with mesh 
+size \(\Delta h = 5.0 \times 10^{-3}\,\si{\meter}\) is shown in \fig{fig:stefan_evolution}. The 
+phase interface advances towards the positive \(x\)-direction over time. 
+Temperature decreases from the Dirichlet boundary at \(x = 0\) towards the melting 
+temperature \(T_m\) at the interface, remaining constant beyond.
 
 
-\subsection{Objective}
-The objective of the first task is to model the water injection into the evaporation chamber and extract quantities of interest in order 
- to better estimate the initial conditions for the second task. The validity of the multiphase physics models provided by Star-CCM+ and the equations implemented therein
- is also evaluated against the one-dimensional Stefan problem and the two-dimensional Rayleigh-Taylor instability.  
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.90\textwidth]{stef}
+\caption{Evolution of the phase change interface over time.}
+\label{fig:stefan_evolution}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.8\textwidth]{x_PCI}
+\caption{Location of the phase change interface versus time.}
+\label{fig:stefan_location}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\begin{subfigure}{.49\textwidth}
+\includegraphics[width=\linewidth]{err_PCI}
+\caption{Absolute error in the location of the interface}
+\label{fig:stefan_error_location}
+\end{subfigure}
+\hfill
+\begin{subfigure}{.49\textwidth}
+\includegraphics[width=\linewidth]{errL2}
+\caption{Temperature profile convergence analysis}
+\label{fig:stefan_temp_convergence}
+\end{subfigure}
+\caption{Error analysis for the Stefan problem across various mesh refinements.}
+\label{fig:stefan_convergence}
+\end{figure}
+
+\fig{fig:stefan_convergence} compares the numerically predicted interface location for different mesh sizes against the analytical solution. The interface position is inferred by combining volume fraction and temperature data. Data are sampled at \(100\,\si{\second}\) intervals. The absolute interface location error is displayed in \fig{fig:stefan_error_location}. The numerical temperature profiles are quantified against the analytical solution through the \(L_2\) and \(L_\infty\) norms:
+
+\[
+L_2 = \sqrt{\frac{1}{N}\sum_{i=1}^{N}(T_i - T_{\mathrm{analytical},i})^2}, \quad
+L_\infty = \max_i \left| T_i - T_{\mathrm{analytical},i} \right|.
+\]
+
+Temperature error decreases with mesh refinement, as shown in \fig{fig:stefan_temp_convergence}, confirming convergence to the analytical solution.
+
+\subsection{Rayleigh-Taylor Instability}
+The \textbf{Rayleigh-Taylor (RT) instability} arises when a denser fluid is accelerated 
+into a lighter fluid, causing perturbations at the interface and the formation of 
+complex vortical structures~\cite{birkhoffTAYLORINSTABILITYLAMINAR1954}\,. This 
+fundamental fluid instability underpins many natural and engineering phenomena. Although 
+the idealized, undisturbed RT instability is rarely observed in practice, its core 
+mechanisms manifest over a broad range of spatial and temporal scales. These mechanisms 
+are influenced by parameters such as viscosity, surface tension, compressibility, 
+external accelerations, and stratification~\cite{SHARP19843}\,.
+
+Perturbation growth is driven by opposing gradients of pressure and density localized 
+at the interface. The density contrast is quantified by the non-dimensional Atwood number,
+\[
+At = \frac{\rho_{\ind{H}} - \rho_{\ind{L}}}{\rho_{\ind{H}} + \rho_{\ind{L}}}\,,
+\]
+where \(\rho_{\ind{H}}\) and \(\rho_{\ind{L}}\) denote the densities of the heavier (upper) and lighter 
+(lower) fluids, respectively. Larger Atwood numbers correspond to stronger instability\,.
+
+The nonlinear evolution of the RT instability governs a wide class of two-phase flows 
+involving fluid penetration or displacement~\cite{tryggvasonNumericalSimulationsRayleighTaylor1988}\,. 
+Simulating this instability accurately is considered a classical benchmark for two-phase 
+flow solvers, requiring detailed resolution of interface dynamics and precise implementation 
+of interphase momentum and surface tension forces~\cite{gouldingSimplifiedConservativeDiscretization2024}\,.
+
+Consider a two-dimensional rectangular domain \(\Omega \subset \mathbb{R}^2\,\),
+\[
+\Omega = \{(x,y) \in \mathbb{R} \times \mathbb{R} : x \in [0,L^{*}), y \in [0, 4L^{*}]\}\,
+\]
+occupied by immiscible, 
+viscous, incompressible fluids in subregions \(\Omega_{\ind{H}}\) and \(\Omega_{\ind{L}}\), satisfying 
+\(\Omega = \Omega_{\ind{H}} \cup \Omega_{\ind{L}}\). The interface location is described by a scalar height function 
+\(h(x,t)\):
+\[
+\Omega_{\ind{i}}(t) = \left\{ (x,y) \in \mathbb{R}^2 : (-1)^{i}(y - h(x,t)) > 0, \, t \geq 0 \right\}\,, 
+\quad \ind{i} \in \{\ind{H}, \ind{L}\}\,,
+\]
+such that the interface is the curve
+\[
+X(t) = \left\{ (x,y) \in \mathbb{R}^2 : y = h(x,t),\, t \geq 0 \right\}\,.
+\]
+\begin{figure}[h ]
+    \centering
+    \includegraphics[height = 0.80\linewidth]{rt_setup}
+\caption{Problem setup}
+\label{fig:rt_setup}
+\end{figure}
+With initial interface \(X(t_0) = X_0\) and initial velocity field 
+\(\vect{v}(t_0) = \vect{v}_0\), the governing equations of the Rayleigh-Taylor
+instability in the one-fluid formulation are shown in~\eq{eq:rt-equation-system}.
+The phases are assumed to be incompressible and the jump conditions at
+the interface consist of the kinematic constraint of no relative phase velocity
+and the momentum jump.
+\begin{subequations}\label{eq:rt-equation-system}
+\begin{align}
+\pderiv{\rho}{t} + \nabla \cdot (\rho \vect{v}) &= 0 \,,  
+&& \text{in } \Omega(t)\,, \\
+\pderiv{(\rho \vect{v})}{t} + \nabla \cdot (\rho \vect{v} \otimes \vect{v}) &= -\nabla p 
++ \mu \nabla^{2} \vect{v} + \rho \vect{g} \,,  
+&& \text{in } \Omega(t)\,, \\
+\nabla \cdot \vect{v} &= 0 \,,  
+&& \text{in } \Omega(t)\,, \\
+\left[\! \left[\vect{v} \right]\! \right] &= 0 \,,&& \text{on } X(t)\,, \\
+\left[\! \left[ \left(
+\mu \left(\nabla \vect{v} + (\nabla \vect{v})^{T} \right) - (p + \rho \vect{g} \cdot \vect{x}) \tens{I} 
+\right) \cdot \vect{n} \right] \! \right] &= \sigma \kappa \vect{n} + \left[\! \left[\rho \right]\! \right] \vect{g} \,,&& \text{on } X(t)\,, \\
+\vect{v}(\vect{x}, t_0) &= \vect{v}_0 \,,  
+&& \text{for } t_0 = 0\,, \\
+X(t_0) &= X_0 \,,  
+&& \text{for } t_0 = 0\,,
+\end{align}
+\end{subequations}
+where \(\vect{n}\) is the unit normal on the interface, \(\tens{I}\) the identity tensor, 
+and \(\kappa\) the mean curvature of the interface. 
+
+To impose a single-mode perturbation, the initial interface is defined as
+\[
+X_0 = 2 L_x + A \cos\left(\frac{2 \pi x}{L_x}\right) \,,
+\]
+where \(A = 0.1L^{*}\) is the amplitude of the perturbation.
+
+The numerical simulation of the Rayleigh-Taylor instability is performed using STAR-CCM+ 
+over a two-dimensional computational domain. The domain, similar to the problem description,  
+is a rectangle of size \(L_x = 1.0\,\si{\meter}\) in the horizontal direction 
+and \(4 L_x = 4.0\,\si{\meter}\) in the vertical direction.
+
+The domain is discretized using a trimmed cell mesher, producing a uniform 
+structured mesh of quadrilateral cells with base size \(\Delta h \si{\meter}\). 
+Mesh alignment and local refinements are not applied.
+
+The flow consists of two immiscible, incompressible fluids with constant 
+densities \(\rho_{\ind{H}}\) and \(\rho_{\ind{L}}\) and dynamic 
+viscosities \(\mu_{\ind{H}}\), \(\mu_{\ind{L}}\). Turbulence is modeled using the Shear Stress 
+Transport (SST) \(k\)-\(\omega\) model with low-Reynolds number damping for cases where the 
+Reynolds number exceeds the turbulence onset threshold.
+The multiphase model is employed with a modified High-Resolution 
+Interface Capturing (HRIC) scheme. Surface tension is modeled as a constant 
+coefficient \(\sigma = 1.0 \times 10^{-5}\,\si{\newton\per\meter}\), treated 
+semi-implicitly. Gravity acts downward as \(\vect{g} = [0,\, -1.0]\,\si{\meter\per\second\squared}\).
+The segregated flow solver operates with SIMPLE pressure-velocity coupling. 
+Convective and diffusive fluxes are discretized with second-order upwind schemes, and gradients 
+are computed via a least squares method. The modified HRIC blends the second- and first-order upwind
+schemes while discretising the 
+Physical parameters and numerical details are chosen to maintain dynamic 
+similarity with the canonical DNS study in~\cite{hamzehlooDirectNumericalSimulations2021}\,. 
+Prior literature suggests that a mesh of \(128 \times 512\) cells suffices to capture 
+RT instability at \(At \approx 0.75\)~\cite{MIRJALILI2019221}\,. The timestep is 
+non-dimensionalized using the Atwood number, and chosen as 
+\[
+\Delta t = \frac{2.5 \times 10^{-4}}{\sqrt{At}} \, \si{\second}
+\]
+in line with analogous studies~\cite{DingDiffuseInterfaceModel2007,hamzehlooDirectNumericalSimulations2021}\,.
 
 
-\subsection{Validation Problems}
-\subsubsection{Stefan Problem}
-Phase changes can be regarded as the growth of the domain of one phase accompanied by the reduction of the domain of the other phase. 
-This growth or reduction in domain sizes can be triggered by thermal as well as non-thermal processes~\citelater{shumon koga} 
-and this representative mathematical dynamic model containing moving boundaries is known as the Stefan system. The associated problem of 
-analysing and finding the solutions to the aforementioned model is known as the Stefan problem.~\citelater{koga}. 
-The classical Stefan problem is a one dimensional solidification or melting problem~citelater{jonas, jonsson}. The one-dimensional 
-Stefan problem under semi-infinite geometry, uniform initial temperature, constant boundary temperature, and 
-thermophysical properties constant in each phase is probably the simplest, explicitly solvable problem of phase 
-change~\citelater{lectures, uni tenessee knoxville lectures}, serving as a good benchmark to validate the energy equation implemented in the VOF solver in Star-CCM+.
-~\COMMENT{DOES IT ALSO SERVE AS A GOOD BENCHMARK FOR SIMPLE HEAT CONDUCTION TOO??? BECOZ TWO BIRDS ONE STONE}
+Boundary conditions consist of slip walls on the top and bottom boundaries and symmetry 
+(periodic) boundaries on the left and right sides.
+Initial conditions impose a perturbed interface defined by a cosine wave of 
+amplitude \(A = 0.1 L_x\,\si{\meter}\), with initial velocity set to zero throughout the domain.
 
-Assuming that the region in space, $\Omega \subset \mathbb{R}^{2}$, occupied by the material is the 2D semi-infinite rectangle 
-$\Omega = \{(x,y) \in \mathbb{R} \cross \mathbb{R}:\,x \in [0, \infty),\,y \in [0, \Delta h]\}$, with the solid phase and the liquid phase 
-occupying the regions $\Omega_{s}$ and $\Omega_{l}$ respectively such that $\Omega = \Omega_{s} \cup \Omega_{l}$. At any given time, $t$, the 
-two phases are separated by the interface, $\Gamma(t)$, that marks the change in phase of the material. The boundary of the domain $\Omega$ is 
-denoted by $\partial \Omega$.
-The problem space, $\mathcal{D}$, is the spatial and temporal domain occupied by the material, $\mathcal{D} = \{[t_{0}, t_{f}] \cross \Omega\}$. 
-With the heat equation governing the temperature field in the liquid region, the Stefan condition at the interface, and the respective boundary 
-conditions, the system of equations defining the one-dimensional Stefan problem can be written as,
-\begin{align}\label{stef: eqn_system}
-    \begin{split}
-    \begin{cases}
-        \frac{\partial T}{\partial t} - \alpha \frac{\partial^{2} T}{\partial x^{2}}& = 0,\\
-        \rho h_{m} \frac{d \Gamma(x(t), t)}{d t} + \kappa \frac{\partial \Gamma(x(t), t)}{\partial x}& = 0,\\
-        T(x, 0)& = T_{l},\\
-        \nabla T(x, t) \cdot \mathbf{n}& = 0,\\
-        T(x, 0)& = T_{m}
-    \end{cases}
-\end{split}
-\end{align}   
-- the system of equations is well-posed and has a unique solution. the evolution of the temperature field along with the evolution of the 
-phase change interface is studied.
-The simulation assumes laminar and unsteady flow and solves for the solution variables implicitly using the SIMPLE scheme.
- The 2D region is discretised using a uniform orthogonal quadrilateral mesh of varying sizes in order to 
- study the spatial convergence of the solution. The physical parameters for the simulation are selected according to water ice, as in~\citelater{boledi et al}.
- A constant density $\rho = 1000\,\text{kg}\cdot\text{m}^{-3}$, dynamic viscosity
- $\mu = 8.8871e-4\,\text{Pa}\cdot\text{s}$, latent heat of fusion $100000 \,\text{J}\cdot\text{kg}^{-1}$, and 
- specific heat $4200\,\text{J}\cdot\text{kg}^{-1}\text{K}^{-1}$. Thermal conductivities are defined as $2.33\,\text{W}\cdot\text{m}^{-1}\text{K}^{-1}$ 
- and $0.62\,\text{W}\cdot\text{m}^{-1}\text{K}^{-1}$ for the liquid and solid phases respectively. 
- All four boundaries are assigned a no-slip shear stress specification. The boundary at $x = 0$ is assigned a constant temperature, $T =273\,\text{K}$, 
- while the other boundaries are assumed to be adiabatic. 
- The convection and diffusion
- terms are discretised using the second-order upwind scheme and the least squares method was used to interpolate the values of the 
- gradients from the cell centres onto the face centres. The transient term is discretised using the implicit Euler-method which is first-order accurate.
- First-order HRIC is used to reconstruct the interface. Since Star-CCM+ sets under- and over-relaxation factors conservatively, the values are left unchanged.
+Simulation results are monitored by extracting volume fractions and velocity 
+fields along specified planes to analyze interface evolution. 
 
-The evolution of the temperature field for the simulation with cell size, $\Delta h = 5e-3$ is shown in Figure~\COMMENT{FIG}. A clear propagation of
- the interface from the left to right is observed with increasing simulation times. The temperature also gradually decreases in the liquid phase from the Dirichlet
- boundary at $x = 0$ towards the melting temperature, $T_{m}$, at the interface after which it stays constant. 
+These simulation parameters ensure dynamic similarity with benchmark direct numerical 
+simulations~\cite{hamzehlooDirectNumericalSimulations2021}, providing a reliable 
+basis for validation and analysis of Rayleigh-Taylor instability development.
+\begin{table}[h]
+\centering
+\ra{1.2}
+\begingroup
+\footnotesize % make only this table use small font
+\begin{tabular}{@{}lp{6cm}@{}}
+\toprule
+\multicolumn{2}{@{}l}{\textbf{Simulation Setup}} \\
+\cmidrule(lr){1-2}
+Mesh type and size, \(\Delta h\) & Quadrilateral trimmed cell mesh, \(4.5 \times 10^{-3}\,\si{\meter}\) \\
+Time discretization & Implicit unsteady, first-order Euler \\
+Time step, \(\Delta t\) & \(3.5 \times 10^{-3}\,\si{\second}\) \\
+\addlinespace
+\multicolumn{2}{@{}l}{\textbf{Physical Properties}} \\
+\cmidrule(lr){1-2}
+Amplitude of perturbation, \(A\) & \(0.1\,\si{\meter}\) \\
+Wavelength of perturbation, \(\lambda\) & \(L_x = 1.0\,\si{\meter}\) \\
+Surface tension, \(\sigma\) & \(1.0 \times 10^{-5}\,\si{\newton\per\meter}\) \\
+Gravity, \(\vect{g}\) & \([0, -1.0]\,\si{\meter\per\second\squared}\) \\
+\addlinespace
+\multicolumn{2}{@{}l}{\textbf{Numerical Methods}} \\
+\cmidrule(lr){1-2}
+Multiphase model & VOF with first-order HRIC convection scheme \\
+Flow regime & Turbulent, SST \(k\text{-}\omega\) model \\
+Discretisation scheme & Second-order upwind (flow, volume fraction) \\
+Gradient reconstruction & Least-squares \\
+\bottomrule
+\end{tabular}
+\endgroup
+\caption{Simulation parameters and physics models for the Rayleigh-Taylor instability study.}
+\label{tab:rt-simulation-params}
+\end{table}
 
-\begin{itemize}
-    \item 'This is exactly what one would expect for a velocity that is decreasing in time as is the case for the classical Stefan problem. 
-One can also see that all simulation results converge to the analytical solution for a finer mesh and a smaller time step.'
-    \item \COMMENT{ABOUT CONVERGENCE}
-    \item \COMMENT{ABOUT COMPARISON OF TEMPERATURE W ANALYTICAL SOLUTION}
-    \item \COMMENT{ABOUT COMPARISON OF PCI W ANALYTICAL SOLUTION}
-\end{itemize}
 
-\subsubsection{Rayleigh-Taylor Instability}
-The interface between two superposed fluid with differing densities in unstable
- in cases when the heavier fluid in pushed into the lighter fluid~\cite{birkhoffTAYLORINSTABILITYLAMINAR1954}.
- This instability is known as the Rayleigh-Taylor (RT) instability. Although not encountered in its ideal form, 
- the RT instability may occur across various spatial and temporal scales in natural and other fluid systems where it 
- is often modified by the presence of additional processes~\COMMENT{mention which processes?}. The growth of 
- perturbations at the interface is characterised by opposing 
- pressure and density
- gradients. The density difference is represented by the non-dimensional \textit{Atwood number}, $At = (\rho_{H} - \rho_{L})/(\rho_{H} + \rho_{L})$.
-The principles governing the nonlinear 
- RT instability also govern any motion of one fluid in another of different density~\citelater{Tryggvason rt instability}.
- Modelling of the RT instability requires accurate computation of the interface evolution while also 
- correctly implementing the phase interaction terms described in~\citelater{chapter stuf}, thus, serving as
- a classical benchmark for the evaluation of the behaviour of two phase flows~\cite{gouldingSimplifiedConservativeDiscretization2024}.
+\setlength{\textfloatsep}{4pt plus 2.0pt minus 2.0pt}
+\begin{figure}[htbp]
+    \vspace*{-20pt}
+\centering
+\begin{subfigure}[b]{\textwidth}
+\centering
+\includegraphics[scale = 0.67]{rt_re300}
+\label{fig:rt_re300}
+\end{subfigure}
+\vspace*{-0.25pt}
+\begin{subfigure}[b]{\textwidth}
+\centering
+\includegraphics[scale = 0.67]{rt_re1000}
+\label{fig:rt_re1000}
+\end{subfigure}
+\vspace*{-0.25pt}
+\begin{subfigure}[b]{\textwidth}
+\centering
+\includegraphics[scale = 0.67]{rt_re3000}
+\label{fig:rt_re3000}
+\end{subfigure}
+\vspace*{-15pt}
+\caption{Evolution of Rayleigh-Taylor instability for Atwood number At = 0.5 at different Reynolds numbers.}
+\label{fig:rt_evolution_vertical}
+\end{figure}
+\setlength{\textfloatsep}{20pt plus 2.0pt minus 2.0pt}
+~\fig{fig:rt_evolution_vertical} depicts the evolution of the RT instability for Reynolds numbers 300, 1000, and 3000.
+ The initial evolution of the interface is through exponential growth of the infinitesimal disturbance of the interface~\cite{andrewsSmallAtwoodNumber2010}.
+ The growth follows linear stability theory which transitions into increasing non-linear behaviour as the amplitude grows to orders of $0.1\lambda$~\cite{SHARP19843}.
+ This non-linear evolution is marked by the development of the distinct "bubbles" of lighter fluid rising as the "spikes" of the heavier fluid fall down. 
+ The evolving interface experiences increasing vorticity and the increasing velocity shear results in the development of 
+ Kelvin-Helmholtz type instabilities~\cite{hamzehlooDirectNumericalSimulations2021,tryggvasonNumericalSimulationsRayleighTaylor1988} leading to the roll-up 
+ of the spikes as the amplitude grows to the order of $0.5-1\lambda$.
+ For the case of $Re = 3000$, these instabilities are noticeable much earlier all along the interface, leading to a secondary perturbation
+ along the boundary of the domain. Further growth leads to secondary vortices along the spike ends which leads to chaotic mixing 
+ and complex flow features.~\cite{SHARP19843}.
 
-We assume that the two immiscible, viscuous, and incompressible fluids occupy the regions,
-\begin{equation*}
-    \Omega_{i}(t) = \{(x,y) \in \mathbb{R} \cross \mathbb{R}: (-1)^{i}(y - h(t,x)) > 0,\,t \geq 0\}, \,\, i = 1,2
-\end{equation*}
-and are separated by the interface, $\Gamma(t)$ where
-\begin{equation*}
-    \Gamma(t) = \{(x,y) \in \mathbb{R} \cross \mathbb{R}: y = h(t,x),\, t \geq 0 \}
-\end{equation*}
-Using the navier stokes equations for incompressible fluids, a mixture density and viscosisty, the jump conditions at the interfaces, and the 
-initial boundary conditions, the governing equation for the Rayleigh-Taylor instability can be written as
-\begin{align}\label{rt: eqn_system}
-    \begin{split}
-    \begin{cases}
-        \rho \frac{\partial (\mathbf{u})}{\partial t} + \rho \nabla \cdot (\mathbf{u} \mathbf{u})& = -\nabla p + \mu \nabla^{2} \mathbf{u} + \mathbf{g}\rho,\\
-        \nabla \cdot \mathbf{u}& = 0,\\
-        [\![S(u, p + \mathbf{g}\rho)\mathbf{n}]\!] &= \sigma \kappa \mathbf{n} + [\![\rho]\!] \mathbf{g} y\\
-        [\![u]\!] &= 0\\
-        V &= \mathbf{u} \cdot \mathbf{n}\\
-        u(0) &= u_{0},\\
-        \Gamma(0) &= \Gamma_{0}
-    \end{cases}
-\end{split}
-\end{align}   
-where $\rho$ is the density, $\mathbf{u}$ is the velocity vector, $p$ is the pressure, $\mu$ is the dynamic viscosity, and $g$ is the gravitational acceleration.
+\subsubsection*{Effect of Reynolds and Atwood Number}\par\vspace{-\baselineskip}\vspace{\parskip}
+Increasing the Reynolds number has a relatively small 
+ effect on the penetration lengths of the spikes and bubbles - with $Re = 300$ showing the least penetration depths. 
+ However, it does have a significant effect on the topology of the interface, with increasingly chaotic vortices visible 
+ at the spike rollup and the ensuing turbulent mixing. At $Re = 300$, it is seen in~\fig{fig:rt_evolution_vertical},
+ that the flow remains relatively laminar with smooth interfaces, whereas $Re = 3000$ shows significant turbulent mixing
+ and vortical complex structures.
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.98\linewidth]{rt_Reynolds.png}
+\caption{Evolution of the RT instability with varying Reynolds and Atwood numbers}
+\label{fig:rt_reynolds}
+\end{figure}
+High Atwood numbers promote non-linearity and increased turbulent mixing, and affect the initial interface growth. 
+ The effect and prominence of the counter-rotating vortices at the tip of the spike decreases and reduces 
+ the chaotic flow features at the tips of the secondary vortices. The spike also falls much quicker. This is due to the density-driven 
+ acceleration outweighing the viscous effects as is seen in~\fig{fig:rt_evolution_high_at} and
+ in the very high density ratio simulations of the RT instability in~\cite{HuangConsistentEssentiallyConservative2020}.
 
-In a system of two fluids with a perturbed interface, the heavier fluid penetrates the lighter fluid due to gravitation thereby pushing the lighter fluid upwards.
- The initial perturbations, generally studied using linear stability analysis, lead to an exponential growth~\citelater{andrews and dalziel} and transition into
- non-lineartiy resulting in the rise and sink of the bubbles of lighter fluid and spikes of the heavier fluid respectively~\citelater{sharp, bannerjee}. 
- Figure~\COMMENT{name figure} illustrates the parameter definitions and nomenclature of an evolving single-mode~\COMMENT{need i define single mode rt?} RT 
- instability interface.
+\subsubsection*{Grid Convergence}\par\vspace{-\baselineskip}\vspace{\parskip}
+In order to evaluate the quality of the mesh, the maximum vertical distance of the 
+ spike and bubble tip as measured from the undisturbed initial interface, $y^{*} = |y_{s,b} - y_{0}|$, are evaluated 
+ for Reynolds numbers, $Re = 300, 3000$, and Atwood number, $At = 0.5$. Locations of the spike and bubble tips are 
+ recorded at every time-step and extrapolated in order to compare to the DNS data available 
+ from~\cite{hamzehlooDirectNumericalSimulations2021}.
 
-The simulation assumer turbulent and unsteady flow, utilising the SIMPLE implicit scheme. The computational domain is discretised using an orthogonal quadrilateral mesh.
- The convection and diffusion terms are discretised using the second-order upwind scheme while the least squares method is again used to interpolate the values
- of the gradients from the cell centres onto the face centres. The VOF solver utilises the first-order HRIC scheme to reconstruct the interface.
- The transient term is discretised using the first-order accurate implicit Euler-method. The modified K-Omega (SST k-omega) model is used to account for turbulence and surface
- is treated semi-implicitly.~\COMMENT{MENTION INITIAL CONDITIONS}
-The instability is simulated on a 2D rectangular domain, $[0, L_{x}] \cross [0, 4L_{x}]$, where $L_{x}$ is the reference length. 
- The initial interface, located at $y_{0}$, represents a single-mode perturbation with amplitude, $A = 0.1 L_{x}$, and 
- wavelength, $\lambda = L_{x}$.
-        \begin{equation*}
-           \Gamma_{0} = 2 L_{x}+ A \cos(\frac{2\pi}{ L_{x} })
-        \end{equation*}
-       
-The lower limit of the high Atwood number regime requires the Atwood number to be atleast $0.5$~\cite{HutchinsonDISSERTATIONSUBMITTEDFACULTY}. 
-Gravitational acceleration acts in a downward direction with a magnitude of $g = 1.0$. Periodic boundary conditions are enforced in the 
-horizontal direction and slip wall conditions are applied at the top and bottom boundaries. The physical parameters are selected to make 
-the simulations dynamically similar to the ones studied in~\cite{hamzehlooDirectNumericalSimulations2021}.
-        
-According to~\cite{MIRJALILI2019221}, a reasonable solution to the RT instability with $At \approx 0.75$ can be obtained with 
-a $128 \cross 512$ mesh. With similar mesh resolutions being used in~\cite{hamzehlooDirectNumericalSimulations2021, 
-HuangConsistentEssentiallyConservative2020} to study similar RT instabilities, in addition to a mesh convergence study being performed, 
-the domain is discretised using a uniform orthogonal quadrilateral mesh with size $\delta_{h} = 0.0045$. The timestep for the simulations is 
-selected as $\delta t = 2.5 \cross 10e-4/\sqrt{At}$ similar to~\cite{DingDiffuseInterfaceModel2007,hamzehlooDirectNumericalSimulations2021}. 
-The following cases are studied:\\
-\begin{tabularx}{0.8 \textwidth}{ >{\centering\arraybackslash}X >{\centering\arraybackslash}X  >{\centering\arraybackslash}X  >{\centering\arraybackslash}X >{\centering\arraybackslash}X}
-    \hline
-    Case & $At$ & $Re$ & $\sigma$ & $\delta_{h}$\\
-    \hline
-    1 & $0.5$ & $300$ & $1e-5$ & $0.05$\\
-    2 & $0.5$ & $300$ & $1e-5$ & $0.007$\\
-    3 & $0.5$ & $300$ & $1e-5$ & $0.0045$\\
-    4 & $0.5$ & $300$ & $1e-5$ & $0.0025$\\
-    5 & $0.2$ & $1000$ & $1e-5$ & $0.0045$\\
-    6 & $0.5$ & $1000$ & $1e-5$ & $0.0045$\\
-    5 & $0.5$ & $3000$ & $1e-5$ & $0.0045$\\
-    6 & $0.5$ & $3000$ & $1e-5$ & $0.0045$\\
-    \hline
-\end{tabularx}
-\newline
-In a system of two fluids with a perturbed interface, the heavier fluid penetrates the lighter fluid due to gravitation thereby pushing the lighter fluid upwards. The initial perturbations, generally studied using linear stability analysis, lead to an exponential growth~\citelater{andrews and dalziel} and transition into non-lineartiy resulting in the rise and sink of the bubbles of lighter fluid and spikes of the heavier fluid respectively~\citelater{sharp, bannerjee}. Figure~\ref{rt_definitions} illustrates the parameter definitions and nomenclature of an evolving single-mode~\COMMENT{need i define single mode rt?} RT instability interface. The evolution of RT instabilities for Reynolds numbers 300, 1000, and 3000 are depicted in figure~\ref{rt_reynolds}. As the solution evolves, the penetration of the spike increases and it eventually rolls up and forms two transient counter-rotating vortices due to shear forces and Kelvin-Helmholtz type instabilities~\citelater{hamzelhoo}, which go on to contribute to turbulent mixing and chaotic flow features~\citelater{Sharp}.
+~\fig{fig:rt_convergence} shows the comparison the results of the simulations with the DNS location of 
+ the bubble and spike tips along with the root mean square defined as 
+ \[
+ err = \displaystyle \sqrt{\sum_{t_0}^{t_{f}} (y_b - y_{dns})^{2}}\,.
+ \] 
 
-Figure~\COMMENT{name figure} depicts the evolution of the interface at different times for varying density ratios as simulated in Star-CCM+. Upto high Reynolds numbers, the interface structure and its temporal evolution agree qualitatively with the results published in~\citelater{hamzelhoom huang, ding}.~\COMMENT{why does it look different at high Re}.
-Using the bubble and spike heights, defined as the maximum vertical distance of the spike and bubble as measured from the undisturbed initial interface, the results can be quantitatively compared to~\citelater{hamzelhoo} as shown in Figure~\ref{rt_heights}. Table~\ref{table_rt_errs} summarises the root mean square errors and the maximum errors between the simulated results and~\citelater{hamzelhoo}.
+\begin{figure}[htbp]
+\centering
+\begin{subfigure}{.49\textwidth}
+\includegraphics[width=1.\linewidth]{rt_conv_re300.png}
+\caption{$Re = 300$}
+\label{fig:rt_conv_300}
+\end{subfigure}
+\hfill
+\begin{subfigure}{.49\textwidth}
+\includegraphics[width=1.\linewidth]{rt_conv_re3000.png}
+\caption{$Re = 3000$}
+\label{fig:rt_conv_3000}
+\end{subfigure}
+\caption{Grid convergence analysis for Rayleigh-Taylor instability}
+\label{fig:rt_convergence}
+\end{figure}
 
-Simulations conducted for Atwood numbers very close to one also qualitatively show a similar progression and evolution of structures as the simulations in~\citelater{huang}.~\COMMENT{What happens at high atwood numbers}
+\begin{figure}[htbp]
+\centering
+\begin{subfigure}{.48\textwidth}
+\includegraphics[width=0.98\linewidth]{dns_re1000at05.png}
+\caption{$Re = 1000$, $At = 0.5$}
+\label{fig:dns_re1000}
+\end{subfigure}
+\hfill
+\begin{subfigure}{.48\textwidth}
+\includegraphics[width=0.98\linewidth]{dns_re3000at02.png}
+\caption{$Re = 3000$, $At = 0.2$}
+\label{fig:dns_re3000}
+\end{subfigure}
+\caption{Comparison with DNS results for different Reynolds numbers and Atwood numbers}
+\label{fig:rt_dns_compare}
+\end{figure}
+\begin{figure}[htbp]
+    \centering
+    \begin{subfigure}[b]{\textwidth}
+        \centering
+        \includegraphics[scale = 0.64]{rt_at30}
+        \label{fig:rt_at30}
+    \end{subfigure}
+    \vspace*{-0.25pt}
+    \begin{subfigure}[b]{\textwidth}
+        \centering
+        \includegraphics[scale = 0.64]{rt_at1000}
+        \label{fig:rt_at1000}
+    \end{subfigure}
+    \vspace*{-0.25pt}
+    \begin{subfigure}[b]{\textwidth}
+        \centering
+        \includegraphics[scale = 0.64]{rt_at1500}
+        \label{fig:rt_at1500}
+    \end{subfigure}
+    \caption{Evolution of Rayleigh-Taylor instability for high Atwood numbers At = 30, 1000, and 1500.}
+    \label{fig:rt_evolution_high_at}
+\end{figure}
 
-~\COMMENT{Write about mesh convergence study. WHY DO RESULTS NOT MATCH?}.
-\begin{itemize}
-    \item \COMMENT{ABOUT SPATIAL AND TEMPORAL CONVERGENCE}
-    \item \COMMENT{ABOUT EVOLUTION OF INTERFACE W VARYING REYNOLDS AND VARYING ATWOOD: } Figure~\COMMENT{FIGFIG} and 
-    figure~\COMMENT{GIFGIF} depict the evolution of the interface at different times for varying density ratios and Reynolds numbers 
-    respectively  as simulated in Star-CCM+. Upto high Reynolds numbers, the temporal evolution and the structural features of the 
-    interface agree qualitatively with the results  published in~\citelater{hamzelhoom huang, ding}. As the solution evolves, 
-    the penetration of the spike increases and it eventually rolls up and forms two transient counter-rotating vortices due to 
-    shear forces and Kelvin-Helmholtz type instabilities~\citelater{hamzelhoo}, which go on to contribute to turbulent mixing and 
-    chaotic flow features~\citelater{Sharp}.~\COMMENT{WHY DO HIGH Re NUM SIMS DEVIATE FROM EXPECTED. MENTION SALIENT FEATURES OF THE EVOLUTION} 
-    Simulations conducted for Atwood numbers very close to one also qualitatively show a 
-    similar progression  and evolution of structures as the simulations in~\citelater{huang}.~\COMMENT{What happens at high atwood 
-    numbers}
-    \item~\COMMENT{ABOUT COMPARISON OF BUBBLE HEIGHTS W DNS DATA AND L2 AND L-INF ERRORS: }  Using the bubble and spike heights, defined as the maximum vertical distance of the spike and bubble as measured from the undisturbed initial interface,
- the results can be quantitatively compared to~\citelater{hamzelhoo} as shown in Figure~\ref{rt_heights}. Table~\ref{table_rt_errs} summarises the root 
- mean square errors and the maximum errors between the simulated results and~\citelater{hamzelhoo}.
-\end{itemize}
+~\fig{fig:rt_dns_compare} compares the RT instabilities for $Re = 1000, 3000$ and $At = 0.5, 0.2$ 
+ respectively without the evaluation of the errors.
 
-\subsubsection{Liquid Infiltration of Evaporation Chamber}
-\begin{itemize}
-    \item \COMMENT{ABOUT CONVERGENCE}
-    \item \COMMENT{ON EVOLUTION OF INTERFACE and FLOW FIELD and RESULTING HEIGHT OF WATER}
-    \item \COMMENT{ON EVOLUTION OF TEMPERATURE FIELD}
-\end{itemize}
+Although, STAR-CCM+, qualitatively, accurately simulates the RT instability, the calculated 
+ RMS and absolute errors in the bubble and spike tip locations show erratic behaviour with decreasing mesh size. 
+ For $Re = 300$, a sudden increase in the RMS error at $\Delta h = 0.0025$ is seen.
+ For higher Reynolds numbers, the bubble tip distances are consistently under-predicted for $Re = 1000, 3000$ at
+ later simulation times. For $Re = 3000$, at later simulation times, secondary perturbations develop at the domain edges.
+ These secondary perturbations develop into secondary spikes that interfere with the turbulent vortices at the spike tips and the main spike stem. 
+ This is, interestingly, not seen for the coarsest mesh size for $Re = 3000$.
+ This could be developing Kelvin-Helmholtz instabilities at the surface that transition into secondary RT instabilities~\cite{chenEffectsInitialPerturbations2022}.
+ Although Kelvin-Helmholz instabilities develop along the interface at higher Reynolds number, this secondary 
+ perturbation is first observed for $Re = 10000$ in~\cite{hamzehlooDirectNumericalSimulations2021}.
 
-\subsection{Conclusion?}
+This can be ascribed to either the lower order scheme used in the STAR-CCM+ simulations or the choice of 
+ turbulence modelling using eddy-viscosity models instead of completely resolving turbulence. For Atwood number 
+ that are not close to zero, the Boussinesq hypothesis is also invalid which is an integral assumption in 
+ RANS turbulence models. STAR-CCM+, in order to accommodate the spurious currents that may be 
+ introduced through the use of eddy-viscosity models, provides models that aid in the damping of momentum and/or 
+ turbulence at the interface, however, the addition of these models leads to significant deviations from the DNS results.
 
-%\subsection{Numerical Analysis}
-%\subsubsection{Stefan Problem}
-%\begin{itemize}
-%    \item \textbf{Convergence}
-%    \item \textbf{Results}
-%    \item \textbf{Errors}
-%\end{itemize}%
+\subsection{Liquid Infiltration of Evaporation Chamber}
 
-%\subsubsection{Rayleigh-Taylor Instability}
-%\begin{itemize}
-%    \item \textbf{Convergence}
-%    \item \textbf{Results}
-%    \item \textbf{Errors}
-%\end{itemize}
+The evaporation chamber and the nozzle are modeled together as a two-dimensional domain, 
+as shown in~\fig{sub1-vorstell}. During the creation of the 2D model, 
+STAR-CCM+ prescribes it an automatic and unchangeable depth of \si{1\meter}. To maintain 
+kinematic and dynamic similarity with the actual three-dimensional experiment, 
+the duration of discharge 
+is controlled and the mass flow rates are matched by equating the inlet velocities. 
+\begin{figure}
+    \centering
+    \includegraphics[height = 0.6\linewidth]{Chapters/Imgs/sub2_vof_scene}
+    \caption{The meshed domain after the intial adaptive refinement steps for the infiltration problem}
+    \label{sub1-vorstell}
+\end{figure}
+Approximately \si{150\milli\liter} of water is discharged into the chamber during the experiment.
+The inlet diameter, \(d_\mathrm{in} = 0.017\si{\meter}\), is taken as the reference length. 
+Assuming a discharge time \(t_\mathrm{dis} = 10\si{\second}\) and a constant volumetric flow rate, the inflow velocity of water in the experiment can be calculated as
 
-%\subsubsection{Actual Problem}
+\[
+\dot{Q} = \frac{Q}{t_\mathrm{dis}} = \frac{0.00015}{10} = v \left(\frac{\pi d_\mathrm{in}^2}{4}\right),
+\]
+
+where \(Q\) is the total volume discharged. The flow rate is assumed constant over the discharge period. Thus, the inlet velocity depends on the discharge time according to
+
+\[
+v = \frac{0.00015}{d_\mathrm{in} \, t_\mathrm{dis}}.
+\]
+This relation allows the choice of scales to be simple. The diameter of the inlet $d_{\mathrm{in}}$ is taken to be the 
+ reference length $L^{*}$ in the simulation. The inflow velocity is thus the reference velocity $U^{*}$, and the resulting reference
+ time is given as $t^{*} = L^{*}/U^{*}$.  
+The gravitational acceleration vector is assumed to be \(\mathbf{g} = \SI{0.4}{\meter\per\second\squared}\) directed along the negative \(y\)-axis.
+
+In the actual 3D experiment, the water height at the end of the injection under 
+steady-state conditions can be estimated, using geometrical data and the volume of 
+discharged water, to be approximately \SI{42}{\milli\meter}. In the simulation, 
+the water injection is terminated at about \SI{2.75}{\second}, after which the water 
+level reaches roughly \SI{42}{\milli\meter}. Subsequently, the simulation continues for 
+an additional \SI{5}{\second} with no inflow velocity imposed.
+
+Section probes located along the mid-section of the evaporation chamber (at heights $25, 35,$ and $45\si{\milli\meter}$ respectively) 
+and at various 
+points along the nozzle measure temperature in a manner replicating the experimental 
+measurement setup. The water-air interface is defined by an isosurface corresponding to 
+a volume fraction of water equal to 0.5. This isosurface indicates the maximum water 
+height along the mid-section probe and is used to record the local 
+velocity component in the \(y\)-direction.
+Water is modelled as an incompressible liquid whereas the air is modelled as an ideal 
+gas. The flow is modelled as unsteady using the volume-of-fluid method and employs a modified HRIC scheme to
+capture the interface.
+
+The domain is discretised using a trimmed cell mesher using uniform quadrilateral
+ cells refined locally capture interface dynamics accurately.
+ The coarsest mesh size is $d_{in}/2$ and the finest mesh size is chosen to be $d_{in}/32$. This refinement
+ is performed using the Remeshing solver in conjunction with a user defined field function that
+ switches to a finer mesh size based on the local volume fraction. To account for the possibility of
+ heat exchange between the system and the surrounding due to conduction and negligible convection,
+ the walls of the domain are prescribed using a thermal convection boundary. The coefficient
+ of heat transfer is assumed to be $1\si{\watt\per\meter\squared\per\kelvin}$ and the thermal resistance
+ is calculated using the chamber dimensions. This resistance is added in parallel to the thermal
+ resistance assumed from the insulating foil around the chamber and nozzle. The simulation 
+ assumes a total thermal resistance over the system boundary as $0.098\si{\meter\squared\kelvin\per\watt}$.
+
+Surface tension is modeled using a constant coefficient  \(\sigma = 1.0 \times 10^{-5}\,\si{\newton\per\meter}\), treated 
+semi-implicitly. Gravity acts downward as \(\vect{g} = [0,\, -0.4]\,\si{\meter\per\second\squared}\).
+The segregated flow solver operates with SIMPLE pressure-velocity coupling. 
+Convective and diffusive fluxes are discretized with second-order upwind schemes, and gradients 
+are computed via a least squares method. The integration in time is performed using the 
+first-order implicit Euler scheme. 
+\subsubsection*{Spatial and Temporal Convergence}\par\vspace{-\baselineskip}\vspace{\parskip}
+    In order to assess the spatial convergence of the solution, four uniform quadrilateral meshes are used. Using the reference length,
+    $L^{*}$, the mesh sizes from coarse to fine are $\Delta \text{h}_{1} = d_{in}/4$, $\Delta \text{h}_{2} = d_{in}/8$, $\Delta \text{h}_{3} = d_{in}/16$,
+     and $\Delta \text{h}_{4} = d_{in}/32$ respectively. A uniform timestep,
+    $\Delta t = 0.001$\,s is used for all the meshes along with the same initial conditions. Data is recorded at every $0.01$\,s.
+    The maximum height of the isosurface against the middle section is used to measure the water level. The velocities at 
+    various points along the middle section of the chamber are also recorded.~\fig{fig:sub1_conv} depicts the
+    recorded water level against simulation time and the y-axis component of the velocities 
+    measured along the middle section at the simulation stop time, $t_{f}$ for the above stated mesh sizes. All quantities have been non-dimensionalised
+    using the reference length, velocity, and time scales. 
+    \begin{figure}[htb]
+        \centering
+        \includegraphics[width = \textwidth]{sub1_conv}
+        \caption{Water level and y-axis velocity component at time, $t_{f}$, for various mesh refinements for timestep $\Delta t = 0.001\,$s.}
+        \label{fig:sub1_conv}
+    \end{figure}
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width = \textwidth]{sub1_temp_conv}
+        \caption{Water level and y-axis velocity component at time, $t_{f}$, for various timestep refinements at $\Delta \text{h}_{4}$.}
+        \label{fig:sub1_tconv}
+    \end{figure}
+    \begin{figure}[htb]
+        \centering
+        \includegraphics[width = \textwidth]{sub1_mesh_conv}
+        \caption{Interface at time, $t = 3.25$\,s, with increasing mesh refinement from left to right - $\Delta \text{h}_{1}\,,\,\Delta \text{h}_{2}\,,\,\Delta \text{h}_{3}\,,$ and $\Delta \text{h}_{4}$.}
+        \label{fig:sub1_mesh_conv}
+    \end{figure}
+    The free surface on the coarsest mesh size, h$_{1}$, tends to behave like a vibrating membrane with no significant development of any waves. The fluid bulk does 
+    not contain any air pockets as the mesh is too coarse to resolve any fine details at early times. The finer mesh, h$_{2}$, is able to resolve
+    bubbles in the fluid bulk during times of low bubble velocities and when the bubble diameter spans atleast four cells.
+    The coarse mesh is, however, able to resolve waves and the oscillatory motion of the isosurface is clearly noticeable.
+    The finest mesh size h$_{4}$ is able to resolve merging and breaking apart 
+    of the bubbles, droplets escaping the bulk fluid, as well as the flow features developed due to the interaction between the phases at the 
+    free surface. The mesh h$_{3}$ while also resolving the bubble interactions in the bulk flow and some coarse droplets, is unable to resolve
+    the interface as sharply. However, the increasing void fraction is apparent with decreasing mesh size. 
+
+    The effects of the choice of timestep is similarly evaluated and is seen in~\fig{fig:sub1_tconv}. Using a uniform mesh size $\Delta h_{4}$,
+    the simulation is run for timesteps $0.0005\,$s, $0.001\,$s, and $0.002\,$s. With shorter timesteps, the duration 
+    of the initial peak in water level gets shorter, however no stark difference in flow behaviour is observed as in the case of spatial 
+    refinements. Based on the above observations, the mesh size $\Delta h_{4}$ and timestep $\Delta t = 0.001\,$s is used 
+    as the finest mesh and the standard timestep.  
+\subsubsection*{Evolution of the Interface and Flow Field}\par\vspace{-\baselineskip}\vspace{\parskip}
+The evolution of the solution is highly sensitive even with very conservative values for timesteps and mesh size. The development is 
+ mostly symmetric but loses symmetry due to the clashing waves produced by impact against the boundaries. This entails mixing where bubbles
+ of air get captured inside the fluid field. Two main churning motions are observed in the fluid flow. A larger circular convection 
+ of air is observed in the upper part. This can be due to shear influences of the liquid and the interphase energy exchange. 
+\begin{figure}[h]
+    \centering 
+    \includegraphics[width = \textwidth]{sub1_probe_data}
+    \caption{Pressure, temperature, and void fraction measurements using the surface average values at plane sections in the computational domain.}
+    \label{fig:sub1_probe_data}
+\end{figure}
+\begin{figure}[htbp]
+    \centering 
+    \begin{subfigure}{\linewidth}
+    \includegraphics[width = \textwidth]{1}
+    \end{subfigure}
+    \begin{subfigure}{\linewidth}
+    \includegraphics[width = \textwidth]{2}
+    \end{subfigure}
+    \caption{Flow field visualisations using line integral convolutions and the behaviour of temperature during the infiltration process}
+    \label{fig:lefin}
+\end{figure}
+~\fig{fig:sub1_probe_data} displays the temperature and pressure recorded by the probes in the nozzle area as would be in
+the actual experimental setup. The nozzle observes an increasing temperature with increasing water inflow. This temperature 
+cools down equally rapidly due to the energy exchange with the water after inflow has stopped. At the end of the simulation, 
+the recorded temperatures are lower than the temperatures in the water bulk as shown in the surface averages measured along the 
+main body section planes which record a stable temperature of $353\,$K. 
+The pressure at the end of the 
+infiltration process is recorded to be at $\approx 1.35\si{\bar}$ which is the stipulated pressure at the end of the infiltration
+process in the actual experiment. Void fractions measuring existence of air pockets in the water also record almost negligible
+values concluding that the infiltration is not turbulent enough to produce thorough mixing of the water and air into a
+bubble mixture as the system gets enough time to somewhat stabilise. 
+The flow field is visualised using line integral convolutions of the velocity field. Along with this temperature behaviour during infiltration times is depicted in~\fig{fig:lefin}
+\subsection{Summary}
+Numerical studies of the described benchmarks show convergent Stefan-front 
+tracking and qualitatively correct Rayleigh-Taylor instabilit behaviour, 
+with noted discrepancies at higher Reynolds numbers attributable to model order and RANS assumptions. 
+The infiltration simulations provide resolved interface dynamics and stable 
+thermohydraulic end-states (water level, temperature field, and chamber pressure) 
+that match the experimental envelope and serve as credible 
+initial conditions for subsequent flash-evaporation modeling.

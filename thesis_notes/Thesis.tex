@@ -18,7 +18,7 @@
 %                                                                           %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\documentclass[paper=a4,10pt,titlepage,listof=totoc,index=totoc,bibliography=totoc]{scrartcl}
+\documentclass[paper=a4,12pt,titlepage,listof=totoc,index=totoc,bibliography=totoc]{scrartcl}
 % paper=a4		Papierformat DinA 4
 % 12pt		Schriftgr��e 12pt
 % titlepage 		Deckblatt
@@ -45,11 +45,11 @@
 \usepackage{amsthm} 
 \usepackage{cancel}
 \usepackage{color}
-\usepackage{epigraph}
+%\usepackage{epigraph}
 % For coloured table cells
 \usepackage[table,xcdraw]{xcolor}
 \usepackage{graphicx}
-\usepackage{latexsym}
+%\usepackage{latexsym}
 \usepackage{listings}
 \usepackage{mathrsfs}
 \usepackage{mathtools}
@@ -60,33 +60,53 @@
 \usepackage{subcaption}
 \usepackage{tabularx}
 \usepackage{tikzscale}
-\usepackage{todonotes}
+%\usepackage{todonotes}
 \usepackage{siunitx}
+\usepackage{wrapfig}
 %red, green, blue, yellow, cyan, magenta, black, white
-\usepackage{pifont}
+%\usepackage{pifont}
 \usepackage{tocvsec2}
 \usepackage{enumitem}
-\usepackage{framed}
+%\usepackage{framed}
 \usepackage{dashrule}
-\usepackage{hyperref}
-%\usepackage[T1]{fontenc}
-\usepackage{mathpazo}
-\usepackage{libertine}
+\usepackage[T1]{fontenc}
 \usepackage[a-1b]{pdfx}
-\usepackage[latin9,utf8]{inputenc}
+\usepackage[utf8]{inputenc}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{makecell}
+\usepackage{float}
+\usepackage{bm}
+\renewcommand{\vect}[1]{\bm{\bar{#1}}}    % bold vector with overbar
+\renewcommand{\matr}[1]{\bm{\bar{\bar{\mathsf{#1}}}}}
+\renewcommand{\eqref}[1]{\eq{#1}} 
+\newcommand{\ra}[1]{\renewcommand{\arraystretch}{#1}}
+\allowdisplaybreaks[1]
+\predisplaypenalty=0
+\DeclareMathSizes{10}{10}{7}{5}   % For size 10 text
+%\DeclareMathSizes{11}{19}{13}{9}   % For size 11 text
+%\DeclareMathSizes{12}{20}{14}{10}  % For size 12 text %\DeclareMathSizes{ds}{ts}{ss}{sss}: 10: {10}{18}{12}{8} {11}{19}{13}{9}
+\everymath{\displaystyle}
+\abovedisplayskip=12pt
+\belowdisplayskip=12pt
+\abovedisplayshortskip=0pt
+\belowdisplayshortskip=7pt
 \numberwithin{equation}{section}
-%\renewcommand{\theequation}{\thesection\arabic{equation}}
-%\renewcommand{\theequation}{\thesubsection\arabic{equation}}
-%\input{Chapters/symbols.tex}		% Glossar mit Einteilung in Kategorien
-\newtheorem{defn}{Definition}
 
-\newcommand{\todoin}[1]{\todo[inline]{#1}}
-\newcommand{\g}[1]{{\gls{#1}}}
 \newcommand{\note}[1]{\textcolor{red}{[#1]}}
 \newcommand{\citelater}[1]{\textcolor{blue}{[#1]}}
 \newcommand{\COMMENT}[1]{\textcolor{red}{[#1]}}
 \newcommand{\highlight}[1]{%
 	\colorbox{red!10}{$\displaystyle#1$}}
+
+%\input{Chapters/symbols.tex}		% Glossar mit Einteilung in Kategorien
+
+
+\newtheorem{defn}{Definition}
+
+\newcommand{\todoin}[1]{\todo[inline]{#1}}
+\newcommand{\g}[1]{{\gls{#1}}}
+
 
 \newcommand{\customlabel}[2]{%
 \protected@write \@auxout {}{\string \newlabel {#1}{{#2}{}}}}
@@ -129,6 +149,8 @@
             \node[shape=circle,fill=blue!20,draw,inner sep=2pt] (char) {#1};}}
 
 
+\newcommand{\tens}[1]{{\matr{#1}}}
+\newcommand{\vetor}[1]{\mathbf{\underline{#1}}}
 %\usepackage[pdftex,colorlinks,hypertexnames=false]{hyperref}
 %\hypersetup{%
 %	linkcolor={blue},
@@ -180,9 +202,9 @@
 
 
 %Alle Glossare
-\printglossary[type=main, style=Glossar-parent]
-\printglossary[type=index, style=Glossar]
-\printglossary[type=abkz, style=Abkzg]
+%\printglossary[type=main, style=Glossar-parent]
+%\printglossary[type=index, style=Glossar]
+%\printglossary[type=abkz, style=Abkzg]
 
 %\newpage 
 
@@ -190,10 +212,13 @@
 % VERZEICHNISSE    
 %----------------------------------------
 \setcounter{tocdepth}{1}
-%\listoffigures              % Abbildungsverzeichnis
-%\newpage
-%\listoftables               % Tabellenverzeichnis
-%\newpage
+\listoffigures              % Abbildungsverzeichnis
+\newpage
+\listoftables               % Tabellenverzeichnis
+\newpage
+
+
+
 
 
 %----------------------------------------
@@ -203,7 +228,7 @@
 
 % Ab hier arabische Nummerierung
 \pagenumbering{arabic}
-\settocdepth{subsection}
+\settocdepth{subsubsection}
 \noindent
 % Inhalt kann auch in Dateien ausgelagert werden, die
 % folgenderma�en eingebunden werden
@@ -213,8 +238,9 @@
 
 % Inhalt
 
-%\printglossaries
-%\input{InputExample/symbole_2}		% Glossar mit Einteilung in Kategorien
+%\makenoidxglossaries
+%\input{Chapters/symbols}		% Glossar mit Einteilung in Kategorien
+%\printnoidxglossaries
 %\input{Chapters/todo.tex}
 
 % You can insert your source here. Split the 
@@ -228,15 +254,21 @@
 % If compilation is slow, you might comment out some of the packages included above with \usepackage if 
 % you do not use them.
 
-
+\graphicspath{{./Chapters/Imgs/}{./Chapters/Introduction/figs}{./Chapters/Chap1/figs}{./Chapters/Chap2/figs}{./Chapters/Appendix/figs}}
 
 %\input{Chapters/Notes/notes.tex}
 %\input{Chapters/ActualThesis/chap1_rough.tex}
+%\newpage
+\input{Chapters/Introduction/intros.tex}
 \newpage
-\input{Chapters/ActualThesis/chap2.tex}
+\input{Chapters/Chap1/mathematics.tex}
+\newpage
+\input{Chapters/Chap2/nums.tex}
 \newpage
 \input{Chapters/ActualThesis/subprob1.tex}
 \newpage
+\input{Chapters/ActualThesis/concs.tex}
+%\newpage
 %\input{Chapters/Review/review}
 %\newpage
 %\input{Chapters/YOURCHAPTER/yourtexfile.tex}
@@ -249,7 +281,7 @@
 \newpage
 \appendix
 %\input{Chapters/Appendix/appendix.tex}
-\newpage
+%newpage
 \FloatBarrier
 
 %----------------------------------------

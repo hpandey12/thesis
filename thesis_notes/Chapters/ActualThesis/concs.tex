@@ -1,0 +1,120 @@
+\section{Conclusion}\label{chap4}
+In this last chapter, we provide a brief summary of major topics convered in 
+the thesis and assess the impending future work. 
+
+\subsection{Summary}
+In this thesis we,
+\begin{itemize}
+    \item studied the physical phenomenon of flash evaporation. We reviewed 
+    the contradictory effects of low-pressure and low-gravity environments to liquid-gas
+    phase change phenomena. We review the existing flash evaporation models and their 
+    capabilities, limits, and applicabilities to different flow scenarios.
+    %The increased superheat limit due to increased
+    %delay in nucleation is counteracted by the higher rate of heterogeneous
+    %nucleation on surfaces. Bubble shapes tend to more ideal descriptions, and the lack
+    %of buoyancy or strong convection in the system eliminates complex bubble interactions.
+    %We described the limiting rate of phase-change using bubble-growth and kinetic theory.
+    Based on experimental 
+    observations and review of literature, we identified the governing 
+    factors in an accurate modelling of flash evaporation.
+
+    \item revisted the multiphase flow models for two-phase liquid-gas systems and 
+    detailed the context of jump conditions in the models. We also discuss turbulence and
+    describe the numerical implementation of these models in STAR-CCM+.
+    
+    \item assessed the complex maze of closure relations for the interphase interactions
+    in the two-fluid model and arrived at a set of generally applicable closures based on
+    physical principles instead of empirical coefficients. 
+
+    \item modelled the 1D Stefan problem and the 2D Rayleigh-Taylor instability. This was done
+    to assess the treatment of a moving 
+    interface in the context of a fixed grid method like the finite-volume method. The 
+    Stefan problem also serves as a benchmark to test for the accurate modelling of the phase change phenomenon.
+    The Rayleigh-Taylor instability is a fundamental phenomenon in two-phase flows with a significant 
+    density difference. The limitations of our assumptions in context of high Reynolds numbers
+    and turbulence are discussed in 
+    this context.
+    
+    \item described the mathematical formulation of the infiltration of water in a low-pressure
+    chamber which was subsequently modelled using the Volume-of-Fluid method.
+    We implemented adaptive mesh refinement based on user-defined field functions in order to
+    refine the mesh locally during flow evolution. We finally analysed the flow evolution and 
+    determined the initial conditions expected in the flash evaporation subproblem.    
+\end{itemize}
+
+\subsection{Outlook}
+While this thesis investigated the factors affecting a modelling framework for flash evaporation, the 
+ problem remains unmodelled and forms the immediate next steps. 
+ \begin{itemize}
+    \item An assessment of the effects of RANS turbulence models is required for flash evaporation applications.
+    Investigations combining a hybrid RANS-LES approaches could be suitable possibilities.
+    \item Building on the validated treatment 
+ of two-phase flows using the VOF method, investigations could be performed identifying 
+ the possibility of modelling phase change using phase specific source terms in STAR-CCM+. Equilibrium
+ conditions can be enforced by disregarding the energy equation solver and implementing an additional 
+ scalar equation to treat temperature. 
+    \item An ideal flash evaporation model would account for the homogeneous and heterogeneous nucleation rates
+    along with phase transfer at the interface governed by the kinetic theory. To this end, a scalar equation 
+    solving for the conservation of the number of bubbles in the system can be solved. This would enable
+    consistent interfacial area concentration and closure feedback for heat, mass, and momentum exchange.
+ \end{itemize}
+
+\subsubsection{A Theoretical Stipulation}
+To model flashing under rapid depressurisation with thermal and velocity non-equilibrium, 
+we propose an Eulerian Multiphase (two-fluid) formulation 
+with Large-Scale Interface capabilities, coupled to interfacial 
+area concentration (IAC) transport, a bubble population balance for 
+number density and nucleation, and a kinetic interfacial mass-flux closure of Schrage type.
+
+\paragraph{Governing phasic balances and sources.}
+For each phase \(i\in\{l,v\}\), solve the volume-averaged mass, 
+momentum, and energy balances as in the two-fluid model with a mass source in the governing equations to the 
+the kinetic mass transfer using the Schrage equation. 
+
+\paragraph{Interfacial area concentration transport.}
+Evolve the IAC field \(a_{lv}\) to reflect transient nucleation, growth, coalescence/breakage, and phase change:%
+\[
+\frac{\partial a_{lv}}{\partial t} + \nabla\cdot(a_{lv}\,\boldsymbol{u}_{mix})
+\;=\; S_{nuc} + S_{grw} - S_{coal} - S_{brk} \;+\; S_{pc},%
+\]
+where \(S_{nuc}\) adds area from newly nucleated bubbles, \(S_{grw}\) accounts for radius change \( \dot{R}\), \(S_{coal}\) and \(S_{brk}\) model topology changes, and \(S_{pc}\) captures interfacial recession/advance due to phase change at large interfaces (LSI regime).%
+In dispersed-bubble cells, relate \(a_{lv}\) to the bubble size distribution \(n(d)\) by%
+\[
+a_{lv} \;=\; \int_0^\infty \pi d^2\,n(d)\,\mathrm{d}d
+\quad\text{(spherical bubbles)}.%
+\]
+
+\paragraph{Population balance for bubble number density.}
+Solve a number-density transport for diameter \(d\) (or radius \(R\)) with growth velocity \(G=\dot{d}\), 
+coalescence/breakage kernels, and nucleation sources:%
+\[
+\frac{\partial n}{\partial t} + \nabla\cdot(n\,\boldsymbol{u}_v) + \frac{\partial}{\partial d}\!\bigl(G\,n\bigr)
+\;=\; B_{nuc}(d) + B_{coal}(d) + B_{brk}(d) \;-\; D_{coal}(d) - D_{brk}(d).%
+\]
+
+
+\paragraph{Bubble growth law and thermal coupling.}
+Use a composite growth rate that superposes inertial- and thermal-limits, consistent with diffusion-controlled Stefan scaling at later times:%
+\[
+\dot{R} \;=\; 
+\sqrt{\frac{2\,(p_{sat}(T_l^{int})-p_l)}{3\rho_l}}
+\;+\; 
+\frac{\rho_l\,c_{p,l}\,|T_l^{int}-T_{sat}(p_l)|}{\rho_v\,h_{lv}}
+\sqrt{\frac{3\,\alpha_l}{\pi\,t}}\,,
+\]
+and couple to \(\dot{m}\) by enforcing local interfacial energy balance and consistent choices of \(T_l^{int}\), \(T_{int}\), and heat-transfer coefficients for \(q_i^{int}\).%
+
+
+\paragraph{Algorithmic outline for the flashing stage.}
+\begin{enumerate}
+  \item Initialise from the infiltration end-state: fields \((\alpha_i,\boldsymbol{v}_i,T_i,p)\), set vacuum/outflow boundary and depressurisation profile.%
+  \item Enable EMP with multiregime blending and activate PBE+IAC in dispersed regions; seed initial \(n(d)\) from known particulate load or a uniform low background consistent with silicate content.%
+  \item Compute nucleation source \(B_{nuc}\) using CNT with heterogeneous correction where walls/impurities dominate; map to \(n(d)\) and update \(a_{lv}\).%
+  \item Advance \(\dot{R}\) and \(G=\dot{d}\) with thermal coupling; update \(a_{lv}\) and \(n(d)\) including coalescence/breakage.%
+  \item Evaluate kinetic \(\dot{m}\) (Schrage) and apply \(\Gamma_i=a_{lv}\dot{m}\), \(\dot{Q}\), and interfacial momentum sources in phasic balances; iterate to convergence per time-step.%
+  \item Remesh/refine adaptively near rapid void-fraction transients and LSI interfaces; limit interface Courant number and apply interface-turbulence damping if needed.%
+\end{enumerate}
+
+This plan provides a theoretically working 
+NHNEM pathway with physics-based interfacial exchanges, retaining slip 
+and non-equilibrium, while remaining compatible with STAR-CCM+ EMP/LSI numerics.%

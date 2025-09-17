@@ -6,3 +6,6 @@ matplotlib
 scipy
 rasterio
 vtk
+tol_colors
+scienceplots
+torch

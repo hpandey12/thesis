@@ -2,9 +2,94 @@
 { \addtocontents{toc}{\protect\setcounter{tocdepth}{0}}
 
 \input{Chapters/Appendix/matprops/matprops}
+he physical parameters and the simulation setup, along with the various cases studied are summarised in 
+ Tables~\ref{tab:rt-simulation-params} and~\ref{tab:rt-parameter-matrix}.
+\begin{table}[htbp]
+\centering
+\ra{1.2}
+\begin{tabular}{@{}lp{6cm}@{}}
+\toprule
+\multicolumn{2}{@{}l}{\textbf{Simulation Setup}} \\
+\cmidrule(lr){1-2}
+Domain & Two-dimensional rectangular, \([0, L_x] \times [0, 4L_x]\), with \(L_x = 1\,\si{\meter}\) \\
+Mesh size, \(\Delta h\) & \(4.5 \times 10^{-3}\,\si{\meter}\) \\
+Time discretization & Implicit unsteady, first-order Euler \\
+Time step, \(\Delta t\) & \(3.5 \times 10^{-3}\,\si{\second}\) \\
+\addlinespace
+\multicolumn{2}{@{}l}{\textbf{Physical Properties}} \\
+\cmidrule(lr){1-2}
+Amplitude of perturbation, \(A\) & \(0.1\) \\
+Wavelength of perturbation, \(\lambda\) & \(L_x = 1.0\,\si{\meter}\) \\
+Surface tension, \(\sigma\) & \(1.0 \times 10^{-5}\,\si{\newton\per\meter}\) \\
+Gravity, \(\vect{g}\) & \([0, -1.0]\,\si{\meter\per\second\squared}\) \\
+\addlinespace
+\multicolumn{2}{@{}l}{\textbf{Numerical Methods}} \\
+\cmidrule(lr){1-2}
+Multiphase model & VOF with first-order HRIC convection scheme \\
+Flow regime & Turbulent, SST \(k\text{--}\omega\) model \\
+Discretisation scheme & Second-order (flow), first-order (HRIC) \\
+Gradient reconstruction & Least-squares \\
+\bottomrule
+\end{tabular}
+\caption{Simulation parameters and physics models for the Rayleigh-Taylor instability study.}
+\label{tab:rt-simulation-params}
+\end{table}
 
+\begin{table}[htbp]
+\small
+\centering
+\ra{1.0}
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}l ccc ccc ccc@{}}
+\toprule
+& \multicolumn{3}{c}{At = 0.2} & \multicolumn{3}{c}{At = 0.5} & \multicolumn{3}{c}{High At} \\
+\cmidrule(lr){2-4} \cmidrule(lr){5-7} \cmidrule(lr){8-10}
+Parameter & Re300 & Re1000 & Re3000 & Re300 & Re1000 & Re3000 & 30 & 1000 & 1500 \\
+\midrule
+$\rho_H$ [\si{kg.m^{-3}}] & 1.5 & 1.5 & 1.5 & 3.0 & 3.0 & 3.0 & 3.0 & 1.0 & 1.5 \\
+$\rho_L$ [\si{kg.m^{-3}}] & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 0.1 & 0.001 & 0.001 \\
+$\mu_{H,L}$ [\si{Pa.s}] & 0.005 & 0.0015 & 0.0005 & 0.01 & 0.003 & 0.001 & 0.001 & 0.001 & 0.001 \\
+Mesh size $\Delta h$ [\si{m}] & 0.0045 & 0.0045 & 0.0045 & 
+\makecell[r]{(0.01, 0.007,\\ 0.0045)} & 0.0045 & 
+\makecell[r]{(0.01, 0.007,\\ 0.0045)} & 0.0045 & 0.0045 & 0.0045 \\
+\bottomrule
+\end{tabular}
+\caption{Fluid properties and mesh resolutions for all simulation cases.}
+\label{tab:rt-parameter-matrix}
+\end{table}
 
-
+\begin{table}[htbp]
+\centering
+\ra{1.2}
+\begin{tabular}{@{}lp{6cm}@{}}
+\toprule
+\multicolumn{2}{@{}l}{\textbf{Simulation Setup}} \\
+\cmidrule(lr){1-2}
+Domain & Two-dimensional rectangular \\
+Mesh size, \(\Delta h\) & \(2.0 \times 10^{-3}\,\si{\meter}\) \\
+Time discretization & Implicit unsteady, first-order Euler \\
+Time step, \(\Delta t\) & \(0.5\,\si{\second}\) \\
+\addlinespace
+\multicolumn{2}{@{}l}{\textbf{Physical Properties}} \\
+\cmidrule(lr){1-2}
+Density, \(\rho\) & \(1000.0\,\si{\kilogram\per\meter\cubed}\) \\
+Dynamic viscosity, \(\mu\) & \(8.8871 \times 10^{-4}\,\si{\pascal\second}\) \\
+Specific heat, \(C_p\) & \(4200.0\,\si{\joule\per\kilogram\per\kelvin}\) \\
+Latent heat of fusion, \(L\) & \(1.0 \times 10^{5}\,\si{\joule\per\kilogram}\) \\
+Thermal conductivity (liquid), \(k_l\) & \(2.33\,\si{\watt\per\meter\per\kelvin}\) \\
+Thermal conductivity (solid), \(k_s\) & \(0.62\,\si{\watt\per\meter\per\kelvin}\) \\
+Melting temperature, \(T_m\) & \(273\,\si{\kelvin}\) \\
+\addlinespace
+\multicolumn{2}{@{}l}{\textbf{Numerical Methods}} \\
+\cmidrule(lr){1-2}
+Multiphase model & VOF with first-order HRIC convection scheme \\
+Flow regime & Laminar \\
+Discretisation Scheme & Second-order upwind (energy), blended second- and first-order upwind (volume fraction) \\
+\bottomrule
+\end{tabular}
+\caption{Simulation parameters and physics models for the Stefan melting-solidification problem.}
+\label{tab:stefan-simulation-params}
+\end{table}
 \FloatBarrier
 
 
