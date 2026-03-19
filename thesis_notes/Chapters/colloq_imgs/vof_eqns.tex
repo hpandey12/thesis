@@ -1,0 +1,110 @@
+\documentclass[paper=a4,12pt,titlepage,listof=totoc,index=totoc,bibliography=totoc]{scrartcl}
+% paper=a4		Papierformat DinA 4
+% 12pt		Schriftgr��e 12pt
+% titlepage 		Deckblatt
+% listof=totoc	Abbildungs- und Tabellenverzeichnis in Inhaltsverzeichnis
+% index=totoc		Index ins Inhaltverzeichnis
+% bibliography=totoc	Quellenverzeichnis ins Inhaltsverzeichnis
+%liststotoc: 	Abbildungs- und Tabellenverzeichnis in Inhaltsverzeichnis
+%idxtotoc: 		Index ins Inhaltverzeichnis
+%bibtotoc:    Literaturverzeichnis ins Inhaltsverzeichnis
+%twoside:     f�r Duplex
+
+
+
+%\usepackage{scrpage2}    
+\usepackage[export]{adjustbox}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm} 
+\usepackage{cancel}
+\usepackage{color}
+%\usepackage{epigraph}
+% For coloured table cells
+\usepackage[table,xcdraw]{xcolor}
+\usepackage{graphicx}
+%\usepackage{latexsym}
+\usepackage{listings}
+\usepackage{mathrsfs}
+\usepackage{mathtools}
+\usepackage{pgf,tikz}
+\usepackage{physics}
+\usepackage{placeins}
+\usepackage{scalerel}
+\usepackage{subcaption}
+\usepackage{tabularx}
+\usepackage{tikzscale}
+%\usepackage{todonotes}
+\usepackage{siunitx}
+\usepackage{wrapfig}
+%red, green, blue, yellow, cyan, magenta, black, white
+%\usepackage{pifont}
+\usepackage{tocvsec2}
+\usepackage{enumitem}
+%\usepackage{framed}
+\usepackage{dashrule}
+\usepackage[T1]{fontenc}
+\usepackage[a-1b]{pdfx}
+\usepackage[utf8]{inputenc}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{makecell}
+\usepackage{float}
+\usepackage{bm}
+\newcommand{\pderiv}[2]{\ensuremath{\displaystyle\frac{\partial{#1}}{\partial{#2}}}}
+\newcommand{\ptwoderiv}[2]{\ensuremath{\displaystyle\frac{\partial^{2}{#1}}{\partial{#2}^{2}}}}
+\newcommand{\deriv}[2]{\ensuremath{\displaystyle\frac{d{#1}}{d{#2}}}}
+\newcommand{\limint}[1]{\ensuremath{\displaystyle\int\limits_{#1}}}
+\newcommand{\limsum}[2]{\ensuremath{\displaystyle\sum\limits_{#1}^{#2}}}
+\newcommand{\vect}[1]{\bm{\bar{#1}}}    % bold vector with overbar
+\newcommand{\tens}[1]{\bm{\bar{\bar{\mathsf{#1}}}}}
+\newcommand{\munit}[1]{\ensuremath{\mathrm{#1}}}
+% eigene
+\newcommand{\integ}[2]{\ensuremath{\displaystyle\int\limits_{#1}^{#2}}}
+\newcommand{\ointeg}[2]{\ensuremath{\displaystyle\oint\limits_{#1}^{#2}}}
+\newcommand*\diff{\mathop{}\!\mathrm{d}}
+\newcommand{\ind}[1]{\ensuremath{\mathsf {#1}}}
+\begin{document}
+ \begin{equation*}\label{eq:emp-mass}
+ \begin{split}
+\text{Mass conservation: }& \\  
+\pderiv{}{t}
+\integ{V}{} \alpha_{\ind{i}} \rho_{\ind{i}} \,\diff{V}
+&+ \ointeg{\partial V}{} \alpha_{\ind{i}} \rho_{\ind{i}} \vect{v}_{\ind{i}} \cdot \diff{\vect{a}} = 
+\integ{V}{} \Gamma_{\ind{i}} \,\diff{V}
++ \integ{V}{} \mathrm{S}^{\alpha}_{\ind{i}} \,\diff{V}\,.
+\end{split}
+\end{equation*}
+
+\begin{equation*}\label{eq:emp-mom}
+\begin{split}
+\text{Momentum conservation: }& \\  
+\pderiv{}{t}
+\integ{V}{} \alpha_{\ind{i}} \rho_{\ind{i}} \vect{v}_{\ind{i}} \,\diff{V}
++ &\ointeg{\partial V}{} \alpha_{\ind{i}} \rho_{\ind{i}} \vect{v}_{\ind{i}} \otimes \vect{v}_{\ind{i}} \cdot \diff{\vect{a}}
+=  
+\integ{V}{} \left(-\alpha_{\ind{i}} \nabla p 
++ \alpha_{\ind{i}} \rho_{\ind{i}} \vect{g}
++ (\vect{F}_{\ind{int}})_{\ind{i}} \right) \,\diff{V}\\
+&+ \ointeg{\partial V}{} \left[ \alpha_{\ind{i}} \left( \tens{T}_{\ind{i}}\right) \right] \cdot \,\diff{\vect{a}}
++ \integ{V}{} \vect{S}^{\alpha}_{\ind{i}} \,\diff{V}
++ \integ{V}{} \bigl(\Gamma_{\ind{i}} \vect{v}_{\ind{i}} + \vect{\mathcal{M}}_{\ind{i}}\bigr)  \,\diff{V}\,.
+\end{split}
+\end{equation*}
+
+\begin{align*}\label{eq:emp-en}
+\begin{split}
+\text{Energy conservation: }\qquad&\\  
+\pderiv{}{t}
+\integ{V}{} \alpha_{\ind{i}} \rho_{\ind{i}} E_{\ind{i}} \,\diff{V}
++ \ointeg{\partial V}{} \alpha_{\ind{i}} \rho_{\ind{i}} H_{\ind{i}}&
+\vect{v}_{\ind{i}} \cdot \diff{\vect{a}}
+  = 
+\ointeg{\partial V}{} \alpha_{\ind{i}} (k_{\mathrm{eff}})_{\ind{i}} \nabla T_{\ind{i}} \cdot \diff{\vect{a}}
++ \ointeg{\partial V}{} \tens{T}_{\ind{i}} \vect{v}_{\ind{i}} \cdot \diff{\vect{a}}\nonumber \\
+& + \integ{V}{} \vect{f_{b}}_{\ind{i}} \cdot \vect{v}_{\ind{i}} \,\diff{V}
++ \integ{V}{} \mathrm{S}_{u,\ind{i}} \,\diff{V} + \integ{V}{} \bigl(\Gamma_{\ind{i}}H_{\ind{i}} + \mathcal{E}_{\ind{i}}\bigr)\,\diff{V}\,.
+\end{split}
+\end{align*} 
+
+\end{document}
