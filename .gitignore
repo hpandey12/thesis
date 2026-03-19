@@ -326,3 +326,4 @@ tsconfig.lsif.json
 *.sh
 *.sim~
 *.pyc
+*.mp4
